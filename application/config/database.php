@@ -5,6 +5,7 @@
         $query_builder = TRUE;
         // $tnsname = '(DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = 118.68.169.0)(PORT = 1521))
         // (CONNECT_DATA = (SERVER = DEDICATED) (SERVICE_NAME = xe)))';118.68.169.0:1521:xe; Acc: msc_dump/112233
+        
         $tnsname = '(DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = 118.68.169.0)(PORT = 1521))
                     (CONNECT_DATA = (SERVER = DEDICATED) (SERVICE_NAME = xe)))';
         $db['default'] = array(
