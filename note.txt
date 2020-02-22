@@ -1,0 +1,412 @@
+#####################################################################################
+Job clone news + push
+--------------------------
+--------------------------
+
+*/5 * * * * curl http://dauthau2.zdoday.com/cloneNews/cloneList
+* * * * * curl http://dauthau2.zdoday.com/pushNotify
+0 0 * * * curl http://dauthau2.zdoday.com/clearTableContentLogPush
+*/10 * * * * curl http://dauthau2.zdoday.com/scanContentPush?call=1
+*/3 * * * * curl http://dauthau2.zdoday.com/scanContentPush?call=8
+*/11 * * * * curl http://dauthau2.zdoday.com/scanContentPush?call=3
+0 * * * * curl http://dauthau2.zdoday.com/scanContentPush?call=4
+1 * * * * curl http://dauthau2.zdoday.com/scanContentPush?call=5
+2 * * * * curl http://dauthau2.zdoday.com/scanContentPush?call=6
+3 * * * * curl http://dauthau2.zdoday.com/scanContentPush?call=7
+4 * * * * curl http://dauthau2.zdoday.com/scanContentPush?call=9
+5 * * * * curl http://dauthau2.zdoday.com/scanContentPush?call=10
+6 * * * * curl http://dauthau2.zdoday.com/scanContentPush?call=11
+7 * * * * curl http://dauthau2.zdoday.com/scanContentPush?call=12
+8 * * * * curl http://dauthau2.zdoday.com/logContentPushByUser
+
+#####################################################################################
+
+
+CREATE SEQUENCE AUTO_INCREMENT_NEWS
+START WITH 1
+INCREMENT BY 1;
+
+CREATE OR REPLACE TRIGGER AUTO_INCREMENT_TRIGGER_NEWS
+BEFORE INSERT ON
+NEWS
+REFERENCING NEW AS NEW
+    FOR EACH ROW
+    BEGIN
+    SELECT
+    AUTO_INCREMENT_NEWS.NEXTVAL INTO :NEW.ID
+    FROM DUAL;
+END;
+
+
+
+('thong_bao_thau','Thông báo mời thầu'),
+('mo_ban_ho_so_thau','Phát hành hồ sơ mời thầu'),
+('lam_ro_ho_so_moi_thau','Làm rõ hồ sơ mơi thầu'),
+('tra_loi_lam_ro_ho_so_moi_thau','Trả lời làm rõ hồ sơ mời thầu'),
+('gia_han_thoi_diem_dong_thau','Gia hạn thời điểm đóng thầu'),
+('thay_doi_thong_tin_gt','Thông báo mời thầu thay đổi'),
+('dong_thau','Đóng thầu'),
+('mo_thau','Mở thầu'),
+('lam_ro_ho_so_du_thau','Làm rõ hồ sơ dự thầu'),
+('tra_loi_lam_ro_ho_so_du_thau','Trả lời làm rõ hồ sơ dự thầu'),
+('bao_cao_danh_gia_ho_so_du_thau','Báo cáo đánh giá hồ sơ dự thầu'),
+('thong_bao_ket_qua','Kết quả lựa chọn nhà thầu'),
+('huy_thau','Hủy thầu')
+
+=========
+//- đóng thầu. thông báo khi đóng - khi đóng thì sẽ bán. 
+- mở thầu. cũng thế.
+    - gói thầu 1 giai đoạn 1 túi. chỉ push mở thầu.
+    - 1 giai đoạn 2 túi thì 2 lần thông báo mở. - mở hồ sơ đề xuất kĩ thuật. lần 2 mở hồ sơ đề xuất tài chính.
+- (tất cả gói thầu ). thêm trường thời điểm gia hạn, thời điểm hủy thầu.
+//- phát hành hồ sơ mời thầu. bắn khi đã phát hành. 
+//- (tất cả các push đều push khi sự kiện đã xẩy ra)
+- đấu thầu điện tử thông báo: đăng tải và phát hành hồ sơ mời thầu (cùng lúc)
+
+
+- cho xóa row ở màn hình thông báo.
+
+
+#- logout khi có máy khác đăng nhập tài khoản
+
+
+
+
+
+####################################################################################
+    */10 * * * * curl http://dauthau2.zdoday.com/scanContentPush?call=1
+    */11 * * * * curl http://dauthau2.zdoday.com/scanContentPush?call=2
+    2 * * * * curl http://dauthau2.zdoday.com/scanContentPush?call=3
+    3 * * * * curl http://dauthau2.zdoday.com/scanContentPush?call=4
+    4 * * * * curl http://dauthau2.zdoday.com/scanContentPush?call=5
+    5 * * * * curl http://dauthau2.zdoday.com/scanContentPush?call=6
+    6 * * * * curl http://dauthau2.zdoday.com/scanContentPush?call=7
+
+
+    call=1. các gói thầu có cập nhật thay đổi
+    call=2. các gói thầu con trong khlcnt có cập nhật thay đổi. (logic này ko xẩy ra. vì hiện tại chỉ đang cập nhật thay đổi cho khlcnt. chứ ko update thay đổi cho từng gói thầu con)
+    call=3. đăng thầu chính thức.
+    call=4. lấy những gói thầu chuẩn bị đóng thầu. (gồm cả sơ tuyển và chính thức)
+    call=5. lấy những gói thầu đã được công bố kết quả
+    call=6. lấy những gói thầu được mở ban hs thầu hôm nay. (gồm cả sơ tuyển và chính thức)
+    call=7. lấy những thông báo mở thầu. (bao gồm cả sơ tuyển và chính thức)
+
+####################################################################################
+logic cho tung loại push 
+- yêu cầu 1. link mở khi click vào thông tin push. hay trang list. phải trả tự động từ sever.
+- nội dung hiển thị trang log list push phải được hiển thị tự động hóa theo sever.
+- các phần push nếu chưa có dữ liệu thì phải tự giả lập dữ liệu.
+- làm phải test được để biết đúng hay sai.
+
+- list lại tất cả các kịch bản push chi tiết cho từng thằng. 
+    *******************************************************************************************
+    note: * đã làm và đã test
+          - đã làm nhưng chưa test
+
+    *I. "Đóng thầu! - Số TBMT: ... - Tên gói thầu: ... - Thời điểm đóng thầu: ... Click vào hiển thị thông tin gói thầu chi tiết"
+      - push theo thời gian kết thúc nhận hồ sơ thầu. 
+          1. quét dữ liệu 1h 1 lần. log time start push = time kết thúc nhận hồ sơ.
+          2. nội dung hiển thị trên push 
+            Đóng thầu! 
+            - Số TBMT: 099999. Tên gói thầu: gói thầu abc. Thời điểm đóng thầu: 04/09/2019 14:22
+          3. nội dung hiển thị trên trang history push 
+            Đóng thầu! 
+            - Số TBMT: 099999
+            - Tên gói thầu: gói thầu abc
+            - Thời điểm đóng thầu: 04/09/2019 14:22
+          4. click vào thì về trang chi tiết gói thầu
+    
+    *II. "Mở thầu!" - với gói thầu 1 giai đoạn 1 túi hồ sơ
+      - push theo thời gian mở thầu. 
+          1. quét dữ liệu 1h 1 lần. log time start push = time mở thầu.
+          2. nội dung hiển thị trên push 
+            *. với gói thầu điện tử
+              Mở thầu! 
+              - Số TBMT: 9999. Tên gói thầu: goi thau aaa. Thời điểm mở thầu: 04/09/2019 14:22. Số nhà thầu tham dự: 20
+            *. với gói thầu trực tiếp
+              Mở thầu! 
+              - Số TBMT: 9999. Tên gói thầu: goi thau aaa. Thời điểm mở thầu: 04/09/2019 14:22
+          3. nội dung hiển thị trên trang history push 
+            *. với gói thầu điện tử
+              Mở thầu! 
+              - Số TBMT: 9999
+              - Tên gói thầu: goi thau aaa
+              - Thời điểm mở thầu: 04/09/2019 14:22
+              - Số nhà thầu tham dự: 20
+            *. với gói thầu trực tiếp
+              Mở thầu! 
+              - Số TBMT: 9999
+              - Tên gói thầu: goi thau aaa
+              - Thời điểm mở thầu: 04/09/2019 14:22
+          4. click vào push 
+            *. với gói thầu điện tử
+              click vào thì hiển thị biên bản mở thầu (link web)
+            *. với gói thầu trực tiếp
+              click vào thì về trang chi tiết gói thầu
+    III. "Mở Hồ sơ đề xuất kỹ thuật!" (chưa lấy được logic push) - với gói thầu 1 giai đoạn 2 túi hồ sơ. hoặc 2 giai đoạn 2 túi hồ sơ 
+      - push theo thời gian Mở Hồ sơ đề xuất kỹ thuật! (giai đoạn công bố hồ sơ lần 1). 
+          1. quét dữ liệu 1h 1 lần. log time start push = time (công bố hồ sơ lần 1).
+          2. nội dung hiển thị trên push 
+            *. với gói thầu điện tử
+              Mở Hồ sơ đề xuất kỹ thuật!
+              - Số TBMT: 9999. Tên gói thầu: goi thau aaa. Số nhà thầu tham dự: 20
+            *. với gói thầu trực tiếp
+              Mở Hồ sơ đề xuất kỹ thuật!! 
+              - Số TBMT: 9999. Tên gói thầu: goi thau aaa.
+          3. nội dung hiển thị trên trang history push 
+            *. với gói thầu điện tử
+              Mở Hồ sơ đề xuất kỹ thuật!! 
+              - Số TBMT: 9999
+              - Tên gói thầu: goi thau aaa
+              - Số nhà thầu tham dự: 20
+            *. với gói thầu trực tiếp
+              Mở Hồ sơ đề xuất kỹ thuật!! 
+              - Số TBMT: 9999
+              - Tên gói thầu: goi thau aaa
+          4. click vào push 
+            *. với gói thầu điện tử
+              click vào thì hiển thị biên bản mở Hồ sơ đề xuất kỹ thuật (link web)
+            *. với gói thầu trực tiếp
+              click vào thì về trang chi tiết gói thầu
+    *IV. "Mở Hồ sơ đề xuất tài chính!" (cần comfim lại) - với gói thầu 1 giai đoạn 2 túi hồ sơ. hoặc 2 giai đoạn 2 túi hồ sơ
+      - push theo thời gian Mở Hồ sơ đề xuất tài chính! (giai đoạn công bố hồ sơ lần 2 - hiện tại đang sét theo trường open_date giống như logic "Mở Thầu!"). 
+          1. quét dữ liệu 1h 1 lần. log time start push = time (công bố hồ sơ lần 2).
+          2. nội dung hiển thị trên push 
+            *. với gói thầu điện tử
+              Mở Hồ sơ đề xuất kỹ thuật!
+              - Số TBMT: 9999. Tên gói thầu: goi thau aaa
+            *. với gói thầu trực tiếp
+              Mở Hồ sơ đề xuất tài chính!
+              - Số TBMT: 9999. Tên gói thầu: goi thau aaa
+          3. nội dung hiển thị trên trang history push 
+            *. với gói thầu điện tử
+              Mở Hồ sơ đề xuất tài chính!
+              - Số TBMT: 9999
+              - Tên gói thầu: goi thau aaa
+            *. với gói thầu trực tiếp
+              Mở Hồ sơ đề xuất tài chính! 
+              - Số TBMT: 9999
+              - Tên gói thầu: goi thau aaa
+          4. click vào push 
+            *. với gói thầu điện tử
+              click vào thì hiển thị biên bản mở Hồ sơ đề xuất tài chính (link web)
+            *. với gói thầu trực tiếp
+              click vào thì về trang chi tiết gói thầu
+    *V. "Thông báo mời thầu thay đổi!" - cho gói thầu (ko can set cho gói thầu con trong khlcnt)
+      - push khi có sự thay đổi version. 
+          1. quét dữ liệu 10s 1 lần. log time start push = time lúc quest (vi khi quest bắt được thay đổi tức là đã có thay đổi xẩy ra).
+          2. nội dung hiển thị trên push 
+            Thông báo mời thầu thay đổi!
+            - Số TBMT: 099999-02. Tên gói thầu: gói thầu abc
+          3. nội dung hiển thị trên trang history push 
+            Thông báo mời thầu thay đổi!
+            - Số TBMT: 099999-02
+            - Tên gói thầu: gói thầu abc
+          4. click vào thì về trang chi tiết gói thầu
+    _VI. "Gia hạn thời điểm đóng thầu! " - (hiện tại chưa bắt được sự kiện gia hạn gói thầu - dự định là làm giống với bắt thay đổi vession - chú ý nếu push thằng này thì thôi push thay đổi thông tin gói thầu )
+        - push khi có sự thay đổi "Gia hạn thời điểm đóng thầu". 
+          1. quét dữ liệu 10s 1 lần. log time start push = time lúc quest (vi khi quest bắt được thay đổi tức là đã có thay đổi xẩy ra).
+          2. nội dung hiển thị trên push 
+            Gia hạn thời điểm đóng thầu!
+            - Số TBMT: 099999-02. Tên gói thầu: gói thầu abc. Thời điểm đóng thầu mới: 04/09/2019 14:22
+          3. nội dung hiển thị trên trang history push 
+            Gia hạn thời điểm đóng thầu!
+            - Số TBMT: 099999-02
+            - Tên gói thầu: gói thầu abc
+            - Thời điểm đóng thầu mới: 04/09/2019 14:22
+          4. click vào thì về trang chi tiết gói thầu
+    _VII. "Huỷ thầu!" - (hiện tại chưa bắt được sự kiện Huỷ thầu) - (chua tao job quest)
+        - push khi có sự thay đổi "Huỷ thầu". 
+          1. quét dữ liệu 10s 1 lần. log time start push = time lúc quest (vi khi quest bắt được thay đổi tức là đã có thay đổi xẩy ra).
+          2. nội dung hiển thị trên push 
+            Huỷ thầu!
+            - Số TBMT: 099999-02. Tên gói thầu: gói thầu abc. Lý do huỷ thầu: ko đủ người tham dự thầu
+          3. nội dung hiển thị trên trang history push 
+            Huỷ thầu!
+            - Số TBMT: 099999-02
+            - Tên gói thầu: gói thầu abc
+            - Lý do huỷ thầu: ko đủ người tham dự thầu
+          4. click vào thì về trang chi tiết gói thầu
+    *VIII. "Đăng tải thông báo mời thầu! "
+        - push khi những gói thầu con trong khlcnt đực Đăng tải thông báo mời thầu chính thức. 
+          1. quét dữ liệu 1h 1 lần. log time start push = time lúc quest (vi khi quest bắt được thông tin đăng tbmt).
+          2. nội dung hiển thị trên push 
+            Đăng tải thông báo mời thầu!
+            - Số TBMT: 099999-02. Tên gói thầu: gói thầu abc
+          3. nội dung hiển thị trên trang history push 
+            Đăng tải thông báo mời thầu!
+            - Số TBMT: 099999-02
+            - Tên gói thầu: gói thầu abc
+          4. click vào thì về trang chi tiết gói thầu
+    *IX. "Phát hành hồ sơ mời thầu!" - đối với đấu thầu trực tiếp
+        - push khi những gói thầu đến thời gian phát hành hsmt. 
+          1. quét dữ liệu 1h 1 lần. log time start push = time chỉ định bán hồ sơ mời thầu.
+          2. nội dung hiển thị trên push 
+            Phát hành hồ sơ mời thầu!
+            - Số TBMT: 099999-02. Tên gói thầu: gói thầu abc. Địa điểm: số 14 cầu giấy, hà nội. Thời gian phát hành: 04/09/2019 14:22
+          3. nội dung hiển thị trên trang history push 
+            Phát hành hồ sơ mời thầu!
+            - Số TBMT: 099999-02
+            - Tên gói thầu: gói thầu abc
+            - Địa điểm: số 14 cầu giấy, hà nội
+            - Thời gian phát hành: 04/09/2019 14:22
+          4. click vào thì về trang chi tiết gói thầu
+    *X. "Đăng tải và phát hành hồ sơ mời thầu!" - đối với đấu thầu điện tử
+        - push khi những gói thầu đến thời gian phát hành hsmt. 
+          1. quét dữ liệu 1h 1 lần. log time start push = time lúc quest. vì gói thầu điện tử đăng là phát hành hồ sơ luôn.
+             vì vậy chỉ push cho 1 thằng nào đã theo dõi từ gói thầu con trong khlcnt 
+          2. nội dung hiển thị trên push 
+            Đăng tải và phát hành hồ sơ mời thầu!
+            - Số TBMT: 099999-02. Tên gói thầu: gói thầu abc. Thời gian phát hành: 04/09/2019 14:22
+          3. nội dung hiển thị trên trang history push 
+            Đăng tải và phát hành hồ sơ mời thầu!
+            - Số TBMT: 099999-02
+            - Tên gói thầu: gói thầu abc
+            - Thời gian phát hành: 04/09/2019 14:22
+          4. click vào thì về trang chi tiết gói thầu
+    *XI. "Kết quả sơ tuyển!"
+        - push khi những gói thầu được theo dõi trong phần thông báo mời thầu sơ tuyển được công bố trong bảng kết quả. 
+          1. quét dữ liệu 1h 1 lần. log time start push = time lúc quest
+          2. nội dung hiển thị trên push 
+            Kết quả sơ tuyển!
+            - Số TBMT: 099999-02. Tên gói thầu: gói thầu abc
+          3. nội dung hiển thị trên trang history push 
+            Kết quả sơ tuyển!
+            - Số TBMT: 099999-02
+            - Tên gói thầu: gói thầu abc
+          4. click vào thì về trang chi tiết kết quả gói thầu
+    *XII. "Kết quả lựa chọn nhà thầu!"
+        - push khi những gói thầu được theo dõi trong phần thông báo mời thầu được công bố trong bảng kết quả. 
+          1. quét dữ liệu 1h 1 lần. log time start push = time lúc quest
+          2. nội dung hiển thị trên push 
+            Kết quả lựa chọn nhà thầu!
+            - Số TBMT: 099999-02. Tên gói thầu: gói thầu abc. Nhà thầu trúng thầu: nha thau A
+          3. nội dung hiển thị trên trang history push 
+            Kết quả lựa chọn nhà thầu!
+            - Số TBMT: 099999-02
+            - Tên gói thầu: gói thầu abc
+            - Nhà thầu trúng thầu: nha thau A
+          4. click vào thì về trang chi tiết kết quả gói thầu
+    _XIII. "Yêu cầu làm rõ Hồ sơ mời thầu!" - Chỉ đối vơi Bên mời thầu
+        - push khi ... có yêu cầu mới, và yêu cầu đó chưa được log trong bảng CONTENT_PUSH
+          1. quét dữ liệu ...
+          2. nội dung hiển thị trên push 
+            Yêu cầu làm rõ Hồ sơ mời thầu!
+            - Số TBMT: 099999-02. Tên gói thầu: gói thầu abc. Nhà thầu yêu cầu: nha thau A
+          3. nội dung hiển thị trên trang history push 
+            Yêu cầu làm rõ Hồ sơ mời thầu!
+            - Số TBMT: 099999-02
+            - Tên gói thầu: gói thầu abc
+            - Nhà thầu yêu cầu: nha thau A
+          4. click vào thì hiển thị thông tin yêu cầu làm rõ
+    _XIV. "Trả lời làm rõ Hồ sơ mời thầu!" - Chỉ đối với nhà thầu. tất cả mọi người theo dõ gói thầu đều nhận được push
+        - push khi ... và yêu cầu đó chưa được log trong bảng CONTENT_PUSH
+          1. quét dữ liệu ...
+          2. nội dung hiển thị trên push 
+            Trả lời làm rõ Hồ sơ mời thầu!
+            - Số TBMT: 099999-02. Tên gói thầu: gói thầu abc. Bên mời thầu: Cơ quan A
+          3. nội dung hiển thị trên trang history push 
+            Trả lời làm rõ Hồ sơ mời thầu!
+            - Số TBMT: 099999-02
+            - Tên gói thầu: gói thầu abc
+            - Bên mời thầu: Cơ quan A
+          4. click vào thì hiển thị nội dung trả lời làm rõ hồ sơ mời thầu
+    _XV. "Yêu cầu làm rõ Hồ sơ dự thầu!" - Chỉ đối với nhà thầu
+        - push khi ... và yêu cầu đó chưa được log trong bảng CONTENT_PUSH
+          1. quét dữ liệu ...
+          2. nội dung hiển thị trên push 
+            Yêu cầu làm rõ Hồ sơ dự thầu!
+            - Số TBMT: 099999-02. Tên gói thầu: gói thầu abc. Bên mời thầu: Cơ quan A
+          3. nội dung hiển thị trên trang history push 
+            Yêu cầu làm rõ Hồ sơ dự thầu!
+            - Số TBMT: 099999-02
+            - Tên gói thầu: gói thầu abc
+            - Bên mời thầu: Cơ quan A
+          4. click vào thì hiển thị nội dung yêu cầu làm rõ hồ sơ dự thầu
+    _XVI. "Trả lời làm rõ Hồ sơ dự thầu!" - Chỉ đối với bên mời thầu
+        - push khi ... và yêu cầu đó chưa được log trong bảng CONTENT_PUSH
+          1. quét dữ liệu ...
+          2. nội dung hiển thị trên push 
+            trả lời làm rõ Hồ sơ dự thầu!
+            - Số TBMT: 099999-02. Tên gói thầu: gói thầu abc. Nhà thầu làm rõ: nha thau A
+          3. nội dung hiển thị trên trang history push 
+            trả lời làm rõ Hồ sơ dự thầu!
+            - Số TBMT: 099999-02
+            - Tên gói thầu: gói thầu abc
+            - Nhà thầu làm rõ: nha thau A
+          4. click vào thì hiển thị nội dung trả lời làm rõ hồ sơ dự thầu
+    
+    XVII. "Phê duyệt đăng ký Nhà thầu!" - Chỉ đối với nhà thầu
+        - push khi ...
+          1. quét dữ liệu ...
+          2. nội dung hiển thị trên push 
+            trả lời làm rõ Hồ sơ dự thầu!
+            - Số ĐKKD/MST: 099999/000101. Tên nhà thầu: Nhà thầu A. Ngày phê duyệt: 02/04/2019
+          3. nội dung hiển thị trên trang history push 
+            trả lời làm rõ Hồ sơ dự thầu!
+            - Số ĐKKD/MST: 099999/000101
+            - Tên nhà thầu: Nhà thầu A
+            - Ngày phê duyệt: 02/04/2019
+          4. click vào thì hiển thị thông tin chi tiết nhà thầu
+    XVIII. "Bảo lưu đăng ký nhà thầu!" - Chỉ đối với nhà thầu
+        - push khi ...
+          1. quét dữ liệu ...
+          2. nội dung hiển thị trên push 
+            trả lời làm rõ Hồ sơ dự thầu!
+            - Số ĐKKD/MST: 099999/000101. Tên nhà thầu: Nhà thầu A. Lý do bảo lưu: thếu hồ sơ
+          3. nội dung hiển thị trên trang history push 
+            trả lời làm rõ Hồ sơ dự thầu!
+            - Số ĐKKD/MST: 099999/000101
+            - Tên nhà thầu: Nhà thầu A
+            - Lý do bảo lưu: thiếu hồ sơ
+          4.  Click vào hiển thị phần hướng dẫn đăng ký nhà thầu
+    XIX. "Phê duyệt đăng ký bên mời thầu!" - Chỉ đối với bên mời thầu
+        - push khi ...
+          1. quét dữ liệu ...
+          2. nội dung hiển thị trên push 
+            Phê duyệt đăng ký bên mời thầu!
+            - Mã cơ quan: z11111. Tên bên mời thầu: Cơ quan A. Ngày phê duyệt: 02/04/2019
+          3. nội dung hiển thị trên trang history push 
+            Phê duyệt đăng ký bên mời thầu!
+            - Mã cơ quan: z11111
+            - Tên bên mời thầu: Cơ quan A
+            - Ngày phê duyệt: 02/04/2019
+          4.  Click vào hiển thị thông tin chi tiết bên mời thầu
+    XX. "Bảo lưu đăng ký bên mời thầu!" - Chỉ đối với bên mời thầu
+        - push khi ...
+          1. quét dữ liệu ...
+          2. nội dung hiển thị trên push 
+            Bảo lưu đăng ký bên mời thầu!
+            - Mã cơ quan: z11111. Tên bên mời thầu: Cơ quan A. Lý do bảo lưu: Hồ sơ thiếu 
+          3. nội dung hiển thị trên trang history push 
+            Bảo lưu đăng ký bên mời thầu!
+            - Mã cơ quan: z11111
+            - Tên bên mời thầu: Cơ quan A
+            - Lý do bảo lưu: Hồ sơ thiếu 
+          4. Click vào hiển thị phần hướng dẫn đăng ký bên mời thầu
+    
+    
+    
+    
+    
+    
+          
+          
+
+
+    *******************************************************************************************
+
+      
+- có kịch bản test luôn. 
+- ra soát lại những nội dung đã push. sem đúng chưa ko thì sửa 
+- làm tiếp theo kịch bản nội dung mới 
+####################################################################################
+####################################################################################
+
+
+
+
+authen base
+AdminMuaSamCong/muasamcong123@!
+
+VIPMuaSamCong/muasamcong123@!VIP
