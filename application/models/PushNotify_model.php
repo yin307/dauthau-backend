@@ -602,13 +602,13 @@ class PushNotify_model extends CI_Model implements PushNotify{
                   CONCAT(a1.TAXNUMBER,
                     CONCAT(\'. Tên nhà thầu: \',
                       CONCAT(a1.BIDER_NAME,
-                        CONCAT(\'Lý do bảo lưu: \',a1.REJECTED_REASON ))))))) as CONTENT_PUSH,
+                        CONCAT(\'. Lý do bảo lưu: \',a1.REJECTED_REASON ))))))) as CONTENT_PUSH,
             SYSDATE as TIME_START_PUSH,
             null as TIME_END_PUSH,
             0 as TIMES,
             null as NOTI_VERSION_NUM_LOG,
             \'/home\' as "URL",
-            \'Phê duyệt đăng ký nhà thầu\' as "HEADER"
+            \'Bảo lưu đăng ký nhà thầu\' as "HEADER"
           from TBL_BIDERS a1
           left join CONTENT_PUSH a2 on a2.NAME_TABLE=\'TBL_BIDERS\' and a2.TABLE_ID=a1."BUSSINESS_REGISTRATION_NUM" and a2.TYPE_PUSH=\'bao_luu_dang_ky_nha_thau\'
           where a1.status = \'\' and a2.ID is null';
