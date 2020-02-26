@@ -737,7 +737,7 @@ class PushNotify_model extends CI_Model implements PushNotify{
           where ROWNUM < 2';
     $query = $this->db->query($sql);
     $res =  $query->result_array();
-    // print_r($res);
+    print_r($res);
     if(empty($res)){
         return;
     }
