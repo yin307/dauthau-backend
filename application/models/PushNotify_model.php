@@ -617,7 +617,6 @@ class PushNotify_model extends CI_Model implements PushNotify{
     //Phê duyệt đăng ký bên mời thầu!" - Chỉ đối với bên mời thầu
     else if($call == 19){
 
-      // $status = $call == 17 ? "Y" : "PENDING";
 
       $sql = 'INSERT INTO CONTENT_PUSH("NAME_TABLE","BID_PACKAGE_CODE","TABLE_ID","TYPE_PUSH","DATE_CREATED",
           "CONTENT_PUSH","TIME_START_PUSH","TIME_END_PUSH","TIMES","NOTI_VERSION_NUM_LOG","URL","HEADER")
@@ -641,6 +640,34 @@ class PushNotify_model extends CI_Model implements PushNotify{
           from TBL_PROCURINGS a1
           left join CONTENT_PUSH a2 on a2.NAME_TABLE=\'TBL_PROCURINGS\' and a2.TABLE_ID=a1."PROCURING_CODE" and a2.TYPE_PUSH=\'phe_duyet_dang_ky_moi_thau\'
           where a1.status = \'Y\' and a2.ID is null';
+          $this->db->query($sql);
+    }
+    //Bảo lưu đăng ký bên mời thầu!" - Chỉ đối với bên mời thầu
+    else if($call == 20){
+
+
+      $sql = 'INSERT INTO CONTENT_PUSH("NAME_TABLE","BID_PACKAGE_CODE","TABLE_ID","TYPE_PUSH","DATE_CREATED",
+          "CONTENT_PUSH","TIME_START_PUSH","TIME_END_PUSH","TIMES","NOTI_VERSION_NUM_LOG","URL","HEADER")
+
+      select \'TBL_PROCURINGS\' as NAME_TABLE,
+            null as BID_PACKAGE_CODE,
+            a1."PROCURING_CODE" as TABLE_ID,
+            \'bao_luu_dang_ky_moi_thau\' as "TYPE_PUSH",
+            SYSDATE as DATE_CREATED,
+            CONCAT(\'Mã cơ quan: \',
+              CONCAT(a1.PROCURING_CODE,
+                CONCAT(\'. Tên bên mời thầu: \',
+                  CONCAT(a1.PROCURING_NAME,
+                    CONCAT(\'. Lý do bảo lưu: \',a1.REJECTED_RSON ))))) as CONTENT_PUSH,
+            SYSDATE as TIME_START_PUSH,
+            null as TIME_END_PUSH,
+            0 as TIMES,
+            null as NOTI_VERSION_NUM_LOG,
+            \'/home\' as "URL",
+            \'Bảo lưu đăng ký bên mời thầu\' as "HEADER"
+          from TBL_PROCURINGS a1
+          left join CONTENT_PUSH a2 on a2.NAME_TABLE=\'TBL_PROCURINGS\' and a2.TABLE_ID=a1."PROCURING_CODE" and a2.TYPE_PUSH=\'bao_luu_dang_ky_moi_thau\'
+          where a1.status = \'B\' and a2.ID is null';
           $this->db->query($sql);
     }
   }
@@ -746,7 +773,7 @@ class PushNotify_model extends CI_Model implements PushNotify{
       foreach ($res as $vl){
         $include_player_ids[]=$vl['DEVICES_ID'];
       }
-    }else if($item['TYPE_PUSH'] == 'phe_duyet_dang_ky_moi_thau'){
+    }else if($item['TYPE_PUSH'] == 'phe_duyet_dang_ky_moi_thau' || $item['TYPE_PUSH'] == 'bao_luu_dang_ky_moi_thau'){
       $sql = '
       select tu.DEVICES_ID 
       FROM CONTENT_PUSH cp 
@@ -803,7 +830,7 @@ class PushNotify_model extends CI_Model implements PushNotify{
               left join AW_TYPE_PUSH b1 on b1.KEY_TYPE = a.TYPE_PUSH
               left join AW_USERS_TYPE_PUSH b2 on b2.type_push_id=b1.id and b2.user_id = a2.user_id
               where (a2.USER_ID is not null or 
-                a.TYPE_PUSH in (\'lam_ro_ho_so_moi_thau\',\'tra_loi_lam_ro_ho_so_moi_thau\',\'lam_ro_ho_so_du_thau\',\'tra_loi_lam_ro_ho_so_du_thau\',\'bao_cao_danh_gia_ho_so_du_thau\', \'phe_duyet_dang_ky_nha_thau\', \'bao_luu_dang_ky_nha_thau\', \'phe_duyet_dang_ky_moi_thau\'))
+                a.TYPE_PUSH in (\'lam_ro_ho_so_moi_thau\',\'tra_loi_lam_ro_ho_so_moi_thau\',\'lam_ro_ho_so_du_thau\',\'tra_loi_lam_ro_ho_so_du_thau\',\'bao_cao_danh_gia_ho_so_du_thau\', \'phe_duyet_dang_ky_nha_thau\', \'bao_luu_dang_ky_nha_thau\', \'phe_duyet_dang_ky_moi_thau\', \'bao_luu_dang_ky_moi_thau\'))
                 and (b2.send_push is null or b2.send_push=1) and a.STATUS_PUSH is null 
                 '.$where.'
               order by a.priority , a.time_start_push
