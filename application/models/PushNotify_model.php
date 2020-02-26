@@ -581,6 +581,7 @@ class PushNotify_model extends CI_Model implements PushNotify{
           from TBL_BIDERS a1
           left join CONTENT_PUSH a2 on a2.NAME_TABLE=\'TBL_BIDERS\' and a2.TABLE_ID=a1."BUSSINESS_REGISTRATION_NUM" and a2.TYPE_PUSH=\'phe_duyet_dang_ky_nha_thau\'
           where a1.status = \''.$status.'\' and a2.ID is null';
+          $this->db->query($sql);
     }
   }
   public function logContentPushByUser(){
