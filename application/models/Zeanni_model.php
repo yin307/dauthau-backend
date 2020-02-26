@@ -1997,7 +1997,7 @@ class Zeanni_model extends CI_Model
                 'urlAppIos'=>$v['URL_APP_IOS'],
                 'urlAppAndroid'=>$v['URL_APP_ANDROID'],
                 'urlSchemeIos'=>$v['URL_SCHEME_IOS'],
-                'urlSchemeAndroid'=$v['URL_SCHEME_ANDROID'],
+                'urlSchemeAndroid'=>$v['URL_SCHEME_ANDROID'],
                 'status'=>$v['STATUS']
             );
         }
