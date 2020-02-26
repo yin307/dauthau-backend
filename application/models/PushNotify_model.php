@@ -611,7 +611,7 @@ class PushNotify_model extends CI_Model implements PushNotify{
             \'Phê duyệt đăng ký nhà thầu\' as "HEADER"
           from TBL_BIDERS a1
           left join CONTENT_PUSH a2 on a2.NAME_TABLE=\'TBL_BIDERS\' and a2.TABLE_ID=a1."BUSSINESS_REGISTRATION_NUM" and a2.TYPE_PUSH=\'bao_luu_dang_ky_nha_thau\'
-          where a1.status = \'PENDING\' and a2.ID is null';
+          where a1.status = \'\' and a2.ID is null';
           $this->db->query($sql);
     }
   }
@@ -761,7 +761,7 @@ class PushNotify_model extends CI_Model implements PushNotify{
               left join AW_TYPE_PUSH b1 on b1.KEY_TYPE = a.TYPE_PUSH
               left join AW_USERS_TYPE_PUSH b2 on b2.type_push_id=b1.id and b2.user_id = a2.user_id
               where (a2.USER_ID is not null or 
-                a.TYPE_PUSH in (\'lam_ro_ho_so_moi_thau\',\'tra_loi_lam_ro_ho_so_moi_thau\',\'lam_ro_ho_so_du_thau\',\'tra_loi_lam_ro_ho_so_du_thau\',\'bao_cao_danh_gia_ho_so_du_thau\', \'phe_duyet_dang_ky_nha_thau\'))
+                a.TYPE_PUSH in (\'lam_ro_ho_so_moi_thau\',\'tra_loi_lam_ro_ho_so_moi_thau\',\'lam_ro_ho_so_du_thau\',\'tra_loi_lam_ro_ho_so_du_thau\',\'bao_cao_danh_gia_ho_so_du_thau\', \'phe_duyet_dang_ky_nha_thau\', \'bao_luu_dang_ky_nha_thau\'))
                 and (b2.send_push is null or b2.send_push=1) and a.STATUS_PUSH is null 
                 '.$where.'
               order by a.priority , a.time_start_push
