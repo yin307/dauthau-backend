@@ -746,6 +746,19 @@ class PushNotify_model extends CI_Model implements PushNotify{
       foreach ($res as $vl){
         $include_player_ids[]=$vl['DEVICES_ID'];
       }
+    }else if($item['TYPE_PUSH'] == 'phe_duyet_dang_ky_moi_thau'){
+      $sql = '
+      select tu.DEVICES_ID 
+      FROM CONTENT_PUSH cp 
+      left join TBL_PROCURINGS tp on cp.table_id=tp.PROCURING_CODE 
+      left join AW_USER_ORGANIZATION auo on tb.PROCURING_CODE = auo.ORGANIZATION_ID 
+      left join TBL_USERS tu on tu.USER_ID=auo.USER_ID 
+      where tu.DEVICES_ID is not null and cp.NAME_TABLE = \'TBL_PROCURINGS\' and cp.ID='.$item['ID'];
+      $query = $this->db->query($sql);
+      $res =  $query->result_array();
+      foreach ($res as $vl){
+        $include_player_ids[]=$vl['DEVICES_ID'];
+      }
     }
 
     if(!in_array($item['TYPE_PUSH'],$arrCk) || $item['TYPE_PUSH']=='tra_loi_lam_ro_ho_so_moi_thau'){
