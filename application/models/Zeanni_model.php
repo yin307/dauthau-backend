@@ -1993,7 +1993,7 @@ class Zeanni_model extends CI_Model
                 'id'=>$vl['ID'],
                 'packageName'=>$vl['PACKAGE_NAME'],
                 'appName'=>$vl['APP_NAME'],
-                'iconPath'=>$vl['ICON_PATH'],
+                'iconPath'=>$vl['ICON_PATCH'],
                 'urlAppIos'=>$vl['URL_APP_IOS'],
                 'urlAppAndroid'=>$vl['URL_APP_ANDROID'],
                 'urlSchemeIos'=>$vl['URL_SCHEME_IOS'],
