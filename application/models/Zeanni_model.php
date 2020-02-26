@@ -1991,14 +1991,14 @@ class Zeanni_model extends CI_Model
         foreach($data as $vl){
             $res[]=array(
                 'id'=>$vl['ID'],
-                'packageName'=>$v['PACKAGE_NAME'],
-                'appName'=>$v['APP_NAME'],
-                'iconPath'=>$v['ICON_PATH'],
-                'urlAppIos'=>$v['URL_APP_IOS'],
-                'urlAppAndroid'=>$v['URL_APP_ANDROID'],
-                'urlSchemeIos'=>$v['URL_SCHEME_IOS'],
-                'urlSchemeAndroid'=>$v['URL_SCHEME_ANDROID'],
-                'status'=>$v['STATUS']
+                'packageName'=>$vl['PACKAGE_NAME'],
+                'appName'=>$vl['APP_NAME'],
+                'iconPath'=>$vl['ICON_PATH'],
+                'urlAppIos'=>$vl['URL_APP_IOS'],
+                'urlAppAndroid'=>$vl['URL_APP_ANDROID'],
+                'urlSchemeIos'=>$vl['URL_SCHEME_IOS'],
+                'urlSchemeAndroid'=>$vl['URL_SCHEME_ANDROID'],
+                'status'=>$vl['STATUS']
             );
         }
         return $res;
