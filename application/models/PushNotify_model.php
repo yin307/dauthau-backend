@@ -751,7 +751,7 @@ class PushNotify_model extends CI_Model implements PushNotify{
       select tu.DEVICES_ID 
       FROM CONTENT_PUSH cp 
       left join TBL_PROCURINGS tp on cp.table_id=tp.PROCURING_CODE 
-      left join AW_USER_ORGANIZATION auo on tb.PROCURING_CODE = auo.ORGANIZATION_ID 
+      left join AW_USER_ORGANIZATION auo on tp.PROCURING_CODE = auo.ORGANIZATION_ID 
       left join TBL_USERS tu on tu.USER_ID=auo.USER_ID 
       where tu.DEVICES_ID is not null and cp.NAME_TABLE = \'TBL_PROCURINGS\' and cp.ID='.$item['ID'];
       $query = $this->db->query($sql);
