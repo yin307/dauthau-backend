@@ -729,7 +729,7 @@ class PushNotify_model extends CI_Model implements PushNotify{
               left join AW_TYPE_PUSH b1 on b1.KEY_TYPE = a.TYPE_PUSH
               left join AW_USERS_TYPE_PUSH b2 on b2.type_push_id=b1.id and b2.user_id = a2.user_id
               where (a2.USER_ID is not null or 
-                a.TYPE_PUSH in (\'lam_ro_ho_so_moi_thau\',\'tra_loi_lam_ro_ho_so_moi_thau\',\'lam_ro_ho_so_du_thau\',\'tra_loi_lam_ro_ho_so_du_thau\',\'bao_cao_danh_gia_ho_so_du_thau\'))
+                a.TYPE_PUSH in (\'lam_ro_ho_so_moi_thau\',\'tra_loi_lam_ro_ho_so_moi_thau\',\'lam_ro_ho_so_du_thau\',\'tra_loi_lam_ro_ho_so_du_thau\',\'bao_cao_danh_gia_ho_so_du_thau\', \'phe_duyet_dang_ky_nha_thau\'))
                 and (b2.send_push is null or b2.send_push=1) and a.STATUS_PUSH is null 
                 '.$where.'
               order by a.priority , a.time_start_push
