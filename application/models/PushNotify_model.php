@@ -568,7 +568,7 @@ class PushNotify_model extends CI_Model implements PushNotify{
             CONCAT(\'Số ĐKKD/MST: \',
               CONCAT(a1.BUSSINESS_REGISTRATION_NUM,
                 CONCAT(\'/\',
-                  CONCAT(\'MST\',
+                  CONCAT(a1.TAXNUMBER,
                     CONCAT(\'. Tên nhà thầu: \',
                       CONCAT(a1.BIDER_NAME,
                         CONCAT(\'. Ngày phê duyệt: \',TO_CHAR(a1.APPROVAL_DATE, \'dd/mm/yyyy\') ))))))) as CONTENT_PUSH,
