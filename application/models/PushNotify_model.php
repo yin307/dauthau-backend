@@ -704,6 +704,7 @@ class PushNotify_model extends CI_Model implements PushNotify{
       }  
     }
     
+    print_r($include_player_ids);
     return $include_player_ids;
   }
   public function pushNotify(){
