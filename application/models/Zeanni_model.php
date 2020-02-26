@@ -1979,7 +1979,7 @@ class Zeanni_model extends CI_Model
     public function GetListAppConnect()
     {
         $status = 1;
-        if(!empty($_GET['status']){
+        if(!empty($_GET['status'])){
             $status = $_GET['status'];
         }
         $sql = 'select a.ID,a.PACKAGE_NAME, a.APP_NAME, a.ICON_PATH, a.URL_APP_IOS,a.URL_APP_ANDROID,a.UTL_SCHEME_IOS,a.URL_SCHEME_ANDROID,a.STATUS
