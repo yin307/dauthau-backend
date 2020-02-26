@@ -614,6 +614,35 @@ class PushNotify_model extends CI_Model implements PushNotify{
           where a1.status = \'PENDING\' and a2.ID is null';
           $this->db->query($sql);
     }
+    //Phê duyệt đăng ký bên mời thầu!" - Chỉ đối với bên mời thầu
+    else if($call == 19){
+
+      // $status = $call == 17 ? "Y" : "PENDING";
+
+      $sql = 'INSERT INTO CONTENT_PUSH("NAME_TABLE","BID_PACKAGE_CODE","TABLE_ID","TYPE_PUSH","DATE_CREATED",
+          "CONTENT_PUSH","TIME_START_PUSH","TIME_END_PUSH","TIMES","NOTI_VERSION_NUM_LOG","URL","HEADER")
+
+      select \'TBL_PROCURINGS\' as NAME_TABLE,
+            null as BID_PACKAGE_CODE,
+            a1."PROCURING_CODE" as TABLE_ID,
+            \'phe_duyet_dang_ky_moi_thau\' as "TYPE_PUSH",
+            SYSDATE as DATE_CREATED,
+            CONCAT(\'Mã cơ quan: \',
+              CONCAT(a1.PROCURING_CODE,
+                CONCAT(\'. Tên bên mời thầu: \',
+                  CONCAT(a1.PROCURING_NAME,
+                    CONCAT(\'. Ngày phê duyệt: \',TO_CHAR(a1.APPROVAL_DATE, \'dd/mm/yyyy\') ))))) as CONTENT_PUSH,
+            SYSDATE as TIME_START_PUSH,
+            null as TIME_END_PUSH,
+            0 as TIMES,
+            null as NOTI_VERSION_NUM_LOG,
+            \'/home\' as "URL",
+            \'Phê duyệt đăng ký bên mời thầu\' as "HEADER"
+          from TBL_PROCURINGS a1
+          left join CONTENT_PUSH a2 on a2.NAME_TABLE=\'TBL_PROCURINGS\' and a2.TABLE_ID=a1."PROCURING_CODE" and a2.TYPE_PUSH=\'phe_duyet_dang_ky_moi_thau\'
+          where a1.status = \'Y\' and a2.ID is null';
+          $this->db->query($sql);
+    }
   }
   public function logContentPushByUser(){
     $sql = "INSERT INTO AW_USERS_CONTENT_PUSH(USER_ID,CONTENT_PUSH_ID,PACKAGE_NAME,URL,STATUS_VIEW)
