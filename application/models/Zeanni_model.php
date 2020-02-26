@@ -1982,7 +1982,7 @@ class Zeanni_model extends CI_Model
         if(!empty($_GET['status'])){
             $status = $_GET['status'];
         }
-        $sql = 'select a.ID,a.PACKAGE_NAME, a.APP_NAME, a.ICON_PATH, a.URL_APP_IOS,a.URL_APP_ANDROID,a.URL_SCHEME_IOS,a.URL_SCHEME_ANDROID,a.STATUS
+        $sql = 'select a.ID,a.PACKAGE_NAME, a.APP_NAME, a.ICON_PATCH, a.URL_APP_IOS,a.URL_APP_ANDROID,a.URL_SCHEME_IOS,a.URL_SCHEME_ANDROID,a.STATUS
             from APP_CONNECT a WHERE a.STATUS=\''.$status.'\'
             order by APP_NAME ';
         $query = $this->db->query($sql);
