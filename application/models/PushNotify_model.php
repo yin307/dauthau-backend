@@ -553,9 +553,9 @@ class PushNotify_model extends CI_Model implements PushNotify{
       $this->db->query($sql);
     }
     //Phê duyệt đăng ký Nhà thầu!" - Chỉ đối với nhà thầu
-    else if($call == 17 || $call == 18){
+    else if($call == 17){
 
-      $status = $call == 17 ? "Y" : "PENDING";
+      // $status = $call == 17 ? "Y" : "PENDING";
 
       $sql = 'INSERT INTO CONTENT_PUSH("NAME_TABLE","BID_PACKAGE_CODE","TABLE_ID","TYPE_PUSH","DATE_CREATED",
           "CONTENT_PUSH","TIME_START_PUSH","TIME_END_PUSH","TIMES","NOTI_VERSION_NUM_LOG","URL","HEADER")
@@ -580,7 +580,38 @@ class PushNotify_model extends CI_Model implements PushNotify{
             \'Phê duyệt đăng ký nhà thầu\' as "HEADER"
           from TBL_BIDERS a1
           left join CONTENT_PUSH a2 on a2.NAME_TABLE=\'TBL_BIDERS\' and a2.TABLE_ID=a1."BUSSINESS_REGISTRATION_NUM" and a2.TYPE_PUSH=\'phe_duyet_dang_ky_nha_thau\'
-          where a1.status = \''.$status.'\' and a2.ID is null';
+          where a1.status = \'Y\' and a2.ID is null';
+          $this->db->query($sql);
+    }
+    //Bảo  đăng ký Nhà thầu!" - Chỉ đối với nhà thầu
+    else if($call == 18){
+
+      // $status = $call == 17 ? "Y" : "PENDING";
+
+      $sql = 'INSERT INTO CONTENT_PUSH("NAME_TABLE","BID_PACKAGE_CODE","TABLE_ID","TYPE_PUSH","DATE_CREATED",
+          "CONTENT_PUSH","TIME_START_PUSH","TIME_END_PUSH","TIMES","NOTI_VERSION_NUM_LOG","URL","HEADER")
+
+      select \'TBL_BIDERS\' as NAME_TABLE,
+            null as BID_PACKAGE_CODE,
+            a1."BUSSINESS_REGISTRATION_NUM" as TABLE_ID,
+            \'bao_luu_dang_ky_nha_thau\' as "TYPE_PUSH",
+            SYSDATE as DATE_CREATED,
+            CONCAT(\'Số ĐKKD/MST: \',
+              CONCAT(a1.BUSSINESS_REGISTRATION_NUM,
+                CONCAT(\'/\',
+                  CONCAT(a1.TAXNUMBER,
+                    CONCAT(\'. Tên nhà thầu: \',
+                      CONCAT(a1.BIDER_NAME,
+                        CONCAT(\'Lý do bảo lưu: \',a1.REJECTED_REASON ))))))) as CONTENT_PUSH,
+            SYSDATE as TIME_START_PUSH,
+            null as TIME_END_PUSH,
+            0 as TIMES,
+            null as NOTI_VERSION_NUM_LOG,
+            \'/home\' as "URL",
+            \'Phê duyệt đăng ký nhà thầu\' as "HEADER"
+          from TBL_BIDERS a1
+          left join CONTENT_PUSH a2 on a2.NAME_TABLE=\'TBL_BIDERS\' and a2.TABLE_ID=a1."BUSSINESS_REGISTRATION_NUM" and a2.TYPE_PUSH=\'bao_luu_dang_ky_nha_thau\'
+          where a1.status = \'Y\' and a2.ID is null';
           $this->db->query($sql);
     }
   }
@@ -673,7 +704,7 @@ class PushNotify_model extends CI_Model implements PushNotify{
       foreach ($res as $vl){
         $include_player_ids[]=$vl['DEVICES_ID'];
       }
-    }else if($item['TYPE_PUSH'] == 'phe_duyet_dang_ky_nha_thau'){
+    }else if($item['TYPE_PUSH'] == 'phe_duyet_dang_ky_nha_thau' || $item['TYPE_PUSH'] == 'bao_luu_dang_ky_nha_thau'){
       $sql = '
       select tu.DEVICES_ID 
       FROM CONTENT_PUSH cp 
