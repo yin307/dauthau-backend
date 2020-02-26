@@ -752,4 +752,10 @@ class Zeanni extends CI_Controller
         echo json_encode($data);
     }
 
+    public function Ajax_getListAppConnect(){
+        $res = $this->Zeanni->GetListAppConnect();
+        $data = array("errCode" => 0, "msg" => '0k', "data" => array("data" => $res, "lable" => array()));
+        echo json_encode($data);
+    }
+
 }

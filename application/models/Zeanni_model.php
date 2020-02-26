@@ -1975,4 +1975,32 @@ class Zeanni_model extends CI_Model
 
         }
     }
+
+    public function GetListAppConnect()
+    {
+        $status = 1;
+        if(!empty($_GET['status']){
+            $status = $_GET['status'];
+        }
+        $sql = 'select a.ID,a.PACKAGE_NAME, a.APP_NAME, a.ICON_PATH, a.URL_APP_IOS,a.URL_APP_ANDROID,a.UTL_SCHEME_IOS,a.URL_SCHEME_ANDROID,a.STATUS
+            from APP_CONNECT a WHERE a.STATUS=\''.$status.'\'
+            order by APP_NAME ';
+        $query = $this->db->query($sql);
+        $data =  $query->result_array();
+        $res=array();
+        foreach($data as $vl){
+            $res[]=array(
+                'id'=>$vl['ID'],
+                'packageName'=>$v['PACKAGE_NAME'],
+                'appName'=>$v['APP_NAME'],
+                'iconPath'=>$v['ICON_PATH'],
+                'urlAppIos'=>$v['URL_APP_IOS'],
+                'urlAppAndroid'=>$v['URL_APP_ANDROID'],
+                'urlSchemeIos'=>$v['URL_SCHEME_IOS'],
+                'urlSchemeAndroid'=$v['URL_SCHEME_ANDROID'],
+                'status'=>$v['STATUS']
+            );
+        }
+        return $res;
+    }
 }

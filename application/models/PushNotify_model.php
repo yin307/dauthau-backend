@@ -552,6 +552,14 @@ class PushNotify_model extends CI_Model implements PushNotify{
           where a5."ID" is null and a1.ANSWER_TYPE = \'HSDT\'';
       $this->db->query($sql);
     }
+    //Phê duyệt đăng ký Nhà thầu!" - Chỉ đối với nhà thầu
+    else if($call == 17){
+      $sql = 'INSERT INTO CONTENT_PUSH("NAME_TABLE","BID_PACKAGE_CODE","TABLE_ID","TYPE_PUSH","DATE_CREATED",
+          "CONTENT_PUSH","TIME_START_PUSH","TIME_END_PUSH","TIMES","NOTI_VERSION_NUM_LOG","URL","HEADER")
+
+          
+          '
+    }
   }
   public function logContentPushByUser(){
     $sql = "INSERT INTO AW_USERS_CONTENT_PUSH(USER_ID,CONTENT_PUSH_ID,PACKAGE_NAME,URL,STATUS_VIEW)
