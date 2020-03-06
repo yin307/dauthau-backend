@@ -17,7 +17,11 @@ Job clone news + push
 5 * * * * curl http://dauthau2.zdoday.com/scanContentPush?call=10
 6 * * * * curl http://dauthau2.zdoday.com/scanContentPush?call=11
 7 * * * * curl http://dauthau2.zdoday.com/scanContentPush?call=12
-8 * * * * curl http://dauthau2.zdoday.com/logContentPushByUser
+8 * * * * curl http://dauthau2.zdoday.com/scanContentPush?call=17
+9 * * * * curl http://dauthau2.zdoday.com/scanContentPush?call=18
+10 * * * * curl http://dauthau2.zdoday.com/scanContentPush?call=19
+11 * * * * curl http://dauthau2.zdoday.com/scanContentPush?call=20
+12 * * * * curl http://dauthau2.zdoday.com/logContentPushByUser
 
 #####################################################################################
 
