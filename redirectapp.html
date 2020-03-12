@@ -6,8 +6,8 @@
             var player;
             window.addEventListener('load', function() {
                 player = new window.vintom.Player().initialize('globalPlayer', '33fc604506ebc1ea168a8af1ba3eda3d').run();
-                player.on("play", function(payload){ console.log('>>>>>payload:'+ payload.time)});
-                player.on("action", function(payload) { console.log('>>>>>payload:'+ payload.actionAdditionalData.inputValue) });
+                player.on("play", function(payload){ alert('>>>>>payload:'+ payload.time)});
+                player.on("action", function(payload) { alert('>>>>>payload:'+ payload.actionAdditionalData.inputValue) });
                 window.postMessage('asdsasadsadsdsasad');
                 });
 
