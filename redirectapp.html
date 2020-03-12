@@ -2,6 +2,7 @@
     <head>
         <script type='text/javascript' src='http://player.vintom.com/player/vintom-player-2/index.js'></script>
         <script type='text/javascript'>
+            window.postMessage("Post message from web", "*");
             const localConfigurationOverride = {'autoplay': true};
             var player;
             window.addEventListener('load', function() {
