@@ -1,4 +1,23 @@
-<script type="text/javascript">
-	var link = "tg://"
-	window.location.href = link;
-</script>
+<html>
+    <head>
+        <script type='text/javascript' src='http://player.vintom.com/player/vintom-player-2/index.js'></script>
+        <script type='text/javascript'>
+            const localConfigurationOverride = {'autoplay': true};
+            var player;
+            window.addEventListener('load', function() {
+                player = new window.vintom.Player().initialize('globalPlayer', '33fc604506ebc1ea168a8af1ba3eda3d').run();
+                player.on("play", function(payload){ console.log('>>>>>payload:'+ payload.time)});
+                player.on("action", function(payload) { console.log('>>>>>payload:'+ payload.actionAdditionalData.inputValue) });
+ 
+                });
+        </script>
+    </head>
+    <body>
+        <div>
+            <div class='playerContainer' style='width: 100%; height: 100%;'>
+                <div class='player' id='globalPlayer' style='width: 100%; height: 100%;'>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
