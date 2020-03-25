@@ -6,15 +6,17 @@
         // $tnsname = '(DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = 118.68.169.0)(PORT = 1521))
         // (CONNECT_DATA = (SERVER = DEDICATED) (SERVICE_NAME = xe)))';118.68.169.0:1521:xe; Acc: msc_dump/112233
         
+        //$tnsname = '(DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = 118.68.169.0)(PORT = 1521))
+          //          (CONNECT_DATA = (SERVER = DEDICATED) (SERVICE_NAME = xe)))';
         $tnsname = '(DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = 118.68.169.0)(PORT = 1521))
                     (CONNECT_DATA = (SERVER = DEDICATED) (SERVICE_NAME = xe)))';
         $db['default'] = array(
             'dsn'   => '',
             'hostname' => $tnsname,
-//             'username' => 'MSC_ITO',
-//             'password' => '123@321@b',
-            'username' => 'msc_dump',
-            'password' => '112233',
+            'username' => 'MSC_MPI',
+            'password' => '123456aA',
+            // 'username' => 'msc_dump',
+            // 'password' => '112233',
             'database' => '',
             'dbdriver' => 'oci8',
             'dbprefix' => '',
