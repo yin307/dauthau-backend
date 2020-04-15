@@ -1267,7 +1267,7 @@ class Zeanni_model extends CI_Model
                         (
                             select  a1."BIDING_ID" 
                             from "TBL_BIDINGS" a1 
-                            where  \''.$BidingsId.'\'  = a1."BID_PACKAGE_CODE" and a1."NOTI_TYPE"=0
+                            where  \''.$BidingsId.'\'  = a1."BID_PACKAGE_CODE" and a1."NOTI_TYPE"=0 and rownum < 2
                         ) as BIDING_ID
                 from "TBL_BIDINGS" a1 
             where  \''.$BidingsId.'\'  = a1."BID_PACKAGE_CODE" and a1."NOTI_TYPE"=1
