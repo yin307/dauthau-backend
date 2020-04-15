@@ -1331,20 +1331,29 @@ class Zeanni_model extends CI_Model
         //get list nha thau qua vong so tuyen
         //BID_PACKAGE_CODE
         if(!empty($data) && !empty($_GET['NOTI_TYPE'])){
+
+            // $sql = 'select a1."BIDER_NAME" as "a1-zn-BIDER_NAME",
+            //             (
+            //                 select  a1."BIDING_ID" 
+            //                 from "TBL_BIDINGS" a1 
+            //                 where  \''.$data[0]['a1-zn-BID_PACKAGE_CODE'].'\'  = a1."BID_PACKAGE_CODE" and a1."NOTI_TYPE"=0
+            //             ) as BIDING_ID,
+            //             a1.BID_BUSSINESS_REGISTRATION_NUM
+            //     from "TBL_BIDINGS" a1 
+            // where  \''.$data[0]['a1-zn-BID_PACKAGE_CODE'].'\'  = a1."BID_PACKAGE_CODE" and a1."NOTI_TYPE"=1
+            // group by a1."BIDER_NAME", a1.BID_BUSSINESS_REGISTRATION_NUM ';
+
             $sql = 'select a1."BIDER_NAME" as "a1-zn-BIDER_NAME",
-                        (
-                            select  a1."BIDING_ID" 
-                            from "TBL_BIDINGS" a1 
-                            where  \''.$data[0]['a1-zn-BID_PACKAGE_CODE'].'\'  = a1."BID_PACKAGE_CODE" and a1."NOTI_TYPE"=0
-                        ) as BIDING_ID,
                         a1.BID_BUSSINESS_REGISTRATION_NUM
                 from "TBL_BIDINGS" a1 
             where  \''.$data[0]['a1-zn-BID_PACKAGE_CODE'].'\'  = a1."BID_PACKAGE_CODE" and a1."NOTI_TYPE"=1
             group by a1."BIDER_NAME", a1.BID_BUSSINESS_REGISTRATION_NUM ';
+
             $query = $this->db->query($sql);
             $data[0]['listBinder'] =  $query->result_array();
 
             $this->updateViewBidings($data[0]['a1-zn-BID_PACKAGE_CODE'],true);
+
         }
         else{
             $this->updateViewBidings($_getSegment[2],false);
