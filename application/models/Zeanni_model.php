@@ -1263,15 +1263,21 @@ class Zeanni_model extends CI_Model
             return array();
         };
         $BidingsId = $this->db->escape_str($_GET['BidingsId']);
-        $sql = 'select a1."BIDER_NAME" as "a1-zn-BIDER_NAME",
-                        (
-                            select  a1."BIDING_ID" 
-                            from "TBL_BIDINGS" a1 
-                            where  \''.$BidingsId.'\'  = a1."BID_PACKAGE_CODE" and a1."NOTI_TYPE"=0 and rownum < 2
-                        ) as BIDING_ID
+        // $sql = 'select a1."BIDER_NAME" as "a1-zn-BIDER_NAME",
+        //                 (
+        //                     select  a1."BIDING_ID" 
+        //                     from "TBL_BIDINGS" a1 
+        //                     where  \''.$BidingsId.'\'  = a1."BID_PACKAGE_CODE" and a1."NOTI_TYPE"=0 and rownum < 2
+        //                 ) as BIDING_ID
+        //         from "TBL_BIDINGS" a1 
+        //     where  \''.$BidingsId.'\'  = a1."BID_PACKAGE_CODE" and a1."NOTI_TYPE"=1
+        //     group by a1."BIDER_NAME"';
+
+        $sql = 'select a1."BIDER_NAME" as "a1-zn-BIDER_NAME"
                 from "TBL_BIDINGS" a1 
             where  \''.$BidingsId.'\'  = a1."BID_PACKAGE_CODE" and a1."NOTI_TYPE"=1
             group by a1."BIDER_NAME"';
+
             $query = $this->db->query($sql);
             return $query->result_array();
     }
