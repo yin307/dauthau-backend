@@ -385,7 +385,7 @@ class Zeanni extends CI_Controller
         $data = array("errCode" => 0, "msg" => "ok", "data" => array("data" => array(), "lable" => array(),"packageFollows"=>array() ));
         $res = $this->Zeanni->login();
         if($res['errorCode']!=0){
-            $arr = array(1=>'Vui lòng điền đầy đủ email và mật khẩu',2=>'Email hoặc mật khẩu không đúng');
+            $arr = array(1 => 'Vui lòng điền đầy đủ email và mật khẩu',2=>'Email hoặc mật khẩu không đúng');
             $data = array("errCode" => 1, "msg" => $arr[$res['errorCode']], "data" => array("data" => array(), "lable" => array()));
         }
         else{

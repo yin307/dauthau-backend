@@ -8,13 +8,16 @@
         
         //$tnsname = '(DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = 118.68.169.0)(PORT = 1521))
           //          (CONNECT_DATA = (SERVER = DEDICATED) (SERVICE_NAME = xe)))';
-        $tnsname = '(DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = 118.68.169.0)(PORT = 1521))
-                    (CONNECT_DATA = (SERVER = DEDICATED) (SERVICE_NAME = xe)))';
+        // $tnsname = '(DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = 118.68.169.0)(PORT = 1521))
+        //             (CONNECT_DATA = (SERVER = DEDICATED) (SERVICE_NAME = xe)))';
+        $tnsname = '(DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = 14.248.82.173)(PORT = 1521))
+                    (CONNECT_DATA = (SERVER = DEDICATED) (SERVICE_NAME = orcl)))';
+
         $db['default'] = array(
             'dsn'   => '',
             'hostname' => $tnsname,
-            'username' => 'MSC_MPI',
-            'password' => '123456aA',
+            'username' => 'MSC_ITO',
+            'password' => 'MSC_ITO',
             // 'username' => 'msc_dump',
             // 'password' => '112233',
             'database' => '',

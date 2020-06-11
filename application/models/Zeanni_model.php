@@ -291,7 +291,7 @@ class Zeanni_model extends CI_Model
             return array('errorCode'=>1,'data'=>array());
         }
         
-        $TOKEN =md5((microtime().rand(10,1000)));
+        $TOKEN = md5((microtime().rand(10,1000)));
         
         $res = $this->getUserInfo(array('EMAIL'=>$email,'PWD'=>$password));
         if($res['errorCode']==0){
