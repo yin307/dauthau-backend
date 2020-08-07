@@ -10,7 +10,7 @@
           //          (CONNECT_DATA = (SERVER = DEDICATED) (SERVICE_NAME = xe)))';
         // $tnsname = '(DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = 118.68.169.0)(PORT = 1521))
         //             (CONNECT_DATA = (SERVER = DEDICATED) (SERVICE_NAME = xe)))';
-        $tnsname = '(DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = 14.248.82.173)(PORT = 1521))
+        $tnsname = '(DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = 27.72.89.79)(PORT = 2000))
                     (CONNECT_DATA = (SERVER = DEDICATED) (SERVICE_NAME = orcl)))';
 
         $db['default'] = array(
