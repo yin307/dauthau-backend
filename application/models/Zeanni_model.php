@@ -833,6 +833,8 @@ class Zeanni_model extends CI_Model
         if(!empty($_GET['time']) && $_GET['time']=='1d'){
             //CREATE_DATE
             $where .= " and a1.\"CREATE_DATE\" >= TO_DATE('".date("Y-m-d")."','yyyy-MM-dd') ";
+        }else{
+            $where .= " and a1.\"CREATE_DATE\" > TO_DATE('".date("Y-01-01")."','yyyy-MM-dd') ";
         }
 
                 $sql ="SELECT * FROM
@@ -846,7 +848,8 @@ class Zeanni_model extends CI_Model
                         a1.\"VALUE\" as \"a1-zn-VALUE\",  
                         to_char(a1.\"CREATE_DATE\", 'yyyy-mm-dd hh24:mi:ss') as \"a1-zn-CREATE_DATE\",  
                         a5.\"LOCATION\" as \"a2-zn-LOCATION\",NVL(a1.\"COUNT_VIEW\",0) as \"COUNT_VIEW\"
-                        from \"TBL_BIDER_SELECTIONS\" a1
+                        from \"TBL_BIDER_SELECTIONS\" a1 
+
                         left join ( 
                                 select \"CODE\",MAX(\"ID\") as \"ID\"
                                 from \"TBL_PACKAGE_INFO\" 
