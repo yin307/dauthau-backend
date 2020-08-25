@@ -846,16 +846,17 @@ class Zeanni_model extends CI_Model
                         TO_CHAR(a1.\"NAME\") as \"a1-zn-NAME\",  a1.\"INVESTORS\" as \"a1-zn-INVESTORS\",  
                         a1.\"VERSION_NUM\" as \"a1-zn-VERSION_NUM\",  a1.\"BID_NUM\" as \"a1-zn-BID_NUM\", 
                         a1.\"VALUE\" as \"a1-zn-VALUE\",  
-                        to_char(a1.\"CREATE_DATE\", 'yyyy-mm-dd hh24:mi:ss') as \"a1-zn-CREATE_DATE\",  
-                        a5.\"LOCATION\" as \"a2-zn-LOCATION\",NVL(a1.\"COUNT_VIEW\",0) as \"COUNT_VIEW\"
-                        from \"TBL_BIDER_SELECTIONS\" a1 
+                        to_char(a1.\"CREATE_DATE\", 'yyyy-mm-dd hh24:mi:ss') as \"a1-zn-CREATE_DATE\",
+                        NVL(a1.\"COUNT_VIEW\",0) as \"COUNT_VIEW\",
+                        (SELECT a2.\"LOCATION\" as \"a2-zn-LOCATION\" from TBL_PACKAGE_INFO a2 where a1.\"BIDER_SELECTION_ID\" = a2.\"CODE\" and rownum = 1 )
 
-                        left join ( 
-                                select \"CODE\",MAX(\"ID\") as \"ID\"
-                                from \"TBL_PACKAGE_INFO\" 
-                                group by CODE
-                        ) a2 on a1.\"BIDER_SELECTION_ID\" = a2.\"CODE\" 
-                        left join \"TBL_PACKAGE_INFO\"  a5 on a5.\"ID\"=a2.\"ID\"
+                        from \"TBL_BIDER_SELECTIONS\" a1 
+                        -- left join ( 
+                        --         select \"CODE\",MAX(\"ID\") as \"ID\"
+                        --         from \"TBL_PACKAGE_INFO\" 
+                        --         group by CODE
+                        -- ) a2 on a1.\"BIDER_SELECTION_ID\" = a2.\"CODE\" 
+                        -- left join \"TBL_PACKAGE_INFO\"  a5 on a5.\"ID\"=a2.\"ID\"
                         " . $where . "
                         order by  a1.\"CREATE_DATE\" desc
                     ) a
