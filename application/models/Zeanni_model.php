@@ -1969,7 +1969,7 @@ class Zeanni_model extends CI_Model
         }
         else{
             $ck = strtotime("now")-$row['TIME_SEND_OTP'];
-            if($ck > 120){//otp chi con hieu qua trong 2 phut
+            if($ck > 3600){//otp chi con hieu qua trong 2 phut
                 $this->db->where('ID',$row['ID']);
                 $this->db->update('AW_USER_ORGANIZATION',array('OTP'=>null));
                 return array(
