@@ -1687,6 +1687,7 @@ class Zeanni_model extends CI_Model
                     and a1."CREATE_DATE" >= TO_DATE(\''.$date.'\',\'yyyy-MM-dd\')
                 group by TO_CHAR(a1."CREATE_DATE",\'yyyy-MM-dd\')
                 order by "A" ';
+
             }
             else{
                 $date = date('Y-01');
@@ -1697,6 +1698,7 @@ class Zeanni_model extends CI_Model
                 group by TO_CHAR(a1."CREATE_DATE",\'yyyy-MM\')
                 order by "A" ';
             }
+            echo($sql);
             $query = $this->db->query($sql);
             $res =  $query->result_array();
             $arrLabel=array();
