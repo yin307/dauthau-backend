@@ -1698,12 +1698,12 @@ class Zeanni_model extends CI_Model
                 group by TO_CHAR(a1."CREATE_DATE",\'yyyy-MM\')
                 order by "A" ';
             }
-            echo($sql);
+            // echo($sql);
             $query = $this->db->query($sql);
             $res =  $query->result_array();
             $arrLabel=array();
             $j=1;
-            print_r($res);die;
+            // print_r($res);die;
             if($time=='1t' || $time=='1th'){
                 $arr=array();
                 if($time=='1t'){
