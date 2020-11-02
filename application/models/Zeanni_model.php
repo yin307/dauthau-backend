@@ -1729,7 +1729,6 @@ class Zeanni_model extends CI_Model
                         $arrLabel[$i] = $i + 1;
                         $arr[$date] = 0;
                     }
-                    print_r($arr);
                 }
                 else{
                     $dateLog = date('Y-m');
