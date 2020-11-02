@@ -1723,7 +1723,7 @@ class Zeanni_model extends CI_Model
                 $arr=array();
                 if($time=='1t'){
                     $arrDate = array();
-                    for($i=0;$i<=6;$i++)
+                    for($i=0;$i<=6;$i++){
                         $date = date_add(date_create($week_start),date_interval_create_from_date_string( $i." days"));
                         $date = date_format($date,"Y-m-d");
                         $arrDate[$i] = $date;
