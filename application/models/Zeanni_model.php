@@ -1722,11 +1722,14 @@ class Zeanni_model extends CI_Model
             if($time=='1t' || $time=='1th'){
                 $arr=array();
                 if($time=='1t'){
-                    $d = date("Y-m-d");
-                    for($i=$wday;$i>=0;$i--){
-                        $df = strtotime($d . "-".$i." days");
-                        $arr[date('Y-m-d',$df)]=0;
-                        $arrLabel[]=(string)date('j',$df);
+                    
+                    for($i = 0; $i <= 6; $i ++){
+                        if($i < count($res)){
+                            $arr[$i] = $res[$i];
+                            
+                        }else{
+                            $arr[$i] = 0;
+                        }
                     }
                 }
                 else{
