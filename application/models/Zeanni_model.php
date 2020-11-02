@@ -1726,11 +1726,12 @@ class Zeanni_model extends CI_Model
                     for($i = 0; $i <= 6; $i ++){
                         if($i < count($res)){
                             $arr[$i] = $res[$i]['C'];
-                            
+
                         }else{
                             $arr[$i] = 0;
                         }
                     }
+                    return array("data"=>array_values($arr),"lable"=>$arrLabel);
                 }
                 else{
                     $dateLog = date('Y-m');
