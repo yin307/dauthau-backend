@@ -886,7 +886,8 @@ class Zeanni_model extends CI_Model
                         a1.\"APPROVAL_STATUS\" as \"a1-zn-APPROVAL_STATUS\",  a1.\"VALUE\" as \"a1-zn-VALUE\",  
                         a1.\"APPROVAL_OFFICE\" as \"a1-zn-APPROVAL_OFFICE\",  
                         a1.\"APPROVAL_DOC_NUM\" as \"a1-zn-APPROVAL_DOC_NUM\",  
-                        to_char(a1.\"APPROVAL_DATE\", 'yyyy-mm-dd hh24:mi:ss') as \"a1-zn-APPROVAL_DATE\"  
+                        to_char(a1.\"APPROVAL_DATE\", 'yyyy-mm-dd hh24:mi:ss') as \"a1-zn-APPROVAL_DATE\",
+                        to_char(a1.\"CREATE_DATE\", 'yyyy-mm-dd hh24:mi:ss') as \"a1-zn-CREATE_DATE\" 
                 from \"TBL_BIDER_SELECTIONS\" a1 
                 left join \"TBL_PROCURINGS\" a2  on a2.\"PROCURING_CODE\" = a1.\"PROCURING_CODE\" 
                 where  '" . $_getSegment['2'] . "'  = a1.\"BIDER_SELECTION_ID\"";
@@ -1700,7 +1701,7 @@ class Zeanni_model extends CI_Model
             $res =  $query->result_array();
             $arrLabel=array();
             $j=1;
-            // print_r($res);die;
+            print_r($res);die;
             if($time=='1t' || $time=='1th'){
                 $arr=array();
                 if($time=='1t'){
