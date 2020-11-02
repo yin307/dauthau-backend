@@ -887,7 +887,8 @@ class Zeanni_model extends CI_Model
                         a1.\"APPROVAL_OFFICE\" as \"a1-zn-APPROVAL_OFFICE\",  
                         a1.\"APPROVAL_DOC_NUM\" as \"a1-zn-APPROVAL_DOC_NUM\",  
                         to_char(a1.\"APPROVAL_DATE\", 'yyyy-mm-dd hh24:mi:ss') as \"a1-zn-APPROVAL_DATE\",
-                        to_char(a1.\"CREATE_DATE\", 'yyyy-mm-dd hh24:mi:ss') as \"a1-zn-CREATE_DATE\" 
+                        to_char(a1.\"CREATE_DATE\", 'yyyy-mm-dd hh24:mi:ss') as \"a1-zn-CREATE_DATE\",
+                        a2.\"PROVINCE\" as \"PROVINCE\"
                 from \"TBL_BIDER_SELECTIONS\" a1 
                 left join \"TBL_PROCURINGS\" a2  on a2.\"PROCURING_CODE\" = a1.\"PROCURING_CODE\" 
                 where  '" . $_getSegment['2'] . "'  = a1.\"BIDER_SELECTION_ID\"";
@@ -912,6 +913,8 @@ class Zeanni_model extends CI_Model
                 a1.\"BIDER_SELECTION_TYPE\" as \"a1-zn-BIDER_SELECTION_TYPE\",  
                 a1.\"VALUE\" as \"a1-zn-VALUE\",  a1.\"INTERNET\" as \"a1-zn-INTERNET\",  
                 a1.\"SELECTION_TIME\" as \"a1-zn-SELECTION_TIME\",  a1.\"LOCATION\" as \"a1-zn-LOCATION\",  
+                a1.\"BID_TYPE\" \"as-zn-BID_TYPE\",
+
                 a1.\"FUNDING_SOURCE\" as \"a1-zn-FUNDING_SOURCE\"  from \"TBL_PACKAGE_INFO\" a1 where  '" . $_getSegment['2'] . "'  = a1.\"CODE\"";
         $query = $this->db->query($sql);
         $data =  $query->result_array();
@@ -1679,8 +1682,10 @@ class Zeanni_model extends CI_Model
             if($time=='1t' || $time=='1th'){
                 $date = getdate();
                 $wday = $date['wday'];
-    
-                $date = $time=='1t'?date('Y-m-d',strtotime(date("Y-m-d") . "-".$wday." days")):date("Y-m-01");
+                $week_start = date('Y-m-d',strtotime('monday this week'));
+                echo "monday is ".$week_start;
+                $date = $time=='1t'? $week_start : date("Y-m-01");
+
                 $sql = 'select COUNT(a1."BID_PACKAGE_ID") as C,TO_CHAR(a1."CREATE_DATE",\'yyyy-MM-dd\') as "A"
                 from "TBL_BID_PACKAGES" a1 
                 where (a1."PREQUALIFICATION_STATUS" !=  \'1\' or a1."PREQUALIFICATION_STATUS" is null) 
