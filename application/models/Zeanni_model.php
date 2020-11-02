@@ -848,7 +848,7 @@ class Zeanni_model extends CI_Model
                         a1.\"VALUE\" as \"a1-zn-VALUE\",  
                         to_char(a1.\"CREATE_DATE\", 'yyyy-mm-dd hh24:mi:ss') as \"a1-zn-CREATE_DATE\",
                         NVL(a1.\"COUNT_VIEW\",0) as \"COUNT_VIEW\",
-                        (SELECT a2.\"LOCATION\" as \"a2-zn-LOCATION\" from TBL_PACKAGE_INFO a2 where a1.\"BIDER_SELECTION_ID\" = a2.\"CODE\" and rownum = 1 )
+                        (SELECT a2.\"LOCATION\" as \"a2-zn-LOCATION\" from \"TBL_PACKAGE_INFO\" a2 where a1.\"BIDER_SELECTION_ID\" = a2.\"CODE\" and rownum = 1 ) as LOCATION
 
                         from \"TBL_BIDER_SELECTIONS\" a1 
                         -- left join ( 
