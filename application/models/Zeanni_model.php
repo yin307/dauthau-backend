@@ -1707,7 +1707,7 @@ class Zeanni_model extends CI_Model
             $res =  $query->result_array();
             $arrLabel=array();
             $j=1;
-            // print_r($res);die;
+            print_r($res);
             if($time=='1t' || $time=='1th'){
                 $arr=array();
                 if($time=='1t'){
