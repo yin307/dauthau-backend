@@ -1728,8 +1728,9 @@ class Zeanni_model extends CI_Model
                             $arr[$i] = $res[$i]['C'];
 
                         }else{
-                            $arr[$i] = 0;
+                            $arr[$i] = "0";
                         }
+                        $arrLabel[$i] = $i;
                     }
                     return array("data"=>array_values($arr),"lable"=>$arrLabel);
                 }
