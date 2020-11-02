@@ -1723,19 +1723,14 @@ class Zeanni_model extends CI_Model
                 $arr=array();
                 if($time=='1t'){
                     $arrDate = array();
-                    for($i = 0; $i <= 6; $i ++){
-                        if($i < count($res)){
-                            $arr[$i] = $res[$i]['C'];
-
-                        }else{
-                            $arr[$i] = "0";
-                        }
+                    for(
                         $date = date_add(date_create($week_start),date_interval_create_from_date_string( $i." days"));
                         $date = date_format($week_end,"Y-m-d");
                         $arrDate[$i] = $date;
                         $arrLabel[$i] = $i;
+                        $arr[$date] = 0;
                     }
-                    return array("data"=>array_values($arr),"lable"=>$arrLabel, "dates" => $arrDate);
+                    
                 }
                 else{
                     $dateLog = date('Y-m');
@@ -1747,12 +1742,14 @@ class Zeanni_model extends CI_Model
                         $j++;
                     }
 
-                    foreach($res as $r){
-                        $arr[$r['A']]=(int)$r['C'];
-                    }
-                    // return array_values($arr);
-                    return array("data"=>array_values($arr),"lable"=>$arrLabel);
+                    
                 }
+
+                foreach($res as $r){
+                    $arr[$r['A']]=(int)$r['C'];
+                }
+                // return array_values($arr);
+                return array("data"=>array_values($arr),"lable"=>$arrLabel);
                 
                 
             }
