@@ -833,8 +833,6 @@ class Zeanni_model extends CI_Model
         if(!empty($_GET['time']) && $_GET['time']=='1d'){
             //CREATE_DATE
             $where .= " and a1.\"CREATE_DATE\" >= TO_DATE('".date("Y-m-d")."','yyyy-MM-dd') ";
-        }else{
-            $where .= " and a1.\"CREATE_DATE\" > TO_DATE('".date("Y-01-01")."','yyyy-MM-dd') ";
         }
 
                 $sql ="SELECT * FROM
@@ -846,17 +844,15 @@ class Zeanni_model extends CI_Model
                         TO_CHAR(a1.\"NAME\") as \"a1-zn-NAME\",  a1.\"INVESTORS\" as \"a1-zn-INVESTORS\",  
                         a1.\"VERSION_NUM\" as \"a1-zn-VERSION_NUM\",  a1.\"BID_NUM\" as \"a1-zn-BID_NUM\", 
                         a1.\"VALUE\" as \"a1-zn-VALUE\",  
-                        to_char(a1.\"CREATE_DATE\", 'yyyy-mm-dd hh24:mi:ss') as \"a1-zn-CREATE_DATE\",
-                        NVL(a1.\"COUNT_VIEW\",0) as \"COUNT_VIEW\",
-                        (SELECT a2.\"LOCATION\" as \"a2-zn-LOCATION\" from TBL_PACKAGE_INFO a2 where a1.\"BIDER_SELECTION_ID\" = a2.\"CODE\" and rownum = 1 )
-
-                        from \"TBL_BIDER_SELECTIONS\" a1 
-                        -- left join ( 
-                        --         select \"CODE\",MAX(\"ID\") as \"ID\"
-                        --         from \"TBL_PACKAGE_INFO\" 
-                        --         group by CODE
-                        -- ) a2 on a1.\"BIDER_SELECTION_ID\" = a2.\"CODE\" 
-                        -- left join \"TBL_PACKAGE_INFO\"  a5 on a5.\"ID\"=a2.\"ID\"
+                        to_char(a1.\"CREATE_DATE\", 'yyyy-mm-dd hh24:mi:ss') as \"a1-zn-CREATE_DATE\",  
+                        a5.\"LOCATION\" as \"a2-zn-LOCATION\",NVL(a1.\"COUNT_VIEW\",0) as \"COUNT_VIEW\"
+                        from \"TBL_BIDER_SELECTIONS\" a1
+                        left join ( 
+                                select \"CODE\",MAX(\"ID\") as \"ID\"
+                                from \"TBL_PACKAGE_INFO\" 
+                                group by CODE
+                        ) a2 on a1.\"BIDER_SELECTION_ID\" = a2.\"CODE\" 
+                        left join \"TBL_PACKAGE_INFO\"  a5 on a5.\"ID\"=a2.\"ID\"
                         " . $where . "
                         order by  a1.\"CREATE_DATE\" desc
                     ) a
@@ -886,8 +882,7 @@ class Zeanni_model extends CI_Model
                         a1.\"APPROVAL_STATUS\" as \"a1-zn-APPROVAL_STATUS\",  a1.\"VALUE\" as \"a1-zn-VALUE\",  
                         a1.\"APPROVAL_OFFICE\" as \"a1-zn-APPROVAL_OFFICE\",  
                         a1.\"APPROVAL_DOC_NUM\" as \"a1-zn-APPROVAL_DOC_NUM\",  
-                        to_char(a1.\"APPROVAL_DATE\", 'yyyy-mm-dd hh24:mi:ss') as \"a1-zn-APPROVAL_DATE\",
-                        to_char(a1.\"CREATE_DATE\", 'yyyy-mm-dd hh24:mi:ss') as \"a1-zn-CREATE_DATE\" 
+                        to_char(a1.\"APPROVAL_DATE\", 'yyyy-mm-dd hh24:mi:ss') as \"a1-zn-APPROVAL_DATE\"  
                 from \"TBL_BIDER_SELECTIONS\" a1 
                 left join \"TBL_PROCURINGS\" a2  on a2.\"PROCURING_CODE\" = a1.\"PROCURING_CODE\" 
                 where  '" . $_getSegment['2'] . "'  = a1.\"BIDER_SELECTION_ID\"";
@@ -1701,7 +1696,7 @@ class Zeanni_model extends CI_Model
             $res =  $query->result_array();
             $arrLabel=array();
             $j=1;
-            print_r($res);die;
+            // print_r($res);die;
             if($time=='1t' || $time=='1th'){
                 $arr=array();
                 if($time=='1t'){
@@ -1970,7 +1965,7 @@ class Zeanni_model extends CI_Model
         }
         else{
             $ck = strtotime("now")-$row['TIME_SEND_OTP'];
-            if($ck > 3600){//otp chi con hieu qua trong 2 phut
+            if($ck > 120){//otp chi con hieu qua trong 2 phut
                 $this->db->where('ID',$row['ID']);
                 $this->db->update('AW_USER_ORGANIZATION',array('OTP'=>null));
                 return array(

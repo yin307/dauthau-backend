@@ -10,15 +10,14 @@
           //          (CONNECT_DATA = (SERVER = DEDICATED) (SERVICE_NAME = xe)))';
         // $tnsname = '(DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = 118.68.169.0)(PORT = 1521))
         //             (CONNECT_DATA = (SERVER = DEDICATED) (SERVICE_NAME = xe)))';
-
-        $tnsname = '(DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = 1.55.215.12)(PORT = 1521))
-                    (CONNECT_DATA = (SERVER = DEDICATED) (SERVICE_NAME = mpsMsc)))';
+        $tnsname = '(DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = 27.72.89.79)(PORT = 2000))
+                    (CONNECT_DATA = (SERVER = DEDICATED) (SERVICE_NAME = orcl)))';
 
         $db['default'] = array(
             'dsn'   => '',
             'hostname' => $tnsname,
             'username' => 'MSC_ITO',
-            'password' => 'REVO_270318',
+            'password' => 'MSC_ITO',
             // 'username' => 'msc_dump',
             // 'password' => '112233',
             'database' => '',
