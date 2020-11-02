@@ -1680,10 +1680,11 @@ class Zeanni_model extends CI_Model
                 $time = trim($_GET['time']);
             }
             if($time=='1t' || $time=='1th'){
-               
+                $date = getdate();
                 $wday = $date['wday'];
                 $week_start = date('Y-m-d',strtotime('monday this week'));
                 $week_end = date_add($week_start,date_interval_create_from_date_string("6 days"));
+                $date = $time=='1t'? $week_start : date("Y-m-01");
                 
                 $sql = 'select COUNT(a1."BID_PACKAGE_ID") as C,TO_CHAR(a1."CREATE_DATE",\'yyyy-MM-dd\') as "A"
                 from "TBL_BID_PACKAGES" a1 
@@ -1692,8 +1693,6 @@ class Zeanni_model extends CI_Model
                     and a1."CREATE_DATE" <= TO_DATE(\''.$week_end.'\',\'yyyy-MM-dd\')
                 group by TO_CHAR(a1."CREATE_DATE",\'yyyy-MM-dd\')
                 order by "A" ';
-
-                
 
             }else if($time == '1th'){
                 $date = date("Y-m-01");
