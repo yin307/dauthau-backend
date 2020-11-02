@@ -1718,7 +1718,6 @@ class Zeanni_model extends CI_Model
             $res =  $query->result_array();
             $arrLabel=array();
             $j=1;
-            print_r($res);
             if($time=='1t' || $time=='1th'){
                 $arr=array();
                 if($time=='1t'){
@@ -1727,10 +1726,10 @@ class Zeanni_model extends CI_Model
                         $date = date_add(date_create($week_start),date_interval_create_from_date_string( $i." days"));
                         $date = date_format($date,"Y-m-d");
                         $arrDate[$i] = $date;
-                        $arrLabel[$i] = $i;
+                        $arrLabel[$i] = $i + 1;
                         $arr[$date] = 0;
                     }
-                    
+                    print_r($arr);
                 }
                 else{
                     $dateLog = date('Y-m');
