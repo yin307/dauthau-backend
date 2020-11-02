@@ -1683,7 +1683,7 @@ class Zeanni_model extends CI_Model
                 $date = getdate();
                 $wday = $date['wday'];
                 $week_start = date('Y-m-d',strtotime('monday this week'));
-                $week_end = date_add($week_start,date_interval_create_from_date_string("6 days"));
+                $week_end = date_add(date_create($week_start),date_interval_create_from_date_string("6 days"));
                 $date = $time=='1t'? $week_start : date("Y-m-01");
                 
                 $sql = 'select COUNT(a1."BID_PACKAGE_ID") as C,TO_CHAR(a1."CREATE_DATE",\'yyyy-MM-dd\') as "A"
