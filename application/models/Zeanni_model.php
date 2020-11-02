@@ -1723,7 +1723,7 @@ class Zeanni_model extends CI_Model
                 $arr=array();
                 if($time=='1t'){
                     $d = date("Y-m-d");
-                    for($i=$wday + 1;$i>=0;$i--){
+                    for($i=$wday;$i>=0;$i--){
                         $df = strtotime($d . "-".$i." days");
                         $arr[date('Y-m-d',$df)]=0;
                         $arrLabel[]=(string)date('j',$df);
