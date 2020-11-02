@@ -1683,7 +1683,6 @@ class Zeanni_model extends CI_Model
                 $date = getdate();
                 $wday = $date['wday'];
                 $week_start = date('Y-m-d',strtotime('monday this week'));
-                echo "monday is ".$week_start;
                 $date = $time=='1t'? $week_start : date("Y-m-01");
 
                 $sql = 'select COUNT(a1."BID_PACKAGE_ID") as C,TO_CHAR(a1."CREATE_DATE",\'yyyy-MM-dd\') as "A"
@@ -1713,7 +1712,7 @@ class Zeanni_model extends CI_Model
                 $arr=array();
                 if($time=='1t'){
                     $d = date("Y-m-d");
-                    for($i=$wday;$i>=0;$i--){
+                    for($i=$wday + 1;$i>=0;$i--){
                         $df = strtotime($d . "-".$i." days");
                         $arr[date('Y-m-d',$df)]=0;
                         $arrLabel[]=(string)date('j',$df);
