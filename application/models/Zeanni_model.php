@@ -1617,7 +1617,7 @@ class Zeanni_model extends CI_Model
                     $arr[$date] = 0;
                 }
                 foreach ($res as $r) {
-                    $arr[$r['A']] = (int)$r['C'];
+                    $arr[$r['A']] = (int)$r['COUNT_BIDER_SELECTION'];
                 }
                 // return array_values($arr);
                 return array("data" => array_values($arr), "lable" => $arrLabel, "date" => $arrDate);
