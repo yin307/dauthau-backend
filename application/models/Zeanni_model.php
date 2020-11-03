@@ -1635,8 +1635,6 @@ class Zeanni_model extends CI_Model
                 }
                 return array("data" => array_values($arr), "lable" => $arrLabel);
             }
-
-            
         } else {
             $arr = array();
             foreach ($res as $r) {
@@ -1773,17 +1771,15 @@ class Zeanni_model extends CI_Model
     }
     public function thongKeTBMT_TP()
     {
-        // $time='1n';
-        // if(!empty($_GET['time'])){
-        //     $time = trim($_GET['time']);
-        // }
-        // if($time=='1th'){
-        //     $date = date('Y-m');
-
-        // }
-        // else{
-        $date = date('Y-01');
-        // }
+        $time = '1n';
+        if (!empty($_GET['time'])) {
+            $time = trim($_GET['time']);
+        }
+        if ($time == '1th') {
+            $date = date('Y-m');
+        } else {
+            $date = date('Y-01');
+        }
         $orderBy = '';
         if (!empty($_GET['orderBy']) && $_GET['orderBy'] == 'desc') {
             $orderBy = 'desc';
