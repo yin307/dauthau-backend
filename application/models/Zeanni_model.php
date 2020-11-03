@@ -933,8 +933,14 @@ class Zeanni_model extends CI_Model
                 a1.\"VALUE\" as \"a1-zn-VALUE\",  a1.\"FUNDING_SOURCE\" as \"a1-zn-FUNDING_SOURCE\",  
                 a1.\"BIDER_SELECTION_TYPE\" as \"a1-zn-BIDER_SELECTION_TYPE\",  
                 a1.\"SELECTION_TIME\" as \"a1-zn-SELECTION_TIME\",  a1.\"EXCUTE_TIME\" as \"a1-zn-EXCUTE_TIME\",
-                a1.CONTRACT_TYPE  
-            from \"TBL_PACKAGE_INFO\" a1 where  '" . $_getSegment[2] . "'  = a1.\"ID\"";
+                a1.\"CONTRACT_TYPE\",
+                a1.\"BID_TYPE\",
+                a2.\"BID_PACKAGE_ID\",
+                a3.\"BIDING_ID\"
+            from \"TBL_PACKAGE_INFO\" a1 
+            left join \"TBL_BID_PACKAGES\" a2 on a1.\"code\"=a2.\"CODEKH\"
+            left join \"TBL_BIDINGS\" a3 on a2.\"BID_PACKAGE_CODE\" = a3.\"BID_PACKAGE_CODE\"
+            where  '" . $_getSegment[2] . "'  = a1.\"ID\"";
         $query = $this->db->query($sql);
         $data =  $query->result_array();
         return $data;
