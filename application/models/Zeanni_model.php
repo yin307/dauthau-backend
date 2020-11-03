@@ -1724,7 +1724,7 @@ class Zeanni_model extends CI_Model
                     $arrDate = array();
                     for($i=0;$i<=6;$i++){
                         $date = date_add(date_create($week_start),date_interval_create_from_date_string( $i." days"));
-                        $date = date_format($date,"Y-m-d");
+                        $date = date_format($date,"d/m/Y");
                         $arrDate[$i] = $date;
                         $arrLabel[$i] = $i + 1;
                         $arr[$date] = 0;
