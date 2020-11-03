@@ -1729,6 +1729,11 @@ class Zeanni_model extends CI_Model
                         $arrLabel[$i] = $i + 1;
                         $arr[$date] = 0;
                     }
+                    foreach($res as $r){
+                        $arr[$r['A']]=(int)$r['C'];
+                    }
+                    // return array_values($arr);
+                    return array("data"=>array_values($arr),"lable"=>$arrLabel, "date"=>$arrDate);
                 }
                 else{
                     $dateLog = date('Y-m');
@@ -1739,15 +1744,15 @@ class Zeanni_model extends CI_Model
                         $arrLabel[]=(string)$j;
                         $j++;
                     }
-
+                    foreach($res as $r){
+                        $arr[$r['A']]=(int)$r['C'];
+                    }
+                    // return array_values($arr);
+                    return array("data"=>array_values($arr),"lable"=>$arrLabel);
                     
                 }
 
-                foreach($res as $r){
-                    $arr[$r['A']]=(int)$r['C'];
-                }
-                // return array_values($arr);
-                return array("data"=>array_values($arr),"lable"=>$arrLabel);
+                
                 
                 
             }
