@@ -938,7 +938,7 @@ class Zeanni_model extends CI_Model
                 a2.\"BID_PACKAGE_ID\",
                 a3.\"BIDING_ID\"
             from \"TBL_PACKAGE_INFO\" a1 
-            left join \"TBL_BID_PACKAGES\" a2 on a1.\"code\"=a2.\"CODEKH\"
+            left join \"TBL_BID_PACKAGES\" a2 on a1.\"CODE\"=a2.\"CODEKH\"
             left join \"TBL_BIDINGS\" a3 on a2.\"BID_PACKAGE_CODE\" = a3.\"BID_PACKAGE_CODE\"
             where  '" . $_getSegment[2] . "'  = a1.\"ID\"";
         $query = $this->db->query($sql);
