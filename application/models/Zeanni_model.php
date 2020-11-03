@@ -1,6 +1,6 @@
 <?php
 defined("BASEPATH") or exit("No direct script access allowed");
-require PATH_STSTEM."/PHPMailer/PHPMailerAutoload.php";
+require PATH_STSTEM . "/PHPMailer/PHPMailerAutoload.php";
 class Zeanni_model extends CI_Model
 {
     // private $base_url;
@@ -54,26 +54,27 @@ class Zeanni_model extends CI_Model
             $_POST[$k] = $this->db->escape_str($v);
         }
     }
-    public function sendMaXacThuc($toEmail='',$OTP_CODE=''){
+    public function sendMaXacThuc($toEmail = '', $OTP_CODE = '')
+    {
         $this->load->config('email');
         $mailInfo = $this->config->item('mailInfo');
-        
-        if(empty($toEmail)){
+
+        if (empty($toEmail)) {
             $_POST = json_decode(file_get_contents('php://input'), true);
-            if(!empty($_POST['email'])){
+            if (!empty($_POST['email'])) {
                 $toEmail = $_POST['email'];
             }
-            if(empty($toEmail) ){
-                return array('errorCode'=>1,'data'=>array());
+            if (empty($toEmail)) {
+                return array('errorCode' => 1, 'data' => array());
             }
         }
-        if(empty($OTP_CODE)){
-            $rand =md5(microtime());
-            $OTP_CODE= strtoupper(substr($rand,0,6));
-            $this->db->where(array('EMAIL'=>$toEmail));
-            $this->db->update('TBL_USERS',array('OTP_CODE'=>$OTP_CODE));
+        if (empty($OTP_CODE)) {
+            $rand = md5(microtime());
+            $OTP_CODE = strtoupper(substr($rand, 0, 6));
+            $this->db->where(array('EMAIL' => $toEmail));
+            $this->db->update('TBL_USERS', array('OTP_CODE' => $OTP_CODE));
         }
-        
+
         //send mail
         $mail = new PHPMailer();
         //Khai báo gửi mail bằng SMTP
@@ -92,256 +93,257 @@ class Zeanni_model extends CI_Model
         $mail->Username   = $mailInfo['smtp_user']; // Tên đăng nhập tài khoản Gmail
         $mail->Password   = "hchdexogutacmzms"; //Mật khẩu của ung dung cua gmail
         $mail->SetFrom($mailInfo['smtp_user'], "Mã xác thực từ App Mua Sắm Công"); // Thông tin người gửi
-        $mail->AddReplyTo($mailInfo['smtp_user']);// Ấn định email sẽ nhận khi người dùng reply lại.
-        $mail->AddAddress($toEmail);//Email của người nhận
+        $mail->AddReplyTo($mailInfo['smtp_user']); // Ấn định email sẽ nhận khi người dùng reply lại.
+        $mail->AddAddress($toEmail); //Email của người nhận
         $mail->Subject = "Mã xác thực từ App Mua Sắm Công"; //Tiêu đề của thư
-        $mail->MsgHTML('<div>Mã xác thực: '.$OTP_CODE.'</div>'); //Nội dung của bức thư.
-        if(!$mail->Send()) {
-            return array('errorCode'=>1,'data'=>array());
+        $mail->MsgHTML('<div>Mã xác thực: ' . $OTP_CODE . '</div>'); //Nội dung của bức thư.
+        if (!$mail->Send()) {
+            return array('errorCode' => 1, 'data' => array());
         } else {
-            return array('errorCode'=>0,'data'=>array());
+            return array('errorCode' => 0, 'data' => array());
         }
     }
-    public function sendOTP_CODE(){
+    public function sendOTP_CODE()
+    {
         $arr = json_decode(file_get_contents('php://input'), true);
-        if(empty($arr['email'])){
-            return array('errorCode'=>2,'data'=>array());
+        if (empty($arr['email'])) {
+            return array('errorCode' => 2, 'data' => array());
         }
         $email = $this->db->escape_str(trim($arr['email']));
         $email = strtolower($email);
         //check acount exits
         $this->db->select('EMAIL');
-        $this->db->where(' Lower(EMAIL) ',$email);
+        $this->db->where(' Lower(EMAIL) ', $email);
         $data = $this->db->get('TBL_USERS')->result_array();
-        if(empty($data)){
-            return array('errorCode'=>1,'data'=>array());
+        if (empty($data)) {
+            return array('errorCode' => 1, 'data' => array());
         }
 
-        $TOKEN =md5((microtime().rand(10,1000)));
-        $OTP_CODE= strtoupper(substr($TOKEN,0,6));
-        $this->sendMaXacThuc($email,$OTP_CODE);
-        $this->db->where(' Lower(EMAIL) ',$email);
-        $this->db->update('TBL_USERS',array('OTP_CODE'=>$OTP_CODE));
-        return array('errorCode'=>0,'data'=>array());
+        $TOKEN = md5((microtime() . rand(10, 1000)));
+        $OTP_CODE = strtoupper(substr($TOKEN, 0, 6));
+        $this->sendMaXacThuc($email, $OTP_CODE);
+        $this->db->where(' Lower(EMAIL) ', $email);
+        $this->db->update('TBL_USERS', array('OTP_CODE' => $OTP_CODE));
+        return array('errorCode' => 0, 'data' => array());
     }
-    public function forgotPassword(){
+    public function forgotPassword()
+    {
         $_POST = json_decode(file_get_contents('php://input'), true);
-        if(!empty($_POST['password'])){
+        if (!empty($_POST['password'])) {
             $password = trim($_POST['password']);
         }
-        if(!empty($_POST['email'])){
+        if (!empty($_POST['email'])) {
             $email = strtolower(trim($_POST['email']));
         }
-        if(!empty($_POST['otp'])){
+        if (!empty($_POST['otp'])) {
             $otp = trim($_POST['otp']);
         }
-        
-        if(empty($password) || empty($email) || empty($otp) ){
-            return array('errorCode'=>1,'data'=>array());
+
+        if (empty($password) || empty($email) || empty($otp)) {
+            return array('errorCode' => 1, 'data' => array());
         }
-        
-        $TOKEN =md5((microtime().rand(10,1000)));
-        $res = $this->getUserInfo(array('EMAIL'=>$email,'OTP_CODE'=>$otp));
-        if($res['errorCode']==0){
-           $this->db->where('USER_ID',$res['data']['USER_ID']);
-           $this->db->update('TBL_USERS',array('TOKEN'=>$TOKEN,'PWD'=>md5($password)));
-           $res['data']['TOKEN']=$TOKEN;
-           
+
+        $TOKEN = md5((microtime() . rand(10, 1000)));
+        $res = $this->getUserInfo(array('EMAIL' => $email, 'OTP_CODE' => $otp));
+        if ($res['errorCode'] == 0) {
+            $this->db->where('USER_ID', $res['data']['USER_ID']);
+            $this->db->update('TBL_USERS', array('TOKEN' => $TOKEN, 'PWD' => md5($password)));
+            $res['data']['TOKEN'] = $TOKEN;
         }
         return $res;
     }
-    public function checkMailExist(){
+    public function checkMailExist()
+    {
         $_POST = json_decode(file_get_contents('php://input'), true);
-        if(!empty($_POST['email'])){
+        if (!empty($_POST['email'])) {
             $email = strtolower(trim($_POST['email']));
         }
-        if(empty($email) ){
-            return array('errorCode'=>1,'data'=>array());
+        if (empty($email)) {
+            return array('errorCode' => 1, 'data' => array());
         }
         $this->db->select('USER_ID,OTP_CODE');
-        $this->db->where(array(' Lower(EMAIL) '=>$email));
+        $this->db->where(array(' Lower(EMAIL) ' => $email));
         $data = $this->db->get('TBL_USERS')->result_array();
-        if(!empty($data)){
-            return array('errorCode'=>1,'msg'=>'Email đã được đăng ký');
-        }
-        else {
-            return array('errorCode'=>0,'msg'=>'ok');
+        if (!empty($data)) {
+            return array('errorCode' => 1, 'msg' => 'Email đã được đăng ký');
+        } else {
+            return array('errorCode' => 0, 'msg' => 'ok');
         }
     }
-    public function xacthuccode(){
+    public function xacthuccode()
+    {
         $_POST = json_decode(file_get_contents('php://input'), true);
-        if(!empty($_POST['OTP_CODE'])){
+        if (!empty($_POST['OTP_CODE'])) {
             $OTP_CODE = $_POST['OTP_CODE'];
         }
-        if(!empty($_POST['email'])){
+        if (!empty($_POST['email'])) {
             $email = strtolower(trim($_POST['email']));
         }
-        if(empty($OTP_CODE) || empty($email) ){
-            return array('errorCode'=>1,'data'=>array());
+        if (empty($OTP_CODE) || empty($email)) {
+            return array('errorCode' => 1, 'data' => array());
         }
-        
+
         $this->db->select('USER_ID,OTP_CODE');
-        $this->db->where(array(' Lower(EMAIL) '=>$email,'OTP_CODE'=>$OTP_CODE));
+        $this->db->where(array(' Lower(EMAIL) ' => $email, 'OTP_CODE' => $OTP_CODE));
         $data = $this->db->get('TBL_USERS')->result_array();
-        if(!empty($data)){
+        if (!empty($data)) {
             $data = $data[0];
-            $this->db->where(array(' Lower(EMAIL) '=>$email,'OTP_CODE'=>$OTP_CODE));
-            $this->db->update('TBL_USERS',array('STATUS'=>2));
-            return array('errorCode'=>0,'data'=>$data);
-        }
-        else {
-            return array('errorCode'=>2,'data'=>array());
+            $this->db->where(array(' Lower(EMAIL) ' => $email, 'OTP_CODE' => $OTP_CODE));
+            $this->db->update('TBL_USERS', array('STATUS' => 2));
+            return array('errorCode' => 0, 'data' => $data);
+        } else {
+            return array('errorCode' => 2, 'data' => array());
         }
     }
-    public function getUserId(){
+    public function getUserId()
+    {
         $arr = getallheaders();
-        if(empty($arr['x-csrftoken'])){
+        if (empty($arr['x-csrftoken'])) {
             return -1;
         }
         $TOKEN = $this->db->escape_str(trim($arr['x-csrftoken']));
-        
-        if(empty($TOKEN) ){
+
+        if (empty($TOKEN)) {
             return -1;
         }
-        
+
         $this->db->select('USER_ID');
-        $this->db->where(array('TOKEN'=>$TOKEN));
+        $this->db->where(array('TOKEN' => $TOKEN));
         $row = $this->db->get('TBL_USERS')->row_array();
-        
-        if(empty($row['USER_ID'])){
+
+        if (empty($row['USER_ID'])) {
             return -1;
         }
 
         return $row['USER_ID'];
-        
     }
-    public function getUserInfo($arr=array()){
+    public function getUserInfo($arr = array())
+    {
         $arrWhere = array();
-        if(empty($arr)){
+        if (empty($arr)) {
             $_POST = json_decode(file_get_contents('php://input'), true);
-            if(!empty($_POST['TOKEN'])){
+            if (!empty($_POST['TOKEN'])) {
                 $TOKEN = $_POST['TOKEN'];
             }
-            
+
             $arrWhere['TOKEN'] = $TOKEN;
-        }
-        else{
-            if(!empty($arr['EMAIL'])){
+        } else {
+            if (!empty($arr['EMAIL'])) {
                 $arrWhere['Lower(EMAIL)'] = $arr['EMAIL'];
             }
-            if(!empty($arr['PWD'])){
+            if (!empty($arr['PWD'])) {
                 $arrWhere['PWD'] = md5($arr['PWD']);
             }
-            if(!empty($arr['OTP_CODE'])){
+            if (!empty($arr['OTP_CODE'])) {
                 $arrWhere['OTP_CODE'] = $arr['OTP_CODE'];
             }
         }
-        
-        if(empty($arrWhere) ){
-            return array('errorCode'=>1,'data'=>array());
+
+        if (empty($arrWhere)) {
+            return array('errorCode' => 1, 'data' => array());
         }
-        
+
         $this->db->select('a.USER_ID,a.FULLNAME,a.EMAIL,a.STATUS,a.TOKEN,a.TEL_NUM,a.BIRTHDAY,a.SEX,b.ORGANIZATION_ID,a.SOCIAL_ID,b.TYPE,b.STATUS as STATUS_ORGANIZATION');
         $this->db->from('TBL_USERS a');
         $this->db->join('AW_USER_ORGANIZATION b', 'b.USER_ID = a.USER_ID', 'left');
         $this->db->where($arrWhere);
         $data = $this->db->get()->result_array();
 
-        if(!empty($data)){
+        if (!empty($data)) {
             $arr = array();
-            foreach($data as $row){
+            foreach ($data as $row) {
                 $arr[$row['TYPE']] = array(
-                    'ORGANIZATION_ID'=>$row['ORGANIZATION_ID'],
-                    'STATUS_ORGANIZATION'=>$row['STATUS_ORGANIZATION'],
-                    'TYPE'=>$row['TYPE'],
+                    'ORGANIZATION_ID' => $row['ORGANIZATION_ID'],
+                    'STATUS_ORGANIZATION' => $row['STATUS_ORGANIZATION'],
+                    'TYPE' => $row['TYPE'],
                 );
             }
             $data = $data[0];
             $data['ORGANIZATION'] = $arr;
             $sql = 'select *
             from "TBL_PACKAGE_FOLLOWS_V2"
-            where "USER_ID" = '.$data['USER_ID'];
+            where "USER_ID" = ' . $data['USER_ID'];
             $query = $this->db->query($sql);
             $data2 =  $query->result_array();
-            $res=array();
-            foreach($data2 as $vl){
-                $k = $vl['IS_SUB_PACKAGE']==1?$vl['BID_PACKAGE_ID']:($vl['BID_PACKAGE_ID'].'_0');
-                $res[$k]=1;
+            $res = array();
+            foreach ($data2 as $vl) {
+                $k = $vl['IS_SUB_PACKAGE'] == 1 ? $vl['BID_PACKAGE_ID'] : ($vl['BID_PACKAGE_ID'] . '_0');
+                $res[$k] = 1;
             }
 
-           return array('errorCode'=>0,'data'=>$data,'packageFollows'=>$res);
-        }
-        else {
-             return array('errorCode'=>2,'data'=>array(),'packageFollows'=>array());
+            return array('errorCode' => 0, 'data' => $data, 'packageFollows' => $res);
+        } else {
+            return array('errorCode' => 2, 'data' => array(), 'packageFollows' => array());
         }
     }
-    public function login(){
+    public function login()
+    {
         $_POST = json_decode(file_get_contents('php://input'), true);
-        if(!empty($_POST['password'])){
+        if (!empty($_POST['password'])) {
             $password = trim($_POST['password']);
         }
-        if(!empty($_POST['email'])){
+        if (!empty($_POST['email'])) {
             $email = $this->db->escape_str(strtolower(trim($_POST['email'])));
         }
-        if(!empty($_POST['devicesId'])){
+        if (!empty($_POST['devicesId'])) {
             $devicesId = $this->db->escape_str(strtolower(trim($_POST['devicesId'])));
         }
-        
-        if(empty($password) || empty($email) ){
-            return array('errorCode'=>1,'data'=>array());
-        }
-        
-        $TOKEN = md5((microtime().rand(10,1000)));
-        
-        $res = $this->getUserInfo(array('EMAIL'=>$email,'PWD'=>$password));
-        if($res['errorCode']==0){
-            $dataInsert = array(
-             'TOKEN'=>$TOKEN
-            );
-            if(!empty($devicesId)){
-             $dataInsert['DEVICES_ID']=$devicesId;
-            }
-            $this->db->where('USER_ID',$res['data']['USER_ID']);
-            $this->db->update('TBL_USERS',$dataInsert);
-            $res['data']['TOKEN']=$TOKEN;
-         }
 
-         return $res;
+        if (empty($password) || empty($email)) {
+            return array('errorCode' => 1, 'data' => array());
+        }
+
+        $TOKEN = md5((microtime() . rand(10, 1000)));
+
+        $res = $this->getUserInfo(array('EMAIL' => $email, 'PWD' => $password));
+        if ($res['errorCode'] == 0) {
+            $dataInsert = array(
+                'TOKEN' => $TOKEN
+            );
+            if (!empty($devicesId)) {
+                $dataInsert['DEVICES_ID'] = $devicesId;
+            }
+            $this->db->where('USER_ID', $res['data']['USER_ID']);
+            $this->db->update('TBL_USERS', $dataInsert);
+            $res['data']['TOKEN'] = $TOKEN;
+        }
+
+        return $res;
     }
-    public function register(){
+    public function register()
+    {
         $_POST = json_decode(file_get_contents('php://input'), true);
-        if(!empty($_POST['password'])){
+        if (!empty($_POST['password'])) {
             $password = trim($_POST['password']);
         }
-        if(!empty($_POST['full_name'])){
+        if (!empty($_POST['full_name'])) {
             $full_name = $this->db->escape_str($_POST['full_name']);
         }
-        if(!empty($_POST['email'])){
+        if (!empty($_POST['email'])) {
             $email = $this->db->escape_str(strtolower(trim($_POST['email'])));
         }
-        $devicesId='';
-        if(!empty($_POST['devicesId'])){
+        $devicesId = '';
+        if (!empty($_POST['devicesId'])) {
             $devicesId = $this->db->escape_str(strtolower(trim($_POST['devicesId'])));
         }
-        
-        if(empty($password) || empty($full_name) || empty($email) ){
-            return array('errorCode'=>1,'data'=>array());
-        }
-        else if(count(explode('@',$email))!=2){
-            return array('errorCode'=>2,'data'=>array());
+
+        if (empty($password) || empty($full_name) || empty($email)) {
+            return array('errorCode' => 1, 'data' => array());
+        } else if (count(explode('@', $email)) != 2) {
+            return array('errorCode' => 2, 'data' => array());
         }
         //check acount exits
         $this->db->select('EMAIL');
-        $this->db->where(' Lower(EMAIL) ',$email);
+        $this->db->where(' Lower(EMAIL) ', $email);
         $data = $this->db->get('TBL_USERS')->result_array();
-        if(!empty($data)){
-            return array('errorCode'=>3,'data'=>array());
+        if (!empty($data)) {
+            return array('errorCode' => 3, 'data' => array());
         }
-        
-        $TOKEN =md5((microtime().rand(10,1000)));
-        $OTP_CODE= strtoupper(substr($TOKEN,0,6));
-        $this->sendMaXacThuc($email,$OTP_CODE);
-         // $arrInsert = array(
+
+        $TOKEN = md5((microtime() . rand(10, 1000)));
+        $OTP_CODE = strtoupper(substr($TOKEN, 0, 6));
+        $this->sendMaXacThuc($email, $OTP_CODE);
+        // $arrInsert = array(
         //         'FULLNAME'=>$full_name,
         //         'EMAIL'=>$email,
         //         'PWD'=>md5($password),
@@ -351,132 +353,128 @@ class Zeanni_model extends CI_Model
         // $this->db->insert('TBL_USERS',$arrInsert);
         $sql = 'insert into TBL_USERS(USER_ID,FULLNAME,EMAIL,PWD,TOKEN,OTP_CODE,DEVICES_ID) 
             values(NVL((SELECT MAX("USER_ID") FROM "TBL_USERS"),0)+1 , 
-            \''.$full_name.'\', \''.$email.'\', \''.md5($password).'\', \''.$TOKEN.'\',\''.$OTP_CODE.'\',\''.$devicesId.'\')';
+            \'' . $full_name . '\', \'' . $email . '\', \'' . md5($password) . '\', \'' . $TOKEN . '\',\'' . $OTP_CODE . '\',\'' . $devicesId . '\')';
         $this->db->query($sql);
-        
+
         $this->db->select('USER_ID');
-        $this->db->where('EMAIL',$email);
+        $this->db->where('EMAIL', $email);
         $data1 = $this->db->get('TBL_USERS')->result_array();
-        
-        return array('errorCode'=>0,'data'=>array(
-            'USER_ID'=>$data1[0]['USER_ID'],
-            'FULLNAME'=>$full_name,
-            'TOKEN'=>$TOKEN,
-            'EMAIL'=>$email,
-            'TEL_NUM'=>'',
-            'BIRTHDAY'=>'',
-            'SEX'=>''
+
+        return array('errorCode' => 0, 'data' => array(
+            'USER_ID' => $data1[0]['USER_ID'],
+            'FULLNAME' => $full_name,
+            'TOKEN' => $TOKEN,
+            'EMAIL' => $email,
+            'TEL_NUM' => '',
+            'BIRTHDAY' => '',
+            'SEX' => ''
         ));
     }
-    
-    public function loginFacebook(){
+
+    public function loginFacebook()
+    {
         //email, social_id,full_name, phone
         $_POST = json_decode(file_get_contents('php://input'), true);
-        if(!empty($_POST['social_id'])){
+        if (!empty($_POST['social_id'])) {
             $social_id = $this->db->escape_str(trim($_POST['social_id']));
         }
-        if(!empty($_POST['full_name'])){
+        if (!empty($_POST['full_name'])) {
             $full_name = $this->db->escape_str($_POST['full_name']);
         }
-        if(!empty($_POST['email'])){
+        if (!empty($_POST['email'])) {
             $email = $this->db->escape_str(strtolower(trim($_POST['email'])));
         }
-        $phone='';
-        if(!empty($_POST['phone'])){
+        $phone = '';
+        if (!empty($_POST['phone'])) {
             $phone = $this->db->escape_str(strtolower(trim($_POST['phone'])));
         }
-        $devicesId='';
-        if(!empty($_POST['devicesId'])){
+        $devicesId = '';
+        if (!empty($_POST['devicesId'])) {
             $devicesId = $this->db->escape_str(strtolower(trim($_POST['devicesId'])));
         }
-        
-        if(empty($social_id) || empty($full_name) || empty($email) ){
-            return array('errorCode'=>1,'data'=>array());
-        }
-        else if(count(explode('@',$email))!=2){
-            return array('errorCode'=>2,'data'=>array());
+
+        if (empty($social_id) || empty($full_name) || empty($email)) {
+            return array('errorCode' => 1, 'data' => array());
+        } else if (count(explode('@', $email)) != 2) {
+            return array('errorCode' => 2, 'data' => array());
         }
 
         //check xem tai khoan da tung duoc dang ky chua.
         //neu chua thì đăng ký.
         //neu rồi thì so sánh update token va tra ve thong tin
-        $TOKEN =md5((microtime().rand(10,1000)));
+        $TOKEN = md5((microtime() . rand(10, 1000)));
 
-         $res = $this->getUserInfo(array('EMAIL'=>$email));
-         if($res['errorCode']==0 && ($social_id==$res['data']['SOCIAL_ID'] || empty($res['data']['SOCIAL_ID']) )){
+        $res = $this->getUserInfo(array('EMAIL' => $email));
+        if ($res['errorCode'] == 0 && ($social_id == $res['data']['SOCIAL_ID'] || empty($res['data']['SOCIAL_ID']))) {
             // $data = $res['data'];
             $dataInsert = array(
-                'TOKEN'=>$TOKEN,
-                'SOCIAL_ID'=>$social_id
+                'TOKEN' => $TOKEN,
+                'SOCIAL_ID' => $social_id
             );
-            if(!empty($devicesId)){
-             $dataInsert['DEVICES_ID']=$devicesId;
+            if (!empty($devicesId)) {
+                $dataInsert['DEVICES_ID'] = $devicesId;
             }
-            $this->db->where('USER_ID',$res['data']['USER_ID']);
-            $this->db->update('TBL_USERS',$dataInsert);
-            
-            $res['data']['TOKEN']=$TOKEN;
+            $this->db->where('USER_ID', $res['data']['USER_ID']);
+            $this->db->update('TBL_USERS', $dataInsert);
+
+            $res['data']['TOKEN'] = $TOKEN;
 
             return $res;
-         }
-         else if($res['errorCode'] != 0){
-             //insert data
-             $sql = 'insert into TBL_USERS(USER_ID,FULLNAME,EMAIL,TOKEN,LOGIN_TYPE,TEL_NUM,SOCIAL_ID,DEVICES_ID,STATUS) 
+        } else if ($res['errorCode'] != 0) {
+            //insert data
+            $sql = 'insert into TBL_USERS(USER_ID,FULLNAME,EMAIL,TOKEN,LOGIN_TYPE,TEL_NUM,SOCIAL_ID,DEVICES_ID,STATUS) 
                 values(NVL((SELECT MAX("USER_ID") FROM "TBL_USERS"),0)+1 , 
-                \''.$full_name.'\', \''.$email.'\', \''.$TOKEN.'\',2,\''.$phone.'\',\''.$social_id.'\',\''.$devicesId.'\',1)';
+                \'' . $full_name . '\', \'' . $email . '\', \'' . $TOKEN . '\',2,\'' . $phone . '\',\'' . $social_id . '\',\'' . $devicesId . '\',1)';
             $this->db->query($sql);
-            
+
             $this->db->select('USER_ID,FULLNAME,EMAIL,STATUS,SOCIAL_ID,TEL_NUM,BIRTHDAY,SEX');
-            $this->db->where(array(' Lower(EMAIL) '=>$email));
+            $this->db->where(array(' Lower(EMAIL) ' => $email));
             $data = $this->db->get('TBL_USERS')->result_array();
             $data = $data[0];
-            $data['TOKEN']=$TOKEN;
-            return array('errorCode'=>0,'data'=>$data,'packageFollows'=>array());
-         }
-         else{
-            return array('errorCode'=>3,'data'=>array(),'packageFollows'=>array());
-         }
-
+            $data['TOKEN'] = $TOKEN;
+            return array('errorCode' => 0, 'data' => $data, 'packageFollows' => array());
+        } else {
+            return array('errorCode' => 3, 'data' => array(), 'packageFollows' => array());
+        }
     }
 
-    public function updateUserInfo(){
+    public function updateUserInfo()
+    {
         $arr = getallheaders();
-        if(empty($arr['x-csrftoken'])){
+        if (empty($arr['x-csrftoken'])) {
             return array(
-                'error'=>1,
-                'msg'=>'Không lấy được giá trị TOKEN truyền lên.',
-                'data'=>''
+                'error' => 1,
+                'msg' => 'Không lấy được giá trị TOKEN truyền lên.',
+                'data' => ''
             );
         }
         $token = $this->db->escape_str(trim($arr['x-csrftoken']));
 
         $_POST = json_decode(file_get_contents('php://input'), true);
         $data = array();
-        if(!empty($_POST['bod'])){
-            $data[] = ' BIRTHDAY = TO_DATE(\''.$this->db->escape_str(trim($_POST['bod'])).'\',\'yyyy-MM-dd\') ';
+        if (!empty($_POST['bod'])) {
+            $data[] = ' BIRTHDAY = TO_DATE(\'' . $this->db->escape_str(trim($_POST['bod'])) . '\',\'yyyy-MM-dd\') ';
         }
-        if(!empty($_POST['phone'])){
-            $data[] = ' TEL_NUM = \''.$this->db->escape_str($_POST['phone']).'\' ';
+        if (!empty($_POST['phone'])) {
+            $data[] = ' TEL_NUM = \'' . $this->db->escape_str($_POST['phone']) . '\' ';
         }
-        if(!empty($data)){
-            $sql = 'update TBL_USERS set '.join($data,',').'
-                where TOKEN=\''.$token.'\'';
+        if (!empty($data)) {
+            $sql = 'update TBL_USERS set ' . join($data, ',') . '
+                where TOKEN=\'' . $token . '\'';
             $this->db->query($sql);
-        
+
             return array(
-                'error'=>0,
-                'msg'=>'OK',
-                'data'=>''
+                'error' => 0,
+                'msg' => 'OK',
+                'data' => ''
+            );
+        } else {
+            return array(
+                'error' => 1,
+                'msg' => 'Không nhận được giá trị update.',
+                'data' => ''
             );
         }
-        else{
-            return array(
-                'error'=>1,
-                'msg'=>'Không nhận được giá trị update.',
-                'data'=>''
-            );
-        }
-        
     }
 
     public function GetListLocation()
@@ -486,13 +484,14 @@ class Zeanni_model extends CI_Model
             order by ID ";
         $query = $this->db->query($sql);
         $data =  $query->result_array();
-        $res=array();
-        foreach($data as $vl){
-            $res[]=array('label'=>$vl['NAME'],'value'=>$vl['NAME'],'ID'=>$vl['ID']);
+        $res = array();
+        foreach ($data as $vl) {
+            $res[] = array('label' => $vl['NAME'], 'value' => $vl['NAME'], 'ID' => $vl['ID']);
         }
         return $res;
     }
-    private function getNewsHighlights(){
+    private function getNewsHighlights()
+    {
         $where = '';
         if (!empty($_GET['keySearch'])) {
             $_GET['keySearch'] = $this->db->escape_str(trim($_GET['keySearch']));
@@ -503,7 +502,7 @@ class Zeanni_model extends CI_Model
                 select a1.\"ID\" as \"a1-zn-ID\",  a1.\"TITLE\" as \"a1-zn-TITLE\", 
                     a1.\"IMG\" as \"a1-zn-IMG\",  a1.\"DATE_SUBMITTED\" as \"a1-zn-DATE_SUBMITTED\",  a1.\"COUNT_VIEW\" as \"a1-zn-COUNT_VIEW\",  a1.\"SHORT_DESCRIPTION\" as \"a1-zn-SHORT_DESCRIPTION\",  a1.\"STATUS\" as \"a1-zn-STATUS\",  a1.\"HIGHLIGHTS\" as \"a1-zn-HIGHLIGHTS\"  
                 from \"NEWS\" a1
-                where a1.\"STATUS\" =  '1' and a1.\"IMG\" is not null ". $where ." 
+                where a1.\"STATUS\" =  '1' and a1.\"IMG\" is not null " . $where . " 
                 order by  a1.\"HIGHLIGHTS\" desc,  a1.\"ID\" desc 
             ) a 
             WHERE rownum <  6 ";
@@ -520,26 +519,26 @@ class Zeanni_model extends CI_Model
             $where = " and  a1.\"TITLE\" like '%" . $_GET['keySearch'] . "%' ";
         }
 
-            $page = empty($_GET['page'])?1:(int)$_GET['page'];
-            $sql = "SELECT * FROM ( 
+        $page = empty($_GET['page']) ? 1 : (int)$_GET['page'];
+        $sql = "SELECT * FROM ( 
                 SELECT a.*, rownum r__ 
                 FROM ( 
                     select a1.\"ID\" as \"a1-zn-ID\",  a1.\"TITLE\" as \"a1-zn-TITLE\", 
                         a1.\"IMG\" as \"a1-zn-IMG\",  a1.\"DATE_SUBMITTED\" as \"a1-zn-DATE_SUBMITTED\",  a1.\"COUNT_VIEW\" as \"a1-zn-COUNT_VIEW\",  a1.\"SHORT_DESCRIPTION\" as \"a1-zn-SHORT_DESCRIPTION\",  a1.\"STATUS\" as \"a1-zn-STATUS\",  a1.\"HIGHLIGHTS\" as \"a1-zn-HIGHLIGHTS\"  
                     from \"NEWS\" a1
-                    where a1.\"STATUS\" =  '1' and a1.\"IMG\" is not null ". $where ." 
+                    where a1.\"STATUS\" =  '1' and a1.\"IMG\" is not null " . $where . " 
                     order by  a1.\"HIGHLIGHTS\" desc,  a1.\"ID\" desc 
                 ) a 
-                WHERE rownum < ((".$page." * 5) + 6 ) 
-            ) WHERE r__ >= (((".$page."-1) * 5) + 6)";
+                WHERE rownum < ((" . $page . " * 5) + 6 ) 
+            ) WHERE r__ >= (((" . $page . "-1) * 5) + 6)";
 
         $query = $this->db->query($sql);
         $data =  $query->result_array();
-        $newsHighlights=array();
-        if($page == 1){
+        $newsHighlights = array();
+        if ($page == 1) {
             $newsHighlights = $this->getNewsHighlights();
         }
-        return array('data'=>$data,'newsHighlights'=>$newsHighlights);
+        return array('data' => $data, 'newsHighlights' => $newsHighlights);
     }
     public function NewsDetail()
     {
@@ -561,16 +560,16 @@ class Zeanni_model extends CI_Model
             where  '" . $_getSegment[2] . "'  = a1.\"ID\"";
         $query = $this->db->query($sql);
         $data =  $query->result_array();
-        
+
         //update count view news
-        $_GET['ID']=$_getSegment[2];
+        $_GET['ID'] = $_getSegment[2];
         $this->updateViewNews();
-        if(!empty($data[0])){
+        if (!empty($data[0])) {
             $data[0]['a1-zn-POST'] = $data[0]['a1-zn-POST'] . $data[0]['a1-zn-POST1'] . $data[0]['a1-zn-POST2'] . $data[0]['a1-zn-POST3'];
         }
         return $data;
     }
-   
+
     public function newsInvolve()
     {
         if (!isset($_NewsDetail)) {
@@ -582,7 +581,7 @@ class Zeanni_model extends CI_Model
             $_POST["NewsDetail-0-a1-zn-ID"] = $this->db->escape_str($_NewsDetail[0]["a1-zn-ID"]);
         }
 
-        $page = empty($_GET['page'])?1:(int)$_GET['page'];
+        $page = empty($_GET['page']) ? 1 : (int)$_GET['page'];
         $sql = "SELECT * FROM ( 
             SELECT a.*, rownum r__ 
             FROM ( 
@@ -596,15 +595,16 @@ class Zeanni_model extends CI_Model
                     and a1.\"ID\" !=  '" . $_POST['NewsDetail-0-a1-zn-ID'] . "'  
                     order by  a1.\"ID\" desc
             ) a 
-            WHERE rownum < ((".$page." * 5) + 1 ) 
-        ) WHERE r__ >= (((".$page."-1) * 5) + 1)";
+            WHERE rownum < ((" . $page . " * 5) + 1 ) 
+        ) WHERE r__ >= (((" . $page . "-1) * 5) + 1)";
 
         $query = $this->db->query($sql);
         $data =  $query->result_array();
         return $data;
     }
-    public function TopNhaThauDuThau(){
-        
+    public function TopNhaThauDuThau()
+    {
+
         $sql = 'select * 
         from (select a1."BIDER_NAME" as "a1-zn-BIDER_NAME",  
             a1."BUSSINESS_REGISTRATION_NUM" as "a1-BUSSINESS_REGISTRATION_NUM",  
@@ -623,7 +623,7 @@ class Zeanni_model extends CI_Model
             from (
                 select BID_BUSSINESS_REGISTRATION_NUM, COUNT(BID_BUSSINESS_REGISTRATION_NUM) as count_
                 from "TBL_BIDINGS" 
-                where APPROVAL_DATE > TO_DATE(\''.date('Y-01-01').'\',\'yyyy-MM-dd\')  
+                where APPROVAL_DATE > TO_DATE(\'' . date('Y-01-01') . '\',\'yyyy-MM-dd\')  
                 group by BID_BUSSINESS_REGISTRATION_NUM
                 order by count_ desc 
             ) b1
@@ -638,7 +638,7 @@ class Zeanni_model extends CI_Model
     }
 
     public function listBiders()
-    { 
+    {
         $_POST = json_decode(file_get_contents('php://input'), true);
         $where = array();
         if (!empty($_GET['keySearch'])) {
@@ -649,30 +649,30 @@ class Zeanni_model extends CI_Model
             )";
         }
 
-        if(!empty($_POST['from_date'])){
-            $where[] = " a1.\"BUSSINESS_REGISTRATION_DATE\" >= TO_DATE('".$_POST['from_date']."','yyyy-MM-dd') ";
+        if (!empty($_POST['from_date'])) {
+            $where[] = " a1.\"BUSSINESS_REGISTRATION_DATE\" >= TO_DATE('" . $_POST['from_date'] . "','yyyy-MM-dd') ";
         }
-        if(!empty($_POST['to_date'])){
-            $where[] = " a1.\"BUSSINESS_REGISTRATION_DATE\" <= TO_DATE('".$_POST['to_date']."','yyyy-MM-dd') ";
+        if (!empty($_POST['to_date'])) {
+            $where[] = " a1.\"BUSSINESS_REGISTRATION_DATE\" <= TO_DATE('" . $_POST['to_date'] . "','yyyy-MM-dd') ";
         }
 
-        if(!empty($_POST['localtion'])){
-             $where[] = " a1.\"PROVINCE\" like '%".$_POST['localtion']."%' ";
+        if (!empty($_POST['localtion'])) {
+            $where[] = " a1.\"PROVINCE\" like '%" . $_POST['localtion'] . "%' ";
         }
 
         if (!empty($_GET['BUSSINESS_FIELD'])) {
-            $_GET['BUSSINESS_FIELD'] = $this->db->escape_str(trim($_GET['BUSSINESS_FIELD']).',');
+            $_GET['BUSSINESS_FIELD'] = $this->db->escape_str(trim($_GET['BUSSINESS_FIELD']) . ',');
         }
-        $join='';
-        $select='';
+        $join = '';
+        $select = '';
         $orderBy = '';
-        if (!empty($_GET['type']) && $_GET['type']=='topBider') {
+        if (!empty($_GET['type']) && $_GET['type'] == 'topBider') {
             $join = ' left join (
                 select b1.*
                 from (
                     select BID_BUSSINESS_REGISTRATION_NUM, COUNT(BID_BUSSINESS_REGISTRATION_NUM) as count_
                     from "TBL_BIDINGS" 
-                    where APPROVAL_DATE > TO_DATE(\''.date('Y-01-01').'\',\'yyyy-MM-dd\')  
+                    where APPROVAL_DATE > TO_DATE(\'' . date('Y-01-01') . '\',\'yyyy-MM-dd\')  
                     group by BID_BUSSINESS_REGISTRATION_NUM
                     order by count_ desc 
                 ) b1
@@ -687,11 +687,11 @@ class Zeanni_model extends CI_Model
         } else {
             $where = '';
         }
-        $page = empty($_GET['page'])?1:(int)$_GET['page'];
+        $page = empty($_GET['page']) ? 1 : (int)$_GET['page'];
         $sql = "SELECT * FROM ( 
             SELECT a.*, rownum r__ 
             FROM ( 
-                select ".$select." a1.\"BIDER_NAME\" as \"a1-zn-BIDER_NAME\",  
+                select " . $select . " a1.\"BIDER_NAME\" as \"a1-zn-BIDER_NAME\",  
                     a1.\"BUSSINESS_REGISTRATION_NUM\" as \"a1-BUSSINESS_REGISTRATION_NUM\",  
                     a1.\"BUSSINESS_REGISTRATION_DATE\" as \"a1-BUSSINESS_REGISTRATION_DATE\",  
                     a1.\"TAXNUMBER\" as \"a1-zn-TAXNUMBER\",  a1.\"TEL_NUM\" as \"a1-zn-TEL_NUM\",  
@@ -702,17 +702,17 @@ class Zeanni_model extends CI_Model
                     a1.\"ADDRESS\" as \"a1-zn-ADDRESS\",  a1.\"BUSSINESS_FIELD\" as \"a1-zn-BUSSINESS_FIELD\",  
                     a1.\"BIDER_EN_NAME\" as \"a1-zn-BIDER_EN_NAME\",  a1.\"BUSSINESS_TYPE\" as \"a1-zn-BUSSINESS_TYPE\"
                 from \"TBL_BIDERS\" a1
-                " . $join 
-                . $where . "
-                ORDER BY ".$orderBy." NVL(a1.\"APPROVAL_DATE\",TO_DATE('1111-01-01','yyyy-MM-dd')) desc
+                " . $join
+            . $where . "
+                ORDER BY " . $orderBy . " NVL(a1.\"APPROVAL_DATE\",TO_DATE('1111-01-01','yyyy-MM-dd')) desc
             ) a 
-            WHERE rownum < ((".$page." * 100) + 1 ) 
-        ) WHERE r__ >= (((".$page."-1) * 100) + 1)";
+            WHERE rownum < ((" . $page . " * 100) + 1 ) 
+        ) WHERE r__ >= (((" . $page . "-1) * 100) + 1)";
         $query = $this->db->query($sql);
         $data =  $query->result_array();
         return $data;
     }
-    
+
     public function detailBiders()
     {
         $_getSegment = $this->_getSegment;
@@ -750,15 +750,15 @@ class Zeanni_model extends CI_Model
             ) ";
         }
 
-        if(!empty($_POST['from_date'])){
-            $where[] = " a1.\"APPROVAL_DATE\" >= TO_DATE('".$_POST['from_date']."','yyyy-MM-dd') ";
+        if (!empty($_POST['from_date'])) {
+            $where[] = " a1.\"APPROVAL_DATE\" >= TO_DATE('" . $_POST['from_date'] . "','yyyy-MM-dd') ";
         }
-        if(!empty($_POST['to_date'])){
-            $where[] = " a1.\"APPROVAL_DATE\" <= TO_DATE('".$_POST['to_date']."','yyyy-MM-dd') ";
+        if (!empty($_POST['to_date'])) {
+            $where[] = " a1.\"APPROVAL_DATE\" <= TO_DATE('" . $_POST['to_date'] . "','yyyy-MM-dd') ";
         }
 
-        if(!empty($_POST['localtion'])){
-            $where[] = " a1.\"PROVINCE\" like '%".$_POST['localtion']."%' ";
+        if (!empty($_POST['localtion'])) {
+            $where[] = " a1.\"PROVINCE\" like '%" . $_POST['localtion'] . "%' ";
         }
 
         if (!empty($_GET['bussiness_type'])) {
@@ -767,18 +767,17 @@ class Zeanni_model extends CI_Model
             $_GET['bussiness_type'] = "";
         }
 
-        if($_GET['bussiness_type']!==''){
+        if ($_GET['bussiness_type'] !== '') {
             // bo find theo type
             //  $where[] = " '".$_GET['bussiness_type'] . "'  = a1.\"BUSSINESS_TYPE\") ";
         }
 
-        if(!empty($where)){
-            $where = ' where '.join(' and ',$where);
+        if (!empty($where)) {
+            $where = ' where ' . join(' and ', $where);
+        } else {
+            $where = '';
         }
-        else{
-            $where='';
-        }
-        $page = empty($_GET['page'])?1:(int)$_GET['page'];
+        $page = empty($_GET['page']) ? 1 : (int)$_GET['page'];
         $sql = "SELECT * FROM ( 
             SELECT a.*, rownum r__ 
             FROM ( 
@@ -791,8 +790,8 @@ class Zeanni_model extends CI_Model
                 " . $where . "
                 ORDER BY NVL(a1.\"APPROVAL_DATE\",TO_DATE('1111-01-01','yyyy-MM-dd')) desc
             ) a 
-            WHERE rownum < ((".$page." * 100) + 1 ) 
-        ) WHERE r__ >= (((".$page."-1) * 100) + 1)";
+            WHERE rownum < ((" . $page . " * 100) + 1 ) 
+        ) WHERE r__ >= (((" . $page . "-1) * 100) + 1)";
         $query = $this->db->query($sql);
         $data =  $query->result_array();
         return $data;
@@ -819,10 +818,10 @@ class Zeanni_model extends CI_Model
         $data =  $query->result_array();
         return $data;
     }
-    
+
     public function listBiderSelections()
     {
-        $page = empty($_GET['page'])?1:(int)$_GET['page'];
+        $page = empty($_GET['page']) ? 1 : (int)$_GET['page'];
         $where = ' where NVL(a1."BID_NUM",0) > 0 and a1."CREATE_DATE" is not null ';
         if (!empty($_GET['keySearch'])) {
             $_GET['keySearch'] = $this->db->escape_str(trim($_GET['keySearch']));
@@ -830,14 +829,14 @@ class Zeanni_model extends CI_Model
         }
 
         //check dieu kien cho trang thong ke
-        if(!empty($_GET['time']) && $_GET['time']=='1d'){
+        if (!empty($_GET['time']) && $_GET['time'] == '1d') {
             //CREATE_DATE
-            $where .= " and a1.\"CREATE_DATE\" >= TO_DATE('".date("Y-m-d")."','yyyy-MM-dd') ";
-        }else{
-            $where .= " and a1.\"CREATE_DATE\" > TO_DATE('".date("Y-01-01")."','yyyy-MM-dd') ";
+            $where .= " and a1.\"CREATE_DATE\" >= TO_DATE('" . date("Y-m-d") . "','yyyy-MM-dd') ";
+        } else {
+            $where .= " and a1.\"CREATE_DATE\" > TO_DATE('" . date("Y-01-01") . "','yyyy-MM-dd') ";
         }
 
-                $sql ="SELECT * FROM
+        $sql = "SELECT * FROM
                 (
                     SELECT a.*, rownum r__
                     FROM
@@ -860,13 +859,13 @@ class Zeanni_model extends CI_Model
                         " . $where . "
                         order by  a1.\"CREATE_DATE\" desc
                     ) a
-                    WHERE rownum < ((".$page." * 100) + 1 )
+                    WHERE rownum < ((" . $page . " * 100) + 1 )
                 )
-                WHERE r__ >= (((".$page."-1) * 100) + 1)";
-                
-                if(!empty($_GET['s_test'])){
-                    echo $sql;
-                }
+                WHERE r__ >= (((" . $page . "-1) * 100) + 1)";
+
+        if (!empty($_GET['s_test'])) {
+            echo $sql;
+        }
         $query = $this->db->query($sql);
         $data =  $query->result_array();
         // print_r($data);
@@ -895,11 +894,11 @@ class Zeanni_model extends CI_Model
 
         $query = $this->db->query($sql);
         $data =  $query->result_array();
-        $_GET['ID']=$_getSegment['2'];
+        $_GET['ID'] = $_getSegment['2'];
         $this->updateViewKHLCNT();
         return $data;
     }
-    
+
     public function biderSelections_packageInfo()
     {
         $_getSegment = $this->_getSegment;
@@ -936,7 +935,8 @@ class Zeanni_model extends CI_Model
                 a1.\"CONTRACT_TYPE\",
                 a1.\"BID_TYPE\",
                 a2.\"BID_PACKAGE_ID\",
-                a3.\"BIDING_ID\"
+                a3.\"BIDING_ID\",
+                a2.\"CODELINK\"
             from \"TBL_PACKAGE_INFO\" a1 
             left join \"TBL_BID_PACKAGES\" a2 on a1.\"CODE\"=a2.\"CODEKH\"
             left join \"TBL_BIDINGS\" a3 on a2.\"BID_PACKAGE_CODE\" = a3.\"BID_PACKAGE_CODE\"
@@ -948,8 +948,8 @@ class Zeanni_model extends CI_Model
     public function listBidings()
     {
         // $startLimit = (int) (empty($_GET['page'])  ? 0 : (($_GET['page'] - 1)  * 20));
-        $page = empty($_GET['page'])?1:(int)$_GET['page'];
-        $BUSSINESS_FIELD = empty($_GET['BUSSINESS_FIELD'])?'hang-hoa':$this->db->escape_str(trim($_GET['BUSSINESS_FIELD']));
+        $page = empty($_GET['page']) ? 1 : (int)$_GET['page'];
+        $BUSSINESS_FIELD = empty($_GET['BUSSINESS_FIELD']) ? 'hang-hoa' : $this->db->escape_str(trim($_GET['BUSSINESS_FIELD']));
         $where = '';
         if (!empty($_GET['keySearch'])) {
             $_GET['keySearch'] = $this->db->escape_str(trim($_GET['keySearch']));
@@ -972,21 +972,21 @@ class Zeanni_model extends CI_Model
                         a1.\"PRICE_BIDING\" as \"a1-zn-PRICE_BIDING\",  a1.\"PRICE_ACCEPT\" as \"a1-zn-PRICE_ACCEPT\",
                         to_char(a1.PUBLIC_DATE, 'yyyy-mm-dd hh24:mi:ss') as \"a1-zn-CREATE_DATE\"
                         from \"TBL_BIDINGS\" a1
-                        left join \"TBL_BID_PACKAGES\" a2  on a2.\"BID_PACKAGE_CODE\" = a1.\"BID_PACKAGE_CODE\"".
-                        " where (a1.\"NOTI_TYPE\" !=  '1' or a1.\"NOTI_TYPE\"  is null) and a1.\"FIELD\"='".$BUSSINESS_FIELD."'
+                        left join \"TBL_BID_PACKAGES\" a2  on a2.\"BID_PACKAGE_CODE\" = a1.\"BID_PACKAGE_CODE\"" .
+            " where (a1.\"NOTI_TYPE\" !=  '1' or a1.\"NOTI_TYPE\"  is null) and a1.\"FIELD\"='" . $BUSSINESS_FIELD . "'
                         " . $where . "
                         order by  NVL(a1.\"PUBLIC_DATE\",TO_DATE('1000-01-01','yyyy-MM-dd')) desc
                     ) a 
-                    WHERE rownum < ((".$page." * 100) + 1 ) 
-                ) WHERE r__ >= (((".$page."-1) * 100) + 1)";
+                    WHERE rownum < ((" . $page . " * 100) + 1 ) 
+                ) WHERE r__ >= (((" . $page . "-1) * 100) + 1)";
         $query = $this->db->query($sql);
         $data =  $query->result_array();
         return $data;
     }
     public function listBidPackages_prequalification()
     {
-        $page = empty($_GET['page'])?1:(int)$_GET['page'];
-        $BUSSINESS_FIELD = empty($_GET['BUSSINESS_FIELD'])?'hang-hoa':$this->db->escape_str(trim($_GET['BUSSINESS_FIELD']));
+        $page = empty($_GET['page']) ? 1 : (int)$_GET['page'];
+        $BUSSINESS_FIELD = empty($_GET['BUSSINESS_FIELD']) ? 'hang-hoa' : $this->db->escape_str(trim($_GET['BUSSINESS_FIELD']));
         $where = '';
         if (!empty($_GET['keySearch'])) {
             $_GET['keySearch'] = $this->db->escape_str(trim($_GET['keySearch']));
@@ -1008,19 +1008,19 @@ class Zeanni_model extends CI_Model
                     a1.\"COUNT_VIEW\" as \"a1-zn-COUNT_VIEW\",a1.\"COUNT_SUB\" as \"a1-zn-COUNT_SUB\" ,a1.\"FIELD\"
                     from \"TBL_BID_PACKAGES\" a1 
                     inner join \"TBL_PROCURINGS\" a2  on a1.\"PROCURING_CODE\" = a2.\"PROCURING_CODE\"
-                    where a1.\"PREQUALIFICATION_STATUS\" =  '1' and a1.\"FIELD\" = '".$BUSSINESS_FIELD."' " . $where . "
+                    where a1.\"PREQUALIFICATION_STATUS\" =  '1' and a1.\"FIELD\" = '" . $BUSSINESS_FIELD . "' " . $where . "
                     order by  a1.\"CREATE_DATE\" desc
             ) a 
-            WHERE rownum < ((".$page." * 100) + 1 ) 
-        ) WHERE r__ >= (((".$page."-1) * 100) + 1)";
+            WHERE rownum < ((" . $page . " * 100) + 1 ) 
+        ) WHERE r__ >= (((" . $page . "-1) * 100) + 1)";
         $query = $this->db->query($sql);
         $data =  $query->result_array();
         return $data;
     }
     public function listBidPackages()
     {
-        $page = empty($_GET['page'])?1:(int)$_GET['page'];
-        $BUSSINESS_FIELD = empty($_GET['BUSSINESS_FIELD'])?'hang-hoa':$this->db->escape_str(trim($_GET['BUSSINESS_FIELD']));
+        $page = empty($_GET['page']) ? 1 : (int)$_GET['page'];
+        $BUSSINESS_FIELD = empty($_GET['BUSSINESS_FIELD']) ? 'hang-hoa' : $this->db->escape_str(trim($_GET['BUSSINESS_FIELD']));
         $where = '';
         if (!empty($_GET['keySearch'])) {
             $_GET['keySearch'] = $this->db->escape_str(trim($_GET['keySearch']));
@@ -1031,34 +1031,30 @@ class Zeanni_model extends CI_Model
         }
 
         //check dieu kien cho trang thong ke
-        $time = !empty($_GET['time'])?trim($_GET['time']):'';
-        $type = !empty($_GET['type'])?trim($_GET['type']):'';
-        
-        if($time=='1d' && $type=='onOff'){
+        $time = !empty($_GET['time']) ? trim($_GET['time']) : '';
+        $type = !empty($_GET['type']) ? trim($_GET['type']) : '';
+
+        if ($time == '1d' && $type == 'onOff') {
             // 'OPEN_DATE'
             $where .= " and ( 
-                (a1.\"OPEN_DATE\" >= TO_DATE('".date("Y-m-d")."','yyyy-MM-dd')  and a1.\"OPEN_DATE\" <= TO_DATE('".date('Y-m-d',strtotime(date("Y-m-d") . "+1 days"))."','yyyy-MM-dd')) 
+                (a1.\"OPEN_DATE\" >= TO_DATE('" . date("Y-m-d") . "','yyyy-MM-dd')  and a1.\"OPEN_DATE\" <= TO_DATE('" . date('Y-m-d', strtotime(date("Y-m-d") . "+1 days")) . "','yyyy-MM-dd')) 
                 or
-                (a1.\"CLOSE_DATE\" >= TO_DATE('".date("Y-m-d")."','yyyy-MM-dd')  and a1.\"CLOSE_DATE\" <= TO_DATE('".date('Y-m-d',strtotime(date("Y-m-d") . "+1 days"))."','yyyy-MM-dd')) 
+                (a1.\"CLOSE_DATE\" >= TO_DATE('" . date("Y-m-d") . "','yyyy-MM-dd')  and a1.\"CLOSE_DATE\" <= TO_DATE('" . date('Y-m-d', strtotime(date("Y-m-d") . "+1 days")) . "','yyyy-MM-dd')) 
             ) ";
-        }
-        else if($type=='phathanh-hsmt'){
-            $where .= " and a1.\"START_SUBMISSION_DATE\" >= TO_DATE('".date("Y-m-d")."','yyyy-MM-dd')  and a1.\"START_SUBMISSION_DATE\" <= TO_DATE('".date('Y-m-d',strtotime(date("Y-m-d") . "+1 days"))."','yyyy-MM-dd') ";
-        }
-        else if($type=='dongmothau-nm'){
+        } else if ($type == 'phathanh-hsmt') {
+            $where .= " and a1.\"START_SUBMISSION_DATE\" >= TO_DATE('" . date("Y-m-d") . "','yyyy-MM-dd')  and a1.\"START_SUBMISSION_DATE\" <= TO_DATE('" . date('Y-m-d', strtotime(date("Y-m-d") . "+1 days")) . "','yyyy-MM-dd') ";
+        } else if ($type == 'dongmothau-nm') {
             //+1d&type=dongmothau-nm
             $where .= " and ( 
-                (a1.\"OPEN_DATE\" >= TO_DATE('".date('Y-m-d',strtotime(date("Y-m-d") . "+1 days"))."','yyyy-MM-dd')  and a1.\"OPEN_DATE\" <= TO_DATE('".date('Y-m-d',strtotime(date("Y-m-d") . "+2 days"))."','yyyy-MM-dd')) 
+                (a1.\"OPEN_DATE\" >= TO_DATE('" . date('Y-m-d', strtotime(date("Y-m-d") . "+1 days")) . "','yyyy-MM-dd')  and a1.\"OPEN_DATE\" <= TO_DATE('" . date('Y-m-d', strtotime(date("Y-m-d") . "+2 days")) . "','yyyy-MM-dd')) 
                 or
-                (a1.\"CLOSE_DATE\" >= TO_DATE('".date('Y-m-d',strtotime(date("Y-m-d") . "+1 days"))."','yyyy-MM-dd')  and a1.\"CLOSE_DATE\" <= TO_DATE('".date('Y-m-d',strtotime(date("Y-m-d") . "+2 days"))."','yyyy-MM-dd')) 
+                (a1.\"CLOSE_DATE\" >= TO_DATE('" . date('Y-m-d', strtotime(date("Y-m-d") . "+1 days")) . "','yyyy-MM-dd')  and a1.\"CLOSE_DATE\" <= TO_DATE('" . date('Y-m-d', strtotime(date("Y-m-d") . "+2 days")) . "','yyyy-MM-dd')) 
             ) ";
-        }
-        else if($type=='phathanh-hsmt-nm'){
+        } else if ($type == 'phathanh-hsmt-nm') {
             // time=+1d&type=phathanh-hsmt-nm
-            $where .= " and a1.\"START_SUBMISSION_DATE\" >= TO_DATE('".date('Y-m-d',strtotime(date("Y-m-d") . "+1 days"))."','yyyy-MM-dd')  and a1.\"START_SUBMISSION_DATE\" <= TO_DATE('".date('Y-m-d',strtotime(date("Y-m-d") . "+2 days"))."','yyyy-MM-dd') ";
-        }
-        else if($time=='1d'){
-            $where .= " and a1.\"CREATE_DATE\" >= TO_DATE('".date("Y-m-d")."','yyyy-MM-dd') ";
+            $where .= " and a1.\"START_SUBMISSION_DATE\" >= TO_DATE('" . date('Y-m-d', strtotime(date("Y-m-d") . "+1 days")) . "','yyyy-MM-dd')  and a1.\"START_SUBMISSION_DATE\" <= TO_DATE('" . date('Y-m-d', strtotime(date("Y-m-d") . "+2 days")) . "','yyyy-MM-dd') ";
+        } else if ($time == '1d') {
+            $where .= " and a1.\"CREATE_DATE\" >= TO_DATE('" . date("Y-m-d") . "','yyyy-MM-dd') ";
         }
 
         $sql = "SELECT * FROM ( 
@@ -1075,23 +1071,24 @@ class Zeanni_model extends CI_Model
                         a1.\"COUNT_VIEW\" as \"a1-zn-COUNT_VIEW\",a1.\"COUNT_SUB\" as \"a1-zn-COUNT_SUB\" ,a1.\"FIELD\"   
                         from \"TBL_BID_PACKAGES\" a1 inner join \"TBL_PROCURINGS\" a2  on a1.\"PROCURING_CODE\" = a2.\"PROCURING_CODE\"
                         where (a1.\"PREQUALIFICATION_STATUS\" !=  '1' or a1.\"PREQUALIFICATION_STATUS\" is null)
-                            and a1.\"FIELD\" = '".$BUSSINESS_FIELD."' " . $where . "
+                            and a1.\"FIELD\" = '" . $BUSSINESS_FIELD . "' " . $where . "
                         order by  a1.\"CREATE_DATE\" desc
                     ) a 
-                    WHERE rownum < ((".$page." * 100) + 1 ) 
-                ) WHERE r__ >= (((".$page."-1) * 100) + 1)";
+                    WHERE rownum < ((" . $page . " * 100) + 1 ) 
+                ) WHERE r__ >= (((" . $page . "-1) * 100) + 1)";
 
         $query = $this->db->query($sql);
         $data =  $query->result_array();
         return $data;
     }
 
-    public function LayTongThongKe(){
+    public function LayTongThongKe()
+    {
         $sql = "select *
                 from (
                         select COUNT(a1.\"BIDER_SELECTION_ID\") as COUNT_BIDER_SELECTION
                         from \"TBL_BIDER_SELECTIONS\" a1
-                        where NVL(a1.\"BID_NUM\",0) > 0 and a1.\"CREATE_DATE\" >= TO_DATE('".date("Y-m-d")."','yyyy-MM-dd')
+                        where NVL(a1.\"BID_NUM\",0) > 0 and a1.\"CREATE_DATE\" >= TO_DATE('" . date("Y-m-d") . "','yyyy-MM-dd')
                 ) a1
                 left join 
                 (
@@ -1100,9 +1097,9 @@ class Zeanni_model extends CI_Model
                     inner join \"TBL_PROCURINGS\" a2  on a1.\"PROCURING_CODE\" = a2.\"PROCURING_CODE\"
                     where (a1.\"PREQUALIFICATION_STATUS\" !=  '1' or a1.\"PREQUALIFICATION_STATUS\" is null) 
                     and ( 
-                        (a1.\"OPEN_DATE\" >= TO_DATE('".date("Y-m-d")."','yyyy-MM-dd')  and a1.\"OPEN_DATE\" <= TO_DATE('".date('Y-m-d',strtotime(date("Y-m-d") . "+1 days"))."','yyyy-MM-dd')) 
+                        (a1.\"OPEN_DATE\" >= TO_DATE('" . date("Y-m-d") . "','yyyy-MM-dd')  and a1.\"OPEN_DATE\" <= TO_DATE('" . date('Y-m-d', strtotime(date("Y-m-d") . "+1 days")) . "','yyyy-MM-dd')) 
                         or
-                        (a1.\"CLOSE_DATE\" >= TO_DATE('".date("Y-m-d")."','yyyy-MM-dd')  and a1.\"CLOSE_DATE\" <= TO_DATE('".date('Y-m-d',strtotime(date("Y-m-d") . "+1 days"))."','yyyy-MM-dd')) 
+                        (a1.\"CLOSE_DATE\" >= TO_DATE('" . date("Y-m-d") . "','yyyy-MM-dd')  and a1.\"CLOSE_DATE\" <= TO_DATE('" . date('Y-m-d', strtotime(date("Y-m-d") . "+1 days")) . "','yyyy-MM-dd')) 
                     )
                 ) a2 on 1=1
                 left join (
@@ -1110,7 +1107,7 @@ class Zeanni_model extends CI_Model
                     from \"TBL_BID_PACKAGES\" a1 
                     inner join \"TBL_PROCURINGS\" a2  on a1.\"PROCURING_CODE\" = a2.\"PROCURING_CODE\"
                     where (a1.\"PREQUALIFICATION_STATUS\" !=  '1' or a1.\"PREQUALIFICATION_STATUS\" is null) 
-                    and a1.\"START_SUBMISSION_DATE\" >= TO_DATE('".date("Y-m-d")."','yyyy-MM-dd')  and a1.\"START_SUBMISSION_DATE\" <= TO_DATE('".date('Y-m-d',strtotime(date("Y-m-d") . "+1 days"))."','yyyy-MM-dd')
+                    and a1.\"START_SUBMISSION_DATE\" >= TO_DATE('" . date("Y-m-d") . "','yyyy-MM-dd')  and a1.\"START_SUBMISSION_DATE\" <= TO_DATE('" . date('Y-m-d', strtotime(date("Y-m-d") . "+1 days")) . "','yyyy-MM-dd')
                 ) a3 on 1=1
                 left join (
                     select COUNT(a1.\"BID_PACKAGE_ID\") as COUNT_DMT_NM
@@ -1118,9 +1115,9 @@ class Zeanni_model extends CI_Model
                     inner join \"TBL_PROCURINGS\" a2  on a1.\"PROCURING_CODE\" = a2.\"PROCURING_CODE\"
                     where (a1.\"PREQUALIFICATION_STATUS\" !=  '1' or a1.\"PREQUALIFICATION_STATUS\" is null) 
                     and ( 
-                        (a1.\"OPEN_DATE\" >= TO_DATE('".date('Y-m-d',strtotime(date("Y-m-d") . "+1 days"))."','yyyy-MM-dd')  and a1.\"OPEN_DATE\" <= TO_DATE('".date('Y-m-d',strtotime(date("Y-m-d") . "+2 days"))."','yyyy-MM-dd')) 
+                        (a1.\"OPEN_DATE\" >= TO_DATE('" . date('Y-m-d', strtotime(date("Y-m-d") . "+1 days")) . "','yyyy-MM-dd')  and a1.\"OPEN_DATE\" <= TO_DATE('" . date('Y-m-d', strtotime(date("Y-m-d") . "+2 days")) . "','yyyy-MM-dd')) 
                         or
-                        (a1.\"CLOSE_DATE\" >= TO_DATE('".date('Y-m-d',strtotime(date("Y-m-d") . "+1 days"))."','yyyy-MM-dd')  and a1.\"CLOSE_DATE\" <= TO_DATE('".date('Y-m-d',strtotime(date("Y-m-d") . "+2 days"))."','yyyy-MM-dd')) 
+                        (a1.\"CLOSE_DATE\" >= TO_DATE('" . date('Y-m-d', strtotime(date("Y-m-d") . "+1 days")) . "','yyyy-MM-dd')  and a1.\"CLOSE_DATE\" <= TO_DATE('" . date('Y-m-d', strtotime(date("Y-m-d") . "+2 days")) . "','yyyy-MM-dd')) 
                     )
                 ) a4 on 1=1
                 left join (
@@ -1128,17 +1125,17 @@ class Zeanni_model extends CI_Model
                     from \"TBL_BID_PACKAGES\" a1 
                     inner join \"TBL_PROCURINGS\" a2  on a1.\"PROCURING_CODE\" = a2.\"PROCURING_CODE\"
                     where (a1.\"PREQUALIFICATION_STATUS\" !=  '1' or a1.\"PREQUALIFICATION_STATUS\" is null) 
-                    and a1.\"START_SUBMISSION_DATE\" >= TO_DATE('".date('Y-m-d',strtotime(date("Y-m-d") . "+1 days"))."','yyyy-MM-dd')  and a1.\"START_SUBMISSION_DATE\" <= TO_DATE('".date('Y-m-d',strtotime(date("Y-m-d") . "+2 days"))."','yyyy-MM-dd') 
+                    and a1.\"START_SUBMISSION_DATE\" >= TO_DATE('" . date('Y-m-d', strtotime(date("Y-m-d") . "+1 days")) . "','yyyy-MM-dd')  and a1.\"START_SUBMISSION_DATE\" <= TO_DATE('" . date('Y-m-d', strtotime(date("Y-m-d") . "+2 days")) . "','yyyy-MM-dd') 
                 ) a5 on 1=1
                 left join (
                     select COUNT(a1.\"BID_PACKAGE_ID\") as COUNT_DT_HN
                     from \"TBL_BID_PACKAGES\" a1 
                     inner join \"TBL_PROCURINGS\" a2  on a1.\"PROCURING_CODE\" = a2.\"PROCURING_CODE\"
                     where (a1.\"PREQUALIFICATION_STATUS\" !=  '1' or a1.\"PREQUALIFICATION_STATUS\" is null) 
-                    and a1.\"CREATE_DATE\" >= TO_DATE('".date("Y-m-d")."','yyyy-MM-dd')
+                    and a1.\"CREATE_DATE\" >= TO_DATE('" . date("Y-m-d") . "','yyyy-MM-dd')
                 ) a5 on 1=1
         ";
-        if(!empty($_GET['s_test'])){
+        if (!empty($_GET['s_test'])) {
             echo $sql;
         }
         $query = $this->db->query($sql);
@@ -1179,62 +1176,61 @@ class Zeanni_model extends CI_Model
             left join \"TBL_PROCURINGS\" a2  on a2.\"PROCURING_CODE\" = a1.\"PROCURING_CODE\" 
             left join \"TBL_BIDINGS\" a3 on a1.\"BID_PACKAGE_CODE\" = a3.\"BID_BID_PACKAGE_CODE\" and a3.\"NOTI_TYPE\" != 1
             where  '" . $_getSegment[2] . "'  = a1.\"BID_PACKAGE_ID\"";
-            // left join \"TBL_BIDER_SELECTIONS\" a4 on a1.\"BID_PACKAGE_CODE\" = a4.\"BID_PACKAGE_CODE\"
-            if(!empty($_GET['s_test'])){
-                echo $sql;
-            }
-        
-        $_GET['ID']=$_getSegment[2];
+        // left join \"TBL_BIDER_SELECTIONS\" a4 on a1.\"BID_PACKAGE_CODE\" = a4.\"BID_PACKAGE_CODE\"
+        if (!empty($_GET['s_test'])) {
+            echo $sql;
+        }
+
+        $_GET['ID'] = $_getSegment[2];
         $this->updateViewBidPackages();
         $query = $this->db->query($sql);
         $data =  $query->result_array();
-        $arrLog=array(
-            'hang-hoa'=>'Hàng Hóa',
-            'tu-van'=>'Tư Vấn',
-            'xay-lap'=>'Xây Lắp',
-            'phi-tu-van'=>'Phi Tư Vấn',
-            'hon-hop'=>'Hỗn hợp'
+        $arrLog = array(
+            'hang-hoa' => 'Hàng Hóa',
+            'tu-van' => 'Tư Vấn',
+            'xay-lap' => 'Xây Lắp',
+            'phi-tu-van' => 'Phi Tư Vấn',
+            'hon-hop' => 'Hỗn hợp'
         );
-        if(!empty($data)){
+        if (!empty($data)) {
             $data[0]['a1-zn-FIELD'] = trim($data[0]['a1-zn-FIELD']);
-            $data[0]['startDate']=$data[0]['a1-zn-START_DOC_DATE'];
-            $data[0]['expiredDate']=$data[0]['a1-zn-FINISH_DOC_DATE'];
-            
-            $data[0]['pre_startDate']=$data[0]['a1-zn-PRE_START_DOC_DATE'];
-            $data[0]['pre_expiredDate']=$data[0]['a1-zn-PRE_FINISH_DOC_DATE'];
-            if(!empty($data[0]['a3-zn-BIDING_ID'])){
-                $data[0]['PRE_BIDING_ID']=$data[0]['a3-zn-BIDING_ID'];
-            }
-            else{
+            $data[0]['startDate'] = $data[0]['a1-zn-START_DOC_DATE'];
+            $data[0]['expiredDate'] = $data[0]['a1-zn-FINISH_DOC_DATE'];
+
+            $data[0]['pre_startDate'] = $data[0]['a1-zn-PRE_START_DOC_DATE'];
+            $data[0]['pre_expiredDate'] = $data[0]['a1-zn-PRE_FINISH_DOC_DATE'];
+            if (!empty($data[0]['a3-zn-BIDING_ID'])) {
+                $data[0]['PRE_BIDING_ID'] = $data[0]['a3-zn-BIDING_ID'];
+            } else {
                 $sql = 'select a1."BIDING_ID"
                     from "TBL_BIDINGS" a1 
-                where  \''.$data[0]['a1-zn-BID_PACKAGE_CODE'].'\'  = a1."BID_PACKAGE_CODE"
+                where  \'' . $data[0]['a1-zn-BID_PACKAGE_CODE'] . '\'  = a1."BID_PACKAGE_CODE"
                 and rownum =1 ';
                 $query = $this->db->query($sql);
                 $row =  $query->row_array();
-                if(!empty($row))
-                    $data[0]['PRE_BIDING_ID']=$row['BIDING_ID'];
+                if (!empty($row))
+                    $data[0]['PRE_BIDING_ID'] = $row['BIDING_ID'];
             }
-            
-            $arrLogId=array(
-                'hang-hoa'=>'1',
-                'tu-van'=>'5',
-                'xay-lap'=>'3',
-                'phi-tu-van'=>'15',
-                'hon-hop'=>'10'
+
+            $arrLogId = array(
+                'hang-hoa' => '1',
+                'tu-van' => '5',
+                'xay-lap' => '3',
+                'phi-tu-van' => '15',
+                'hon-hop' => '10'
             );
-            $data[0]['urlShare'] = 'http://muasamcong.mpi.gov.vn/goi-thau-chi-tiet?id='.$data[0]["a1-zn-BID_PACKAGE_CODE"].'&option[bid_turnno]='.($data[0]["a1-zn-NOTI_VERSION_NUM"]<10?('0'.$data[0]["a1-zn-NOTI_VERSION_NUM"]):$data[0]["a1-zn-NOTI_VERSION_NUM"]).'&option[bid_type]='.(empty($arrLogId[$data[0]['a1-zn-FIELD']])?0:$arrLogId[$data[0]['a1-zn-FIELD']]).'&option[type_jsp]=GG/EP_MPV_GGQ999.jsp&option[bid_target]=bid';
-            
-            $data[0]['a1-zn-FIELD']=empty($arrLog[$data[0]['a1-zn-FIELD']])?$data[0]['a1-zn-FIELD']:$arrLog[$data[0]['a1-zn-FIELD']];
-            $data[0]['url_hosomoithau'] = 'http://muasamcong.mpi.gov.vn:8081/GG/EP_MPV_GGQ999.jsp'.( "?bid_no=" . $data[0]["a1-zn-BID_PACKAGE_CODE"] . '&bid_turnno=' . $data[0]["a1-zn-NOTI_VERSION_NUM"] . '&bid_type=1&lang=' ); 
+            $data[0]['urlShare'] = 'http://muasamcong.mpi.gov.vn/goi-thau-chi-tiet?id=' . $data[0]["a1-zn-BID_PACKAGE_CODE"] . '&option[bid_turnno]=' . ($data[0]["a1-zn-NOTI_VERSION_NUM"] < 10 ? ('0' . $data[0]["a1-zn-NOTI_VERSION_NUM"]) : $data[0]["a1-zn-NOTI_VERSION_NUM"]) . '&option[bid_type]=' . (empty($arrLogId[$data[0]['a1-zn-FIELD']]) ? 0 : $arrLogId[$data[0]['a1-zn-FIELD']]) . '&option[type_jsp]=GG/EP_MPV_GGQ999.jsp&option[bid_target]=bid';
+
+            $data[0]['a1-zn-FIELD'] = empty($arrLog[$data[0]['a1-zn-FIELD']]) ? $data[0]['a1-zn-FIELD'] : $arrLog[$data[0]['a1-zn-FIELD']];
+            $data[0]['url_hosomoithau'] = 'http://muasamcong.mpi.gov.vn:8081/GG/EP_MPV_GGQ999.jsp' . ("?bid_no=" . $data[0]["a1-zn-BID_PACKAGE_CODE"] . '&bid_turnno=' . $data[0]["a1-zn-NOTI_VERSION_NUM"] . '&bid_type=1&lang=');
         }
         return $data;
     }
     public function listBidings_prequalification()
     {
-        $page = empty($_GET['page'])?1:(int)$_GET['page'];
-        $BUSSINESS_FIELD = empty($_GET['BUSSINESS_FIELD'])?'hang-hoa':$this->db->escape_str(trim($_GET['BUSSINESS_FIELD']));
-        $where = " where a1.\"FIELD\"='".$BUSSINESS_FIELD."' ";
+        $page = empty($_GET['page']) ? 1 : (int)$_GET['page'];
+        $BUSSINESS_FIELD = empty($_GET['BUSSINESS_FIELD']) ? 'hang-hoa' : $this->db->escape_str(trim($_GET['BUSSINESS_FIELD']));
+        $where = " where a1.\"FIELD\"='" . $BUSSINESS_FIELD . "' ";
         if (!empty($_GET['keySearch'])) {
             $_GET['keySearch'] = $this->db->escape_str(trim($_GET['keySearch']));
             $where .= " and  (a1.\"PROCURING_NAME\" like '%" . $_GET['keySearch'] . "%'
@@ -1262,18 +1258,18 @@ class Zeanni_model extends CI_Model
                 order by  NVL(a1.\"PUBLIC_DATE\",TO_DATE('1000-01-01','yyyy-MM-dd')) desc,NVL(a1.\"UPDATE_DATE\",TO_DATE('1000-01-01','yyyy-MM-dd')) desc 
             ) a 
             left join TBL_BID_PACKAGES a2 on a2.BID_PACKAGE_CODE = a.\"a1-zn-BID_PACKAGE_CODE\"
-            WHERE rownum < ((".$page." * 100) + 1 ) 
-        ) WHERE r__ >= (((".$page."-1) * 100) + 1)";
+            WHERE rownum < ((" . $page . " * 100) + 1 ) 
+        ) WHERE r__ >= (((" . $page . "-1) * 100) + 1)";
         $query = $this->db->query($sql);
         $data =  $query->result_array();
-        if(!empty($_GET['s_test'])){
+        if (!empty($_GET['s_test'])) {
             echo $sql;
         }
         return $data;
     }
     public function Ajax_listBiderByBidingsIdPre()
     {
-        if(empty($_GET['BidingsId'])){
+        if (empty($_GET['BidingsId'])) {
             return array();
         };
         $BidingsId = $this->db->escape_str($_GET['BidingsId']);
@@ -1289,22 +1285,21 @@ class Zeanni_model extends CI_Model
 
         $sql = 'select a1."BIDER_NAME" as "a1-zn-BIDER_NAME"
                 from "TBL_BIDINGS" a1 
-            where  \''.$BidingsId.'\'  = a1."BID_PACKAGE_CODE" and a1."NOTI_TYPE"=1
+            where  \'' . $BidingsId . '\'  = a1."BID_PACKAGE_CODE" and a1."NOTI_TYPE"=1
             group by a1."BIDER_NAME"';
 
-            $query = $this->db->query($sql);
-            return $query->result_array();
+        $query = $this->db->query($sql);
+        return $query->result_array();
     }
-    
-    public function updateViewBidings($key,$is_pre)
+
+    public function updateViewBidings($key, $is_pre)
     {
-        if($is_pre){
+        if ($is_pre) {
             $sql = 'update "TBL_BIDINGS" set "COUNT_VIEW"=NVL("COUNT_VIEW",0) +1 
-            where NOTI_TYPE =1 and "BID_PACKAGE_CODE"='.$key;
-        }
-        else{
+            where NOTI_TYPE =1 and "BID_PACKAGE_CODE"=' . $key;
+        } else {
             $sql = 'update "TBL_BIDINGS" set "COUNT_VIEW"=NVL("COUNT_VIEW",0) +1 
-            where "BIDING_ID"='.$key;
+            where "BIDING_ID"=' . $key;
         }
         $this->db->query($sql);
     }
@@ -1333,7 +1328,8 @@ class Zeanni_model extends CI_Model
                     to_char(a1.UPDATE_DATE, 'yyyy-mm-dd') as CREATE_DATE,
                     '' as STATUS_BID,
                     a3.CONTRACT_TYPE, a1.SELECTION_BIDER_REASON,
-                    a1.CODEKH,a2.BID_PACKAGE_ID,a4.BIDER_SELECTION_ID
+                    a1.CODEKH,a2.BID_PACKAGE_ID,a4.BIDER_SELECTION_ID,
+                    a4.BIDER_SELECTION_ID
                   from \"TBL_BIDINGS\" a1 
                   left join TBL_BID_PACKAGES a2 on a2.BID_PACKAGE_CODE = a1.\"BID_PACKAGE_CODE\"
                   left join TBL_PACKAGE_INFO a3 on a3.PACKAGE_NUM = a1.CODEKH
@@ -1344,7 +1340,7 @@ class Zeanni_model extends CI_Model
 
         //get list nha thau qua vong so tuyen
         //BID_PACKAGE_CODE
-        if(!empty($data) && !empty($_GET['NOTI_TYPE'])){
+        if (!empty($data) && !empty($_GET['NOTI_TYPE'])) {
 
             // $sql = 'select a1."BIDER_NAME" as "a1-zn-BIDER_NAME",
             //             (
@@ -1360,17 +1356,15 @@ class Zeanni_model extends CI_Model
             $sql = 'select a1."BIDER_NAME" as "a1-zn-BIDER_NAME",
                         a1.BID_BUSSINESS_REGISTRATION_NUM
                 from "TBL_BIDINGS" a1 
-            where  \''.$data[0]['a1-zn-BID_PACKAGE_CODE'].'\'  = a1."BID_PACKAGE_CODE" and a1."NOTI_TYPE"=1
+            where  \'' . $data[0]['a1-zn-BID_PACKAGE_CODE'] . '\'  = a1."BID_PACKAGE_CODE" and a1."NOTI_TYPE"=1
             group by a1."BIDER_NAME", a1.BID_BUSSINESS_REGISTRATION_NUM ';
 
             $query = $this->db->query($sql);
             $data[0]['listBinder'] =  $query->result_array();
 
-            $this->updateViewBidings($data[0]['a1-zn-BID_PACKAGE_CODE'],true);
-
-        }
-        else{
-            $this->updateViewBidings($_getSegment[2],false);
+            $this->updateViewBidings($data[0]['a1-zn-BID_PACKAGE_CODE'], true);
+        } else {
+            $this->updateViewBidings($_getSegment[2], false);
         }
         return $data;
     }
@@ -1378,20 +1372,19 @@ class Zeanni_model extends CI_Model
     {
         if (!empty($_GET['ID'])) {
             $ID = (int) $_GET['ID'];
-            $sql = 'update "NEWS" set "COUNT_VIEW"=NVL("COUNT_VIEW",0) +1 where "ID"='.$ID;
+            $sql = 'update "NEWS" set "COUNT_VIEW"=NVL("COUNT_VIEW",0) +1 where "ID"=' . $ID;
             // echo $sql;
             $this->db->query($sql);
             return array(
-                'error'=>0,
-                'msg'=>'OK',
-                'data'=>''
+                'error' => 0,
+                'msg' => 'OK',
+                'data' => ''
             );
-        }
-        else{
+        } else {
             return array(
-                'error'=>1,
-                'msg'=>'ID is required',
-                'data'=>''
+                'error' => 1,
+                'msg' => 'ID is required',
+                'data' => ''
             );
         }
     }
@@ -1399,20 +1392,19 @@ class Zeanni_model extends CI_Model
     {
         if (!empty($_GET['ID'])) {
             $ID = (int) $_GET['ID'];
-            $sql = 'update "TBL_BID_PACKAGES" set "COUNT_VIEW"=NVL("COUNT_VIEW",0) +1 where "BID_PACKAGE_ID"='.$ID;
+            $sql = 'update "TBL_BID_PACKAGES" set "COUNT_VIEW"=NVL("COUNT_VIEW",0) +1 where "BID_PACKAGE_ID"=' . $ID;
             // echo $sql;
             $this->db->query($sql);
             return array(
-                'error'=>0,
-                'msg'=>'OK',
-                'data'=>''
+                'error' => 0,
+                'msg' => 'OK',
+                'data' => ''
             );
-        }
-        else{
+        } else {
             return array(
-                'error'=>1,
-                'msg'=>'ID is required',
-                'data'=>''
+                'error' => 1,
+                'msg' => 'ID is required',
+                'data' => ''
             );
         }
     }
@@ -1421,27 +1413,26 @@ class Zeanni_model extends CI_Model
         if (!empty($_GET['ID']) && !empty($_GET['USER_ID'])) {
             $BID_PACKAGE_ID = (int) $_GET['ID'];
             $USER_ID = (int) $_GET['USER_ID'];
-            $TYPE = isset($_GET['TYPE'])?(int)$_GET['TYPE']:1;
-            $STATUS = isset($_GET['STATUS'])?(int)$_GET['STATUS']:1;
+            $TYPE = isset($_GET['TYPE']) ? (int)$_GET['TYPE'] : 1;
+            $STATUS = isset($_GET['STATUS']) ? (int)$_GET['STATUS'] : 1;
 
-            if($STATUS==1){
+            if ($STATUS == 1) {
                 //check exits
                 $query = $this->db->select('PACKAGE_FOLLOW_ID')
-                    ->where(array('USER_ID'=>$USER_ID,'BID_PACKAGE_ID'=>$BID_PACKAGE_ID))
+                    ->where(array('USER_ID' => $USER_ID, 'BID_PACKAGE_ID' => $BID_PACKAGE_ID))
                     ->get('TBL_PACKAGE_FOLLOWS_V2');
                 $res = $query->result();
-                
-                if(empty($res)){
+
+                if (empty($res)) {
                     //lay BID_PACKAGE_CODE
-                    if($TYPE!=0){
+                    if ($TYPE != 0) {
                         $sql = 'select a1.BID_PACKAGE_CODE
                                 from TBL_BID_PACKAGES a1
-                                where a1.BID_PACKAGE_ID = \''.$BID_PACKAGE_ID.'\' ';
-                    }
-                    else{
+                                where a1.BID_PACKAGE_ID = \'' . $BID_PACKAGE_ID . '\' ';
+                    } else {
                         $sql = 'select a1.CODE as "BID_PACKAGE_CODE"
                                 from TBL_PACKAGE_INFO a1
-                                where a1.ID = \''.$BID_PACKAGE_ID.'\' ';
+                                where a1.ID = \'' . $BID_PACKAGE_ID . '\' ';
                     }
                     $query = $this->db->query($sql);
                     $row =  $query->row_array();
@@ -1450,73 +1441,72 @@ class Zeanni_model extends CI_Model
                     $sql = 'insert into "TBL_PACKAGE_FOLLOWS_V2"("PACKAGE_FOLLOW_ID","USER_ID","BID_PACKAGE_ID","CREATE_DATE","IS_SUB_PACKAGE","BID_PACKAGE_CODE")
                             values (
                                 NVL((SELECT MAX("PACKAGE_FOLLOW_ID") FROM "TBL_PACKAGE_FOLLOWS_V2"),0)+1
-                                ,'.$USER_ID.','.$BID_PACKAGE_ID.',sysdate,'.$TYPE.',\''.$row['BID_PACKAGE_CODE'].'\'
+                                ,' . $USER_ID . ',' . $BID_PACKAGE_ID . ',sysdate,' . $TYPE . ',\'' . $row['BID_PACKAGE_CODE'] . '\'
                             )';
                     $this->db->query($sql);
-                    if($TYPE==1){
-                        $sql = 'update "TBL_BID_PACKAGES" set "COUNT_SUB"=NVL("COUNT_SUB",0) +1 where "BID_PACKAGE_ID"='.$BID_PACKAGE_ID;
+                    if ($TYPE == 1) {
+                        $sql = 'update "TBL_BID_PACKAGES" set "COUNT_SUB"=NVL("COUNT_SUB",0) +1 where "BID_PACKAGE_ID"=' . $BID_PACKAGE_ID;
                         $this->db->query($sql);
                     }
                 }
-            }
-            else{
+            } else {
                 // $this->db->set('IS_SUB_PACKAGE', 0);
-                $this->db->where(array('USER_ID'=>$USER_ID,'BID_PACKAGE_ID'=>$BID_PACKAGE_ID,'IS_SUB_PACKAGE'=>$TYPE));
+                $this->db->where(array('USER_ID' => $USER_ID, 'BID_PACKAGE_ID' => $BID_PACKAGE_ID, 'IS_SUB_PACKAGE' => $TYPE));
                 $this->db->delete('TBL_PACKAGE_FOLLOWS_V2');
 
-                if($TYPE==1){
-                    $sql = 'update "TBL_BID_PACKAGES" set "COUNT_SUB"=NVL("COUNT_SUB",0) +1 where "BID_PACKAGE_ID"='.$BID_PACKAGE_ID;
+                if ($TYPE == 1) {
+                    $sql = 'update "TBL_BID_PACKAGES" set "COUNT_SUB"=NVL("COUNT_SUB",0) +1 where "BID_PACKAGE_ID"=' . $BID_PACKAGE_ID;
                     $this->db->query($sql);
                 }
             }
 
             return array(
-                'error'=>0,
-                'msg'=>'OK',
-                'data'=>''
+                'error' => 0,
+                'msg' => 'OK',
+                'data' => ''
             );
-        }
-        else{
+        } else {
             return array(
-                'error'=>1,
-                'msg'=>'USER_ID and BID_PACKAGE_ID is required',
-                'data'=>''
+                'error' => 1,
+                'msg' => 'USER_ID and BID_PACKAGE_ID is required',
+                'data' => ''
             );
         }
     }
-    public function updateViewKHLCNT(){
+    public function updateViewKHLCNT()
+    {
         if (!empty($_GET['ID'])) {
             $ID = (int) $_GET['ID'];
             $sql = 'update "TBL_BIDER_SELECTIONS" 
-                    set "COUNT_VIEW"=NVL("COUNT_VIEW",0) +1 where "BIDER_SELECTION_ID"='.$ID;
+                    set "COUNT_VIEW"=NVL("COUNT_VIEW",0) +1 where "BIDER_SELECTION_ID"=' . $ID;
             // echo $sql;
             $this->db->query($sql);
             return array(
-                'error'=>0,
-                'msg'=>'OK',
-                'data'=>''
+                'error' => 0,
+                'msg' => 'OK',
+                'data' => ''
             );
-        }
-        else{
+        } else {
             return array(
-                'error'=>1,
-                'msg'=>'ID is required',
-                'data'=>''
+                'error' => 1,
+                'msg' => 'ID is required',
+                'data' => ''
             );
         }
     }
-    public function getFollowList(){
+    public function getFollowList()
+    {
         $arr = getallheaders();
         // print_r($arr);
-        if(empty($arr['x-csrftoken'])){
+        if (empty($arr['x-csrftoken'])) {
             return array(
-                'error'=>1,
-                'msg'=>'Không lấy được giá trị TOKEN truyền lên.',
-                'data'=>''
+                'error' => 1,
+                'msg' => 'Không lấy được giá trị TOKEN truyền lên.',
+                'data' => ''
             );
         }
         $token = $this->db->escape_str(trim($arr['x-csrftoken']));
-        
+
         $sql = 'select  a1."ID" as "a1-zn-ID",  a1."CODE" as "a1-zn-CODE",  
             a1."PACKAGE_NAME" as "a1-zn-PACKAGE_NAME",  
             a1."BIDER_SELECTION_TYPE" as "a1-zn-BIDER_SELECTION_TYPE",  
@@ -1527,7 +1517,7 @@ class Zeanni_model extends CI_Model
         from "TBL_PACKAGE_INFO" a1
         inner join "TBL_PACKAGE_FOLLOWS_V2" a2 on a2."BID_PACKAGE_ID" = a1."ID"
         inner join "TBL_USERS" a3 on a3."USER_ID" = a2."USER_ID"
-        where a3."TOKEN" = \''.$token.'\' and a2."IS_SUB_PACKAGE"=0';
+        where a3."TOKEN" = \'' . $token . '\' and a2."IS_SUB_PACKAGE"=0';
         // echo $sql;
         $query = $this->db->query($sql);
         $data1 =  $query->result_array();
@@ -1548,109 +1538,125 @@ class Zeanni_model extends CI_Model
         inner join "TBL_PROCURINGS" a2  on a1."PROCURING_CODE" = a2."PROCURING_CODE"                  
         inner join "TBL_PACKAGE_FOLLOWS_V2" a3 on a3."BID_PACKAGE_ID" = a1."BID_PACKAGE_ID"
         inner join "TBL_USERS" a4 on a4."USER_ID" = a3."USER_ID"
-        where a4."TOKEN" = \''.$token.'\' and a3."IS_SUB_PACKAGE"=1';
+        where a4."TOKEN" = \'' . $token . '\' and a3."IS_SUB_PACKAGE"=1';
         // echo '<br/>'.$sql;
         $query = $this->db->query($sql);
         $data2 =  $query->result_array();
         $res = array(
-            'PACKAGE_INFO'=>$data1,
-            'BID_PACKAGES'=>array(),
-            'BID_PACKAGES_PREQUALIFICATION'=>array()
+            'PACKAGE_INFO' => $data1,
+            'BID_PACKAGES' => array(),
+            'BID_PACKAGES_PREQUALIFICATION' => array()
         );
-        foreach($data2 as $k=>$v){
-            if($v['PREQUALIFICATION_STATUS']==1){
-                $res['BID_PACKAGES_PREQUALIFICATION'][]=$v;
-            }
-            else{
+        foreach ($data2 as $k => $v) {
+            if ($v['PREQUALIFICATION_STATUS'] == 1) {
+                $res['BID_PACKAGES_PREQUALIFICATION'][] = $v;
+            } else {
                 $v['a1-zn-START_SUBMISSION_DATE'] = $v['START_SUBMISSION_DATE'];
                 $v['a1-zn-FINISH_SUBMISSION_DATE'] = $v['FINISH_SUBMISSION_DATE'];
-                $res['BID_PACKAGES'][]=$v;
+                $res['BID_PACKAGES'][] = $v;
             }
         }
         return array(
-            'error'=>0,
-            'msg'=>'OK',
-            'data'=>$res
+            'error' => 0,
+            'msg' => 'OK',
+            'data' => $res
         );
     }
-    
-    public function thongKeKHLCNT(){
-        $time='1n';
-        if(!empty($_GET['time'])){
+
+    public function thongKeKHLCNT()
+    {
+        $time = '1n';
+        if (!empty($_GET['time'])) {
             $time = trim($_GET['time']);
         }
-        if($time=='1t' || $time=='1th'){
+        if ($time == '1t') {
             $date = getdate();
             $wday = $date['wday'];
+            $week_start = date('Y-m-d', strtotime('monday this week'));
+            $week_end = date_add(date_create($week_start), date_interval_create_from_date_string("6 days"));
+            $week_end = date_format($week_end, "Y-m-d");
+            $date = $time == '1t' ? $week_start : date("Y-m-01");
 
-            $date = $time=='1t'?date('Y-m-d',strtotime(date("Y-m-d") . "-".$wday." days")):date("Y-m-01");
-            $sql=' select  COUNT(a1."BIDER_SELECTION_ID") as COUNT_BIDER_SELECTION, 
+            $sql = ' select  COUNT(a1."BIDER_SELECTION_ID") as COUNT_BIDER_SELECTION, 
                             TO_CHAR(a1."CREATE_DATE",\'yyyy-MM-dd\') as "A"
             from "TBL_BIDER_SELECTIONS" a1
-            where  a1."CREATE_DATE" >= TO_DATE(\''.$date.'\',\'yyyy-MM-dd\')
+            where  a1."CREATE_DATE" >= TO_DATE(\'' . $week_start . '\',\'yyyy-MM-dd\')
+            and  a1."CREATE_DATE" <= TO_DATE(\'' . $week_end . '\',\'yyyy-MM-dd\')
             group by TO_CHAR(a1."CREATE_DATE",\'yyyy-MM-dd\')
             order by "A" ';
-        }
-        else{
-            $date = date('Y-01');
-            $sql=' select  COUNT(a1."BIDER_SELECTION_ID") as COUNT_BIDER_SELECTION, TO_CHAR(a1."CREATE_DATE",\'yyyy-MM\') as "A"
+        } else if ($time = '1th') {
+            $date = date("Y-m-01");
+            $sql = ' select  COUNT(a1."BIDER_SELECTION_ID") as COUNT_BIDER_SELECTION, 
+                            TO_CHAR(a1."CREATE_DATE",\'yyyy-MM-dd\') as "A"
             from "TBL_BIDER_SELECTIONS" a1
-            where  a1."CREATE_DATE" >= TO_DATE(\''.$date.'\',\'yyyy-MM\')
+            where  a1."CREATE_DATE" >= TO_DATE(\'' . $date . '\',\'yyyy-MM-dd\')
+            group by TO_CHAR(a1."CREATE_DATE",\'yyyy-MM-dd\')
+            order by "A" ';
+        } else {
+            $date = date('Y-01');
+            $sql = ' select  COUNT(a1."BIDER_SELECTION_ID") as COUNT_BIDER_SELECTION, TO_CHAR(a1."CREATE_DATE",\'yyyy-MM\') as "A"
+            from "TBL_BIDER_SELECTIONS" a1
+            where  a1."CREATE_DATE" >= TO_DATE(\'' . $date . '\',\'yyyy-MM\')
             group by TO_CHAR(a1."CREATE_DATE",\'yyyy-MM\')
             order by "A" ';
         }
         $query = $this->db->query($sql);
         $res =  $query->result_array();
         $arrLabel = array();
-        $j=1;
+        $j = 1;
         // print_r($res);die;
-        if($time=='1t' || $time=='1th'){
-            $arr=array();
-            if($time=='1t'){
-                $d = date("Y-m-d");
-                for($i=$wday;$i>=0;$i--){
-                    $df = strtotime($d . "-".$i." days");
-                    $arr[date('Y-m-d',$df)]=0;
-                    $arrLabel[]=(string)date('j',$df);
+        if ($time == '1t' || $time == '1th') {
+            $arr = array();
+            if ($time == '1t') {
+                $arrDate = array();
+                for ($i = 0; $i <= 6; $i++) {
+                    $date = date_add(date_create($week_start), date_interval_create_from_date_string($i . " days"));
+                    $date = date_format($date, "Y-m-d");
+                    $arrDate[$i] = $date;
+                    $arrLabel[$i] = $i + 1;
+                    $arr[$date] = 0;
                 }
-            }
-            else{
+                foreach ($res as $r) {
+                    $arr[$r['A']] = (int)$r['C'];
+                }
+                // return array_values($arr);
+                return array("data" => array_values($arr), "lable" => $arrLabel, "date" => $arrDate);
+            } else {
                 $dateLog = date('Y-m');
-                $start_d = (int)date_format(date_create($date),"d");
+                $start_d = (int)date_format(date_create($date), "d");
                 $end_d = (int)date('d');
-                for($i=$start_d;$i<=$end_d;$i++){
-                    $arr[$dateLog.'-'.($i<10?'0'.$i:$i)]=0;
-                    $arrLabel[]=(string)$j;
+                for ($i = $start_d; $i <= $end_d; $i++) {
+                    $arr[$dateLog . '-' . ($i < 10 ? '0' . $i : $i)] = 0;
+                    $arrLabel[] = (string)$j;
                     $j++;
                 }
+                foreach ($res as $r) {
+                    $arr[$r['A']] = (int)$r['COUNT_BIDER_SELECTION'];
+                }
+                return array("data" => array_values($arr), "lable" => $arrLabel);
             }
+
             
-            foreach($res as $r){
-                $arr[$r['A']]=(int)$r['COUNT_BIDER_SELECTION'];
-            }
-            return array("data"=>array_values($arr),"lable"=>$arrLabel);
-        }
-        else{
-            $arr=array();
-            foreach($res as $r){
-                $arr[]=(int)$r['COUNT_BIDER_SELECTION'];
-                $arrLabel[]=(string)$j;
+        } else {
+            $arr = array();
+            foreach ($res as $r) {
+                $arr[] = (int)$r['COUNT_BIDER_SELECTION'];
+                $arrLabel[] = (string)$j;
                 $j++;
             }
-            return array("data"=>$arr,"lable"=>$arrLabel);
+            return array("data" => $arr, "lable" => $arrLabel);
         }
     }
-    public function thongKeKHLCNT_TP(){
-        $time='1n';
-        if(!empty($_GET['time'])){
+    public function thongKeKHLCNT_TP()
+    {
+        $time = '1n';
+        if (!empty($_GET['time'])) {
             $time = trim($_GET['time']);
         }
-        
-        if($time=='1th'){
+
+        if ($time == '1th') {
             $date = date('Y-m');
-            
-        }
-        else{
+        } else {
             $date = date('Y-01');
         }
 
@@ -1658,138 +1664,130 @@ class Zeanni_model extends CI_Model
                         a2."PROVINCE"
                     from "TBL_BIDER_SELECTIONS" a1 
                     left join "TBL_PROCURINGS" a2 on a2."PROCURING_CODE" = a1."PROCURING_CODE"
-                    where a1."CREATE_DATE" >= TO_DATE(\''.$date.'\',\'yyyy-MM\') 
+                    where a1."CREATE_DATE" >= TO_DATE(\'' . $date . '\',\'yyyy-MM\') 
                     group by a2."PROVINCE"
                     order by COUNT_BIDER_SELECTION desc';
         $query = $this->db->query($sql);
         $res = $query->result_array();
         $data = array();
         $label = array();
-        $i=0;$other=0;
-        foreach($res as $r){
-            if(!empty($r['PROVINCE']) && $i<=5){
-                $label[]=$r['PROVINCE'];
-                $data[]=(int)$r['COUNT_BIDER_SELECTION'];
-            }
-            else{
-                $other +=(int)$r['COUNT_BIDER_SELECTION'];
+        $i = 0;
+        $other = 0;
+        foreach ($res as $r) {
+            if (!empty($r['PROVINCE']) && $i <= 5) {
+                $label[] = $r['PROVINCE'];
+                $data[] = (int)$r['COUNT_BIDER_SELECTION'];
+            } else {
+                $other += (int)$r['COUNT_BIDER_SELECTION'];
             }
             $i++;
         }
-        $data[]=$other;
-        $label[]='Các tỉnh khác';
-        return array("data"=>$data,"lable"=>$label);
+        $data[] = $other;
+        $label[] = 'Các tỉnh khác';
+        return array("data" => $data, "lable" => $label);
     }
-    public function thongKeTBMT(){
-            $time='1n';
-            if(!empty($_GET['time'])){
-                $time = trim($_GET['time']);
-            }
-            if($time=='1t' || $time=='1th'){
-                $date = getdate();
-                $wday = $date['wday'];
-                $week_start = date('Y-m-d',strtotime('monday this week'));
-                $week_end = date_add(date_create($week_start),date_interval_create_from_date_string("6 days"));
-                $week_end = date_format($week_end,"Y-m-d");
-                $date = $time=='1t'? $week_start : date("Y-m-01");
-                
-                $sql = 'select COUNT(a1."BID_PACKAGE_ID") as C,TO_CHAR(a1."CREATE_DATE",\'yyyy-MM-dd\') as "A"
-                from "TBL_BID_PACKAGES" a1 
-                where (a1."PREQUALIFICATION_STATUS" !=  \'1\' or a1."PREQUALIFICATION_STATUS" is null) 
-                    and a1."CREATE_DATE" >= TO_DATE(\''.$week_start.'\',\'yyyy-MM-dd\')
-                    and a1."CREATE_DATE" <= TO_DATE(\''.$week_end.'\',\'yyyy-MM-dd\')
-                group by TO_CHAR(a1."CREATE_DATE",\'yyyy-MM-dd\')
-                order by "A" ';
+    public function thongKeTBMT()
+    {
+        $time = '1n';
+        if (!empty($_GET['time'])) {
+            $time = trim($_GET['time']);
+        }
+        if ($time == '1t' || $time == '1th') {
+            $date = getdate();
+            $wday = $date['wday'];
+            $week_start = date('Y-m-d', strtotime('monday this week'));
+            $week_end = date_add(date_create($week_start), date_interval_create_from_date_string("6 days"));
+            $week_end = date_format($week_end, "Y-m-d");
+            $date = $time == '1t' ? $week_start : date("Y-m-01");
 
-            }else if($time == '1th'){
-                $date = date("Y-m-01");
-                $sql = 'select COUNT(a1."BID_PACKAGE_ID") as C,TO_CHAR(a1."CREATE_DATE",\'yyyy-MM-dd\') as "A"
+            $sql = 'select COUNT(a1."BID_PACKAGE_ID") as C,TO_CHAR(a1."CREATE_DATE",\'yyyy-MM-dd\') as "A"
                 from "TBL_BID_PACKAGES" a1 
                 where (a1."PREQUALIFICATION_STATUS" !=  \'1\' or a1."PREQUALIFICATION_STATUS" is null) 
-                    and a1."CREATE_DATE" >= TO_DATE(\''.$date.'\',\'yyyy-MM-dd\')
+                    and a1."CREATE_DATE" >= TO_DATE(\'' . $week_start . '\',\'yyyy-MM-dd\')
+                    and a1."CREATE_DATE" <= TO_DATE(\'' . $week_end . '\',\'yyyy-MM-dd\')
                 group by TO_CHAR(a1."CREATE_DATE",\'yyyy-MM-dd\')
                 order by "A" ';
-            }
-            else{
-                $date = date('Y-01');
-                $sql = 'select COUNT(a1."BID_PACKAGE_ID") as C,TO_CHAR(a1."CREATE_DATE",\'yyyy-MM\') as "A"
+        } else if ($time == '1th') {
+            $date = date("Y-m-01");
+            $sql = 'select COUNT(a1."BID_PACKAGE_ID") as C,TO_CHAR(a1."CREATE_DATE",\'yyyy-MM-dd\') as "A"
                 from "TBL_BID_PACKAGES" a1 
                 where (a1."PREQUALIFICATION_STATUS" !=  \'1\' or a1."PREQUALIFICATION_STATUS" is null) 
-                    and a1."CREATE_DATE" >= TO_DATE(\''.$date.'\',\'yyyy-MM\')
+                    and a1."CREATE_DATE" >= TO_DATE(\'' . $date . '\',\'yyyy-MM-dd\')
+                group by TO_CHAR(a1."CREATE_DATE",\'yyyy-MM-dd\')
+                order by "A" ';
+        } else {
+            $date = date('Y-01');
+            $sql = 'select COUNT(a1."BID_PACKAGE_ID") as C,TO_CHAR(a1."CREATE_DATE",\'yyyy-MM\') as "A"
+                from "TBL_BID_PACKAGES" a1 
+                where (a1."PREQUALIFICATION_STATUS" !=  \'1\' or a1."PREQUALIFICATION_STATUS" is null) 
+                    and a1."CREATE_DATE" >= TO_DATE(\'' . $date . '\',\'yyyy-MM\')
                 group by TO_CHAR(a1."CREATE_DATE",\'yyyy-MM\')
                 order by "A" ';
-            }
-            // echo($sql);
-            $query = $this->db->query($sql);
-            $res =  $query->result_array();
-            $arrLabel=array();
-            $j=1;
-            if($time=='1t' || $time=='1th'){
-                $arr=array();
-                if($time=='1t'){
-                    $arrDate = array();
-                    for($i=0;$i<=6;$i++){
-                        $date = date_add(date_create($week_start),date_interval_create_from_date_string( $i." days"));
-                        $date = date_format($date,"Y-m-d");
-                        $arrDate[$i] = $date;
-                        $arrLabel[$i] = $i + 1;
-                        $arr[$date] = 0;
-                    }
-                    foreach($res as $r){
-                        $arr[$r['A']]=(int)$r['C'];
-                    }
-                    // return array_values($arr);
-                    return array("data"=>array_values($arr),"lable"=>$arrLabel, "date"=>$arrDate);
+        }
+        // echo($sql);
+        $query = $this->db->query($sql);
+        $res =  $query->result_array();
+        $arrLabel = array();
+        $j = 1;
+        if ($time == '1t' || $time == '1th') {
+            $arr = array();
+            if ($time == '1t') {
+                $arrDate = array();
+                for ($i = 0; $i <= 6; $i++) {
+                    $date = date_add(date_create($week_start), date_interval_create_from_date_string($i . " days"));
+                    $date = date_format($date, "Y-m-d");
+                    $arrDate[$i] = $date;
+                    $arrLabel[$i] = $i + 1;
+                    $arr[$date] = 0;
                 }
-                else{
-                    $dateLog = date('Y-m');
-                    $start_d = (int)date_format(date_create($date),"d");
-                    $end_d = (int)date('d');
-                    for($i=$start_d;$i<=$end_d;$i++){
-                        $arr[$dateLog.'-'.($i<10?'0'.$i:$i)]=0;
-                        $arrLabel[]=(string)$j;
-                        $j++;
-                    }
-                    foreach($res as $r){
-                        $arr[$r['A']]=(int)$r['C'];
-                    }
-                    // return array_values($arr);
-                    return array("data"=>array_values($arr),"lable"=>$arrLabel);
-                    
+                foreach ($res as $r) {
+                    $arr[$r['A']] = (int)$r['C'];
                 }
-
-                
-                
-                
-            }
-            else{
-                $arr=array();
-                foreach($res as $r){
-                    $arr[]=(int)$r['C'];
-                    $arrLabel[]=(string)$j;
+                // return array_values($arr);
+                return array("data" => array_values($arr), "lable" => $arrLabel, "date" => $arrDate);
+            } else {
+                $dateLog = date('Y-m');
+                $start_d = (int)date_format(date_create($date), "d");
+                $end_d = (int)date('d');
+                for ($i = $start_d; $i <= $end_d; $i++) {
+                    $arr[$dateLog . '-' . ($i < 10 ? '0' . $i : $i)] = 0;
+                    $arrLabel[] = (string)$j;
                     $j++;
                 }
-                // return $arr;
-                return array("data"=>$arr,"lable"=>$arrLabel);
+                foreach ($res as $r) {
+                    $arr[$r['A']] = (int)$r['C'];
+                }
+                // return array_values($arr);
+                return array("data" => array_values($arr), "lable" => $arrLabel);
             }
+        } else {
+            $arr = array();
+            foreach ($res as $r) {
+                $arr[] = (int)$r['C'];
+                $arrLabel[] = (string)$j;
+                $j++;
+            }
+            // return $arr;
+            return array("data" => $arr, "lable" => $arrLabel);
+        }
     }
-    public function thongKeTBMT_TP(){
+    public function thongKeTBMT_TP()
+    {
         // $time='1n';
         // if(!empty($_GET['time'])){
         //     $time = trim($_GET['time']);
         // }
         // if($time=='1th'){
         //     $date = date('Y-m');
-            
+
         // }
         // else{
-            $date = date('Y-01');
+        $date = date('Y-01');
         // }
         $orderBy = '';
-        if(!empty($_GET['orderBy']) && $_GET['orderBy']=='desc'){
+        if (!empty($_GET['orderBy']) && $_GET['orderBy'] == 'desc') {
             $orderBy = 'desc';
-        }
-        else{
+        } else {
             $orderBy = 'asc';
         }
 
@@ -1798,10 +1796,10 @@ class Zeanni_model extends CI_Model
                 a1.LOCATION
             from "TBL_BID_PACKAGES" a1 
             where (a1."PREQUALIFICATION_STATUS" !=  \'1\' or a1."PREQUALIFICATION_STATUS" is null) 
-                and a1."CREATE_DATE" >= TO_DATE(\''.$date.'\',\'yyyy-MM\') and a1.LOCATION is not null
+                and a1."CREATE_DATE" >= TO_DATE(\'' . $date . '\',\'yyyy-MM\') and a1.LOCATION is not null
                 and a1.BID_TYPE=2
             group by a1.LOCATION
-            order by "C" '.$orderBy.'
+            order by "C" ' . $orderBy . '
         ) a
         where ROWNUM <= 10';
 
@@ -1818,15 +1816,16 @@ class Zeanni_model extends CI_Model
         $res = $query->result_array();
         $data = array();
         $label = array();
-        foreach($res as $r){
-            $label[]=$r['LOCATION'];
-            $data[]=(int)$r['C'];
+        foreach ($res as $r) {
+            $label[] = $r['LOCATION'];
+            $data[] = (int)$r['C'];
         }
-        
-        return array("data"=>$data,"lable"=>$label);
+
+        return array("data" => $data, "lable" => $label);
     }
 
-    public function validateAccountOrganization(){
+    public function validateAccountOrganization()
+    {
         /*
         param: token, code,type,otp
         //dua token - tay user id.
@@ -1837,51 +1836,51 @@ class Zeanni_model extends CI_Model
         */
         $_POST = json_decode(file_get_contents('php://input'), true);
         $arr = getallheaders();
-        if(empty($arr['x-csrftoken'])){
+        if (empty($arr['x-csrftoken'])) {
             return array(
-                'error'=>1,
-                'msg'=>'Không lấy được giá trị TOKEN truyền lên.',
-                'data'=>''
+                'error' => 1,
+                'msg' => 'Không lấy được giá trị TOKEN truyền lên.',
+                'data' => ''
             );
         }
         $token = $this->db->escape_str(trim($arr['x-csrftoken']));
 
-        if(!empty($_POST['code'])){
+        if (!empty($_POST['code'])) {
             $code = $this->db->escape_str(trim($_POST['code']));
         }
-        if(!empty($_POST['type'])){
+        if (!empty($_POST['type'])) {
             $type = $this->db->escape_str(trim($_POST['type']));
         }
-        if(!empty($_POST['otp'])){
+        if (!empty($_POST['otp'])) {
             $otp = strtoupper($this->db->escape_str(trim($_POST['otp'])));
         }
-        
-        if(empty($code) || empty($type)){
+
+        if (empty($code) || empty($type)) {
             return array(
-                'error'=>1,
-                'msg'=>'Không lấy được giá trị code hoặc type truyền lên.',
-                'data'=>''
+                'error' => 1,
+                'msg' => 'Không lấy được giá trị code hoặc type truyền lên.',
+                'data' => ''
             );
         }
 
-        if(!empty($otp)){
-            return $this->validateOtp($code,$type,$otp,$token);
-        }
-        else{
-            return $this->checkSendOtp($code,$type,$token);
+        if (!empty($otp)) {
+            return $this->validateOtp($code, $type, $otp, $token);
+        } else {
+            return $this->checkSendOtp($code, $type, $token);
         }
     }
-    private function sendOtp($otp,$phone='',$email=''){
-        if(empty($email)){
-            return array('errorCode'=>100,'data'=>array());
+    private function sendOtp($otp, $phone = '', $email = '')
+    {
+        if (empty($email)) {
+            return array('errorCode' => 100, 'data' => array());
         }
-        
+
         $this->load->config('email');
         $mailInfo = $this->config->item('mailInfo');
-        
+
         $toEmail = $email;
         $OTP_CODE = $otp;
-        
+
         //send mail
         $mail = new PHPMailer();
         //Khai báo gửi mail bằng SMTP
@@ -1900,159 +1899,154 @@ class Zeanni_model extends CI_Model
         $mail->Username   = $mailInfo['smtp_user']; // Tên đăng nhập tài khoản Gmail
         $mail->Password   = "hchdexogutacmzms"; //Mật khẩu của ung dung cua gmail
         $mail->SetFrom($mailInfo['smtp_user'], "Mã xác thực từ App Mua Sắm Công"); // Thông tin người gửi
-        $mail->AddReplyTo($mailInfo['smtp_user']);// Ấn định email sẽ nhận khi người dùng reply lại.
-        $mail->AddAddress($toEmail);//Email của người nhận
+        $mail->AddReplyTo($mailInfo['smtp_user']); // Ấn định email sẽ nhận khi người dùng reply lại.
+        $mail->AddAddress($toEmail); //Email của người nhận
         $mail->Subject = "Mã xác thực từ App Mua Sắm Công"; //Tiêu đề của thư
-        $mail->MsgHTML('<div>Mã xác thực: '.$OTP_CODE.'</div>'); //Nội dung của bức thư.
-        if(!$mail->Send()) {
-            return array('errorCode'=>1,'data'=>array());
+        $mail->MsgHTML('<div>Mã xác thực: ' . $OTP_CODE . '</div>'); //Nội dung của bức thư.
+        if (!$mail->Send()) {
+            return array('errorCode' => 1, 'data' => array());
         } else {
-            return array('errorCode'=>0,'data'=>array());
+            return array('errorCode' => 0, 'data' => array());
         }
     }
-    private function checkSendOtp($code,$type,$token){
+    private function checkSendOtp($code, $type, $token)
+    {
         $this->db->select('USER_ID');
-        $this->db->where(array('TOKEN'=>$token));
+        $this->db->where(array('TOKEN' => $token));
         $user = $this->db->get('TBL_USERS')->row_array();
 
         $Organization = array();
         $msg = 'Số đăng ký kinh doanh không tìm thấy trong hệ thống';
-        if($type=='coquan'){
+        if ($type == 'coquan') {
             $this->db->select('PROCURING_CODE as CODE,CURATOR_MOBI_NUM as PHONE,CURATOR_EMAIL as EMAIL');
-            $this->db->where(array('PROCURING_CODE'=>$code));
+            $this->db->where(array('PROCURING_CODE' => $code));
             $Organization = $this->db->get('TBL_PROCURINGS')->row_array();
             $msg = 'Mã cơ quan không tìm thấy trong hệ thống';
-        }
-        else if($type=='doanhnghiep'){
+        } else if ($type == 'doanhnghiep') {
             $this->db->select('BUSSINESS_REGISTRATION_NUM as CODE,LEADER_TEL_NUM as PHONE,LEADER_EMAIL as EMAIL');
-            $this->db->where(array('BUSSINESS_REGISTRATION_NUM'=>$code));
+            $this->db->where(array('BUSSINESS_REGISTRATION_NUM' => $code));
             $Organization = $this->db->get('TBL_BIDERS')->row_array();
         }
-        
-        if(empty($Organization)){
+
+        if (empty($Organization)) {
             return array(
-                'error'=>1,
-                'msg'=>$msg,
-                'data'=>''
+                'error' => 1,
+                'msg' => $msg,
+                'data' => ''
             );
         }
-        
-        $OTP_CODE= strtoupper(substr(md5((microtime().rand(10,1000))),0,6));
+
+        $OTP_CODE = strtoupper(substr(md5((microtime() . rand(10, 1000))), 0, 6));
 
         // - logic cho 1 use co the dai dien cho cả vị trí là chủ thầu và nhà thầu. nhưng mỗi loại chỉ đại điện cho 1 tổ chức duy nhất.
-        
+
         $sql = 'select a1."ID"
             from AW_USER_ORGANIZATION a1
-            where a1.USER_ID=\''.$user['USER_ID'].'\' and a1.TYPE=\''.$type.'\'';
+            where a1.USER_ID=\'' . $user['USER_ID'] . '\' and a1.TYPE=\'' . $type . '\'';
         $query = $this->db->query($sql);
         $row = $query->row_array();
         $timeSend = strtotime("now");
-        if(empty($row)){
+        if (empty($row)) {
             $sql = 'insert into AW_USER_ORGANIZATION(USER_ID,ORGANIZATION_ID,OTP,TYPE,TIME_SEND_OTP,CREATE_DATE,STATUS)
-            values(\''.$user['USER_ID'].'\',\''.$code.'\',\''.$OTP_CODE.'\',\''.$type.'\',\''.$timeSend.'\',TO_TIMESTAMP(\''.date('Y-m-d h:i:s').'\',\'yyyy-mm-dd hh24:mi:ss\'),0)';
+            values(\'' . $user['USER_ID'] . '\',\'' . $code . '\',\'' . $OTP_CODE . '\',\'' . $type . '\',\'' . $timeSend . '\',TO_TIMESTAMP(\'' . date('Y-m-d h:i:s') . '\',\'yyyy-mm-dd hh24:mi:ss\'),0)';
             $this->db->query($sql);
-        }
-        else{
+        } else {
             $sql = 'update AW_USER_ORGANIZATION
-            set  OTP = \''.$OTP_CODE.'\',
-                TIME_SEND_OTP=\''.$timeSend.'\',
-                ORGANIZATION_ID = \''.$code.'\',
+            set  OTP = \'' . $OTP_CODE . '\',
+                TIME_SEND_OTP=\'' . $timeSend . '\',
+                ORGANIZATION_ID = \'' . $code . '\',
                 STATUS = 0
-            where USER_ID = \''.$user['USER_ID'].'\'
-                and TYPE = \''.$type.'\'';
+            where USER_ID = \'' . $user['USER_ID'] . '\'
+                and TYPE = \'' . $type . '\'';
             $this->db->query($sql);
         }
-        
+
         /**
          * send otp mail or sms;
          */
         $phone = $Organization['PHONE'];
         $email = $Organization['EMAIL'];
-        $this->sendOtp($OTP_CODE,$phone,$email);
-         /**
+        $this->sendOtp($OTP_CODE, $phone, $email);
+        /**
          * end send otp mail or sms;
          */
 
         return array(
-            'error'=>0,
-            'msg'=>'OK',
-            'data'=>array('phone'=>$phone,'email'=>$email)
+            'error' => 0,
+            'msg' => 'OK',
+            'data' => array('phone' => $phone, 'email' => $email)
         );
     }
-    private function validateOtp($code,$type,$otp,$token){
+    private function validateOtp($code, $type, $otp, $token)
+    {
         $sql = 'select a1."ID",a1.OTP,a1."TYPE",a1.USER_ID,a1.ORGANIZATION_ID,a1.TIME_SEND_OTP
             from AW_USER_ORGANIZATION a1
-            left join TBL_USERS a2 on a1.USER_ID=a2.USER_ID '.
-            (
-                $type!='coquan'?
+            left join TBL_USERS a2 on a1.USER_ID=a2.USER_ID ' .
+            ($type != 'coquan' ?
                 ' inner join TBL_BIDERS a3 on a3.BUSSINESS_REGISTRATION_NUM = a1.ORGANIZATION_ID '
                 :
-                ' inner join TBL_PROCURINGS a4 on a4.PROCURING_CODE=a1.ORGANIZATION_ID '
-            ).
-            ' where a1.ORGANIZATION_ID = \''.$code.'\' and a2.TOKEN=\''.$token.'\' and a1."TYPE"=\''.$type.'\'
-                and a1.OTP = \''.$otp.'\'
+                ' inner join TBL_PROCURINGS a4 on a4.PROCURING_CODE=a1.ORGANIZATION_ID ') .
+            ' where a1.ORGANIZATION_ID = \'' . $code . '\' and a2.TOKEN=\'' . $token . '\' and a1."TYPE"=\'' . $type . '\'
+                and a1.OTP = \'' . $otp . '\'
             ';
         $query = $this->db->query($sql);
         $row = $query->row_array();
-        if(empty($row)){
+        if (empty($row)) {
             return array(
-                'error'=>1,
-                'msg'=>'Mã OTP không khớp.',
-                'data'=>''
+                'error' => 1,
+                'msg' => 'Mã OTP không khớp.',
+                'data' => ''
             );
-        }
-        else{
-            $ck = strtotime("now")-$row['TIME_SEND_OTP'];
-            if($ck > 3600){//otp chi con hieu qua trong 2 phut
-                $this->db->where('ID',$row['ID']);
-                $this->db->update('AW_USER_ORGANIZATION',array('OTP'=>null));
+        } else {
+            $ck = strtotime("now") - $row['TIME_SEND_OTP'];
+            if ($ck > 3600) { //otp chi con hieu qua trong 2 phut
+                $this->db->where('ID', $row['ID']);
+                $this->db->update('AW_USER_ORGANIZATION', array('OTP' => null));
                 return array(
-                    'error'=>2,
-                    'msg'=>'Thời gian xác thực đã quá hạn. Vui lòng click vào "Gửi Lại OTP" để lấy mã xác thực mới.',
-                    'data'=>array(
-                        strtotime("now"),$row['TIME_SEND_OTP'],$ck
+                    'error' => 2,
+                    'msg' => 'Thời gian xác thực đã quá hạn. Vui lòng click vào "Gửi Lại OTP" để lấy mã xác thực mới.',
+                    'data' => array(
+                        strtotime("now"), $row['TIME_SEND_OTP'], $ck
+                    )
+                );
+            } else {
+                $this->db->where('ID', $row['ID']);
+                $this->db->update('AW_USER_ORGANIZATION', array('OTP' => null, 'STATUS' => 1));
+                return array(
+                    'error' => 0,
+                    'msg' => 'OK',
+                    'data' => array(
+                        strtotime("now"), $row['TIME_SEND_OTP'], $ck
                     )
                 );
             }
-            else{
-                $this->db->where('ID',$row['ID']);
-                $this->db->update('AW_USER_ORGANIZATION',array('OTP'=>null,'STATUS'=>1));
-                return array(
-                    'error'=>0,
-                    'msg'=>'OK',
-                    'data'=>array(
-                        strtotime("now"),$row['TIME_SEND_OTP'],$ck
-                    )
-                );
-            }
-
         }
     }
 
     public function GetListAppConnect()
     {
         $status = 1;
-        if(!empty($_GET['status'])){
+        if (!empty($_GET['status'])) {
             $status = $_GET['status'];
         }
         $sql = 'select a.ID,a.ANDROID_PACKAGE, a.IOS_PACKAGE, a.APP_NAME, a.ICON_PATCH, a.URL_APP_IOS,a.URL_APP_ANDROID,a.URL_SCHEME_IOS,a.URL_SCHEME_ANDROID,a.STATUS
-            from APP_CONNECT a WHERE a.STATUS=\''.$status.'\'
+            from APP_CONNECT a WHERE a.STATUS=\'' . $status . '\'
             order by APP_NAME ';
         $query = $this->db->query($sql);
         $data =  $query->result_array();
-        $res=array();
-        foreach($data as $vl){
-            $res[]=array(
-                'id'=>$vl['ID'],
-                'androidPackage'=>$vl['ANDROID_PACKAGE'],
-                'iosPackage'=>$vl['IOS_PACKAGE'],
-                'appName'=>$vl['APP_NAME'],
-                'iconPath'=>$vl['ICON_PATCH'],
-                'urlAppIos'=>$vl['URL_APP_IOS'],
-                'urlAppAndroid'=>$vl['URL_APP_ANDROID'],
-                'urlSchemeIos'=>$vl['URL_SCHEME_IOS'],
-                'urlSchemeAndroid'=>$vl['URL_SCHEME_ANDROID'],
-                'status'=>$vl['STATUS']
+        $res = array();
+        foreach ($data as $vl) {
+            $res[] = array(
+                'id' => $vl['ID'],
+                'androidPackage' => $vl['ANDROID_PACKAGE'],
+                'iosPackage' => $vl['IOS_PACKAGE'],
+                'appName' => $vl['APP_NAME'],
+                'iconPath' => $vl['ICON_PATCH'],
+                'urlAppIos' => $vl['URL_APP_IOS'],
+                'urlAppAndroid' => $vl['URL_APP_ANDROID'],
+                'urlSchemeIos' => $vl['URL_SCHEME_IOS'],
+                'urlSchemeAndroid' => $vl['URL_SCHEME_ANDROID'],
+                'status' => $vl['STATUS']
             );
         }
         return $res;
