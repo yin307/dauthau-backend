@@ -1658,6 +1658,22 @@ class Zeanni_model extends CI_Model
             $date = date('Y-01');
         }
 
+        $orderBy = '';
+        if (!empty($_GET['orderBy']) && $_GET['orderBy'] == 'desc') {
+            $orderBy = 'desc';
+        } else {
+            $orderBy = 'asc';
+        }
+
+        $internet = '';
+        if(!empty($_GET['type']) && $_GET['type'] == 'ALL'){
+            //SELECT ALL
+            $bidType = '';
+        }else {
+            //SELECT INTERNET
+            $bidType = 'and a1.BID_TYPE = 2';
+        }
+
         $sql = 'select COUNT(a1."BIDER_SELECTION_ID") as COUNT_BIDER_SELECTION, 
                         a2."PROVINCE"
                     from "TBL_BIDER_SELECTIONS" a1 
@@ -1780,11 +1796,21 @@ class Zeanni_model extends CI_Model
         } else {
             $date = date('Y-01');
         }
+
         $orderBy = '';
         if (!empty($_GET['orderBy']) && $_GET['orderBy'] == 'desc') {
             $orderBy = 'desc';
         } else {
             $orderBy = 'asc';
+        }
+
+        $bidType = '';
+        if(!empty($_GET['type']) && $_GET['type'] == 'ALL'){
+            //SELECT ALL
+            $bidType = '';
+        }else {
+            //SELECT INTERNET
+            $bidType = 'and a1.BID_TYPE = 2';
         }
 
         $sql = 'select * from (
@@ -1793,7 +1819,7 @@ class Zeanni_model extends CI_Model
             from "TBL_BID_PACKAGES" a1 
             where (a1."PREQUALIFICATION_STATUS" !=  \'1\' or a1."PREQUALIFICATION_STATUS" is null) 
                 and a1."CREATE_DATE" >= TO_DATE(\'' . $date . '\',\'yyyy-MM\') and a1.LOCATION is not null
-                and a1.BID_TYPE=2
+            '.$bidType.'
             group by a1.LOCATION
             order by "C" ' . $orderBy . '
         ) a
