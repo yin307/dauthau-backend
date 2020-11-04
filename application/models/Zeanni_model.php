@@ -1329,7 +1329,7 @@ class Zeanni_model extends CI_Model
                     '' as STATUS_BID,
                     a3.CONTRACT_TYPE, a1.SELECTION_BIDER_REASON,
                     a1.CODEKH,a2.BID_PACKAGE_ID,a4.BIDER_SELECTION_ID,
-                    a4.BIDER_SELECTION_ID
+                    a2.CODEKH
                   from \"TBL_BIDINGS\" a1 
                   left join TBL_BID_PACKAGES a2 on a2.BID_PACKAGE_CODE = a1.\"BID_PACKAGE_CODE\"
                   left join TBL_PACKAGE_INFO a3 on a3.PACKAGE_NUM = a1.CODEKH
