@@ -793,7 +793,6 @@ class Zeanni_model extends CI_Model
             ) a 
             WHERE rownum < ((" . $page . " * 100) + 1 ) 
         ) WHERE r__ >= (((" . $page . "-1) * 100) + 1)";
-        echo $sql;
         $query = $this->db->query($sql);
         $data =  $query->result_array();
         return $data;
@@ -1183,7 +1182,7 @@ class Zeanni_model extends CI_Model
                 a1.\"BIDER_SELECTION_TYPE\" as \"a1-zn-BIDER_SELECTION_TYPE\",
                 a1.\"PRE_SUBMISSION_PLACE\" as \"a1-zn-PRE_SUBMISSION_PLACE\",
                 a1.\"SUBMISSION_PLACE\" as \"a1-zn-SUBMISSION_PLACE\",  a1.\"BID_TYPE\" as \"a1-zn-BID_TYPE\"  ,
-                a3.\"BIDING_ID\" as \"a3-zn-BIDING_ID\",a1.\"COUNT_SUB\",a1.STAGE_BIDDING,a1.\"PROCURING_CODE\",
+                a3.\"BIDING_ID\" as \"a3-zn-BIDING_ID\",a1.\"COUNT_SUB\",a1.STAGE_BIDDING,a1.\"PROCURING_CODE\"
             from \"TBL_BID_PACKAGES\" a1 
             left join \"TBL_PROCURINGS\" a2  on a2.\"PROCURING_CODE\" = a1.\"PROCURING_CODE\" 
             left join \"TBL_BIDINGS\" a3 on a1.\"BID_PACKAGE_CODE\" = a3.\"BID_BID_PACKAGE_CODE\" and a3.\"NOTI_TYPE\" != 1
