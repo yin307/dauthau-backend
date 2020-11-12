@@ -847,7 +847,8 @@ class Zeanni_model extends CI_Model
                         a1.\"VALUE\" as \"a1-zn-VALUE\",  
                         to_char(a1.\"CREATE_DATE\", 'yyyy-mm-dd hh24:mi:ss') as \"a1-zn-CREATE_DATE\",
                         NVL(a1.\"COUNT_VIEW\",0) as \"COUNT_VIEW\",
-                        (SELECT a2.\"LOCATION\" as \"a2-zn-LOCATION\" from \"TBL_PACKAGE_INFO\" a2 where a1.\"BIDER_SELECTION_ID\" = a2.\"CODE\" and rownum = 1 ) as LOCATION
+                        (SELECT a2.\"LOCATION\" as \"a2-zn-LOCATION\" from \"TBL_PACKAGE_INFO\" a2 where a1.\"BIDER_SELECTION_ID\" = a2.\"CODE\" and rownum = 1 ) as LOCATION,
+                        a1.\"PROCURING_CODE\"
 
                         from \"TBL_BIDER_SELECTIONS\" a1 
                         -- left join ( 
@@ -887,7 +888,8 @@ class Zeanni_model extends CI_Model
                         a1.\"APPROVAL_DOC_NUM\" as \"a1-zn-APPROVAL_DOC_NUM\",  
                         to_char(a1.\"APPROVAL_DATE\", 'yyyy-mm-dd hh24:mi:ss') as \"a1-zn-APPROVAL_DATE\",
                         to_char(a1.\"CREATE_DATE\", 'yyyy-mm-dd hh24:mi:ss') as \"a1-zn-CREATE_DATE\",
-                        a2.\"PROVINCE\" as \"PROVINCE\"
+                        a2.\"PROVINCE\" as \"PROVINCE\",
+                        a1.\"PROCURING_CODE\"
                 from \"TBL_BIDER_SELECTIONS\" a1 
                 left join \"TBL_PROCURINGS\" a2  on a2.\"PROCURING_CODE\" = a1.\"PROCURING_CODE\" 
                 where  '" . $_getSegment['2'] . "'  = a1.\"BIDER_SELECTION_ID\"";
@@ -1006,6 +1008,11 @@ class Zeanni_model extends CI_Model
                     to_char(a1.\"CREATE_DATE\", 'yyyy-mm-dd hh24:mi:ss') as \"a1-zn-CREATE_DATE\",
                     a1.\"BID_TYPE\" as \"a1-zn-BID_TYPE\",
                     a1.\"COUNT_VIEW\" as \"a1-zn-COUNT_VIEW\",a1.\"COUNT_SUB\" as \"a1-zn-COUNT_SUB\" ,a1.\"FIELD\"
+                    a2.\"PROCURING_CODE\",
+                    a2.\"ADDRESS\",
+                    a1.\"OPEN_DATE\",
+                    a1.\"OPEN_PLACE\",
+                    a2.\"EFFECTIVE_DATE\"
                     from \"TBL_BID_PACKAGES\" a1 
                     inner join \"TBL_PROCURINGS\" a2  on a1.\"PROCURING_CODE\" = a2.\"PROCURING_CODE\"
                     where a1.\"PREQUALIFICATION_STATUS\" =  '1' and a1.\"FIELD\" = '" . $BUSSINESS_FIELD . "' " . $where . "
@@ -1068,7 +1075,10 @@ class Zeanni_model extends CI_Model
                         to_char(a1.\"FINISH_SUBMISSION_DATE\", 'yyyy-mm-dd hh24:mi:ss') as \"a1-zn-FINISH_SUBMISSION_DATE\",  
                         to_char(a1.\"CREATE_DATE\", 'yyyy-mm-dd hh24:mi:ss') as \"a1-zn-CREATE_DATE\",  
                         a1.\"ESTIMATE_PRICE\" as \"a1-zn-ESTIMATE_PRICE\",  a1.\"NOTI_TYPE\" as \"a1-zn-NOTI_TYPE\",a1.\"BID_TYPE\" as \"a1-zn-BID_TYPE\",
-                        a1.\"COUNT_VIEW\" as \"a1-zn-COUNT_VIEW\",a1.\"COUNT_SUB\" as \"a1-zn-COUNT_SUB\" ,a1.\"FIELD\"   
+                        a1.\"COUNT_VIEW\" as \"a1-zn-COUNT_VIEW\",a1.\"COUNT_SUB\" as \"a1-zn-COUNT_SUB\" ,a1.\"FIELD\",
+                        a1.\"PROCURING_CODE\",
+                        a2.\"EFFECTIVE_DATE\",
+                        a1.\"TYPE\"
                         from \"TBL_BID_PACKAGES\" a1 inner join \"TBL_PROCURINGS\" a2  on a1.\"PROCURING_CODE\" = a2.\"PROCURING_CODE\"
                         where (a1.\"PREQUALIFICATION_STATUS\" !=  '1' or a1.\"PREQUALIFICATION_STATUS\" is null)
                             and a1.\"FIELD\" = '" . $BUSSINESS_FIELD . "' " . $where . "
@@ -1171,7 +1181,7 @@ class Zeanni_model extends CI_Model
                 a1.\"BIDER_SELECTION_TYPE\" as \"a1-zn-BIDER_SELECTION_TYPE\",
                 a1.\"PRE_SUBMISSION_PLACE\" as \"a1-zn-PRE_SUBMISSION_PLACE\",
                 a1.\"SUBMISSION_PLACE\" as \"a1-zn-SUBMISSION_PLACE\",  a1.\"BID_TYPE\" as \"a1-zn-BID_TYPE\"  ,
-                a3.\"BIDING_ID\" as \"a3-zn-BIDING_ID\",a1.\"COUNT_SUB\",a1.STAGE_BIDDING,a1.\"PROCURING_CODE\"
+                a3.\"BIDING_ID\" as \"a3-zn-BIDING_ID\",a1.\"COUNT_SUB\",a1.STAGE_BIDDING,a1.\"PROCURING_CODE\",
             from \"TBL_BID_PACKAGES\" a1 
             left join \"TBL_PROCURINGS\" a2  on a2.\"PROCURING_CODE\" = a1.\"PROCURING_CODE\" 
             left join \"TBL_BIDINGS\" a3 on a1.\"BID_PACKAGE_CODE\" = a3.\"BID_BID_PACKAGE_CODE\" and a3.\"NOTI_TYPE\" != 1
@@ -1329,7 +1339,11 @@ class Zeanni_model extends CI_Model
                     '' as STATUS_BID,
                     a3.CONTRACT_TYPE, a1.SELECTION_BIDER_REASON,
                     a1.CODEKH,a2.BID_PACKAGE_ID,a4.BIDER_SELECTION_ID,
-                    a2.CODEKH
+                    a2.CODEKH,
+                    a1.\"APPROVAL_CERTIFICATE,
+                    a1.\"PUBLIC_DATE\",
+                    a1.\"BIDPROJECT\",
+                    a1.\"BUYER\"
                   from \"TBL_BIDINGS\" a1 
                   left join TBL_BID_PACKAGES a2 on a2.BID_PACKAGE_CODE = a1.\"BID_PACKAGE_CODE\"
                   left join TBL_PACKAGE_INFO a3 on a3.PACKAGE_NUM = a1.CODEKH
@@ -1354,10 +1368,10 @@ class Zeanni_model extends CI_Model
             // group by a1."BIDER_NAME", a1.BID_BUSSINESS_REGISTRATION_NUM ';
 
             $sql = 'select a1."BIDER_NAME" as "a1-zn-BIDER_NAME",
-                        a1.BID_BUSSINESS_REGISTRATION_NUM
+                        a1.BUSSINESS_REGISTRATION_NUM
                 from "TBL_BIDINGS" a1 
             where  \'' . $data[0]['a1-zn-BID_PACKAGE_CODE'] . '\'  = a1."BID_PACKAGE_CODE" and a1."NOTI_TYPE"=1
-            group by a1."BIDER_NAME", a1.BID_BUSSINESS_REGISTRATION_NUM ';
+            group by a1."BIDER_NAME", a1.BUSSINESS_REGISTRATION_NUM ';
 
             $query = $this->db->query($sql);
             $data[0]['listBinder'] =  $query->result_array();
