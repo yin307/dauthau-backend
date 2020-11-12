@@ -209,6 +209,7 @@ class PushNotify_model extends CI_Model implements PushNotify{
                 null as TIME_END_PUSH,
                 0 as TIMES,
                 a1.NOTI_VERSION_NUM,
+                1 as PRIORITY,
                 CONCAT(\'/thong_tin_goi_thau___chi_tiet/\',a1.BID_PACKAGE_ID) as "URL",
                 \'Đóng thầu!\' as "HEADER"
             from "TBL_BID_PACKAGES" a1 
@@ -239,6 +240,7 @@ class PushNotify_model extends CI_Model implements PushNotify{
           null as TIME_END_PUSH,
           0 as TIMES,
           a1.NOTI_VERSION_NUM,
+          1 as PRIORITY,
           CONCAT(\'/thong_tin_goi_thau_so_tuyen_chi_tiet/\',a1.BID_PACKAGE_ID) as "URL",
           \'Đóng thầu!\' as "HEADER"
         from "TBL_BID_PACKAGES" a1 
@@ -362,7 +364,7 @@ class PushNotify_model extends CI_Model implements PushNotify{
               null as TIME_END_PUSH,
               0 as TIMES,
               a1.NOTI_VERSION_NUM,
-              1 as PRIORITY,
+              2 as PRIORITY,
               CONCAT(\'/thong_tin_goi_thau___chi_tiet/\',a1.BID_PACKAGE_ID) as "URL",
               case when a1.STAGE_BIDDING=\'Một giai đoạn một túi hồ sơ\' or a1.STAGE_BIDDING is null then \'Mở thầu!\' else \'Mở hồ sơ đề xuất tài chính!\' end as "HEADER"
             from "TBL_BID_PACKAGES" a1 
@@ -392,7 +394,7 @@ class PushNotify_model extends CI_Model implements PushNotify{
               null as TIME_END_PUSH,
               0 as TIMES,
               a1.NOTI_VERSION_NUM,
-              1 as PRIORITY,
+              2 as PRIORITY,
               CONCAT(\'/thong_tin_goi_thau_so_tuyen_chi_tiet/\',a1.BID_PACKAGE_ID) as "URL",
               case when a1.STAGE_BIDDING=\'Một giai đoạn một túi hồ sơ\' or a1.STAGE_BIDDING is null then \'Mở thầu!\' else \'Mở hồ sơ đề xuất tài chính!\' end as "HEADER"
             from "TBL_BID_PACKAGES" a1 
@@ -739,7 +741,7 @@ class PushNotify_model extends CI_Model implements PushNotify{
       left join AW_USER_ORGANIZATION a4 on '.
       ($item['TYPE_PUSH']=='lam_ro_ho_so_moi_thau'?'a4.organization_id = a3.ORG_CODE':'a4.organization_id = a3.BIZ_SUPPLIER_CD')
       .' left join TBL_USERS a5 on a5.USER_ID = a4.USER_ID
-      where a5.DEVICES_ID is not null and a1.NAME_TABLE = \'TBL_QUESTION\' and a1.ID = '.$item['ID'];
+      where a5.DEVICES_ID is not null and a1.NAME_TABLE = \'TBL_QUESTION\' and a4.\"STATUS\" = 1 and a1.ID = '.$item['ID'];
       $query = $this->db->query($sql);
       $res =  $query->result_array();
       foreach ($res as $vl){
@@ -754,7 +756,7 @@ class PushNotify_model extends CI_Model implements PushNotify{
       left join TBL_QUESTION a3 on a3.id = a2.question_id
       left join AW_USER_ORGANIZATION a4 on a4.organization_id = a3.BIZ_CODE 
       left join TBL_USERS a5 on a5.USER_ID = a4.USER_ID
-      where a5.DEVICES_ID is not null and a1.NAME_TABLE = \'TBL_ANSWER\' and a1.ID = '.$item['ID'];
+      where a5.DEVICES_ID is not null and a1.NAME_TABLE = \'TBL_ANSWER\' and a4.\"STATUS\" = 1 and a1.ID = '.$item['ID'];
       $query = $this->db->query($sql);
       $res =  $query->result_array();
       foreach ($res as $vl){
@@ -767,7 +769,7 @@ class PushNotify_model extends CI_Model implements PushNotify{
       left join TBL_BIDERS tb on cp.table_id=tb.BUSSINESS_REGISTRATION_NUM 
       left join AW_USER_ORGANIZATION auo on tb.BUSSINESS_REGISTRATION_NUM = auo.ORGANIZATION_ID 
       left join TBL_USERS tu on tu.USER_ID=auo.USER_ID 
-      where tu.DEVICES_ID is not null and cp.NAME_TABLE = \'TBL_BIDERS\' and cp.ID='.$item['ID'];
+      where tu.DEVICES_ID is not null and cp.NAME_TABLE = \'TBL_BIDERS\' and a4.\"STATUS\" = 1 and cp.ID='.$item['ID'];
       $query = $this->db->query($sql);
       $res =  $query->result_array();
       foreach ($res as $vl){
@@ -780,7 +782,7 @@ class PushNotify_model extends CI_Model implements PushNotify{
       left join TBL_PROCURINGS tp on cp.table_id=tp.PROCURING_CODE 
       left join AW_USER_ORGANIZATION auo on tp.PROCURING_CODE = auo.ORGANIZATION_ID 
       left join TBL_USERS tu on tu.USER_ID=auo.USER_ID 
-      where tu.DEVICES_ID is not null and cp.NAME_TABLE = \'TBL_PROCURINGS\' and cp.ID='.$item['ID'];
+      where tu.DEVICES_ID is not null and cp.NAME_TABLE = \'TBL_PROCURINGS\' and a4.\"STATUS\" = 1 and cp.ID='.$item['ID'];
       $query = $this->db->query($sql);
       $res =  $query->result_array();
       foreach ($res as $vl){
