@@ -1007,7 +1007,7 @@ class Zeanni_model extends CI_Model
                     to_char(a1.\"PRE_FINISH_DOC_DATE\", 'yyyy-mm-dd hh24:mi:ss') as \"a1-zn-FINISH_SUBMISSION_DATE\",  
                     to_char(a1.\"CREATE_DATE\", 'yyyy-mm-dd hh24:mi:ss') as \"a1-zn-CREATE_DATE\",
                     a1.\"BID_TYPE\" as \"a1-zn-BID_TYPE\",
-                    a1.\"COUNT_VIEW\" as \"a1-zn-COUNT_VIEW\",a1.\"COUNT_SUB\" as \"a1-zn-COUNT_SUB\" ,a1.\"FIELD\"
+                    a1.\"COUNT_VIEW\" as \"a1-zn-COUNT_VIEW\",a1.\"COUNT_SUB\" as \"a1-zn-COUNT_SUB\" ,a1.\"FIELD\",
                     a2.\"PROCURING_CODE\",
                     a2.\"ADDRESS\",
                     a1.\"OPEN_DATE\",
