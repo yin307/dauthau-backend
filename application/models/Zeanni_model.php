@@ -1265,7 +1265,7 @@ class Zeanni_model extends CI_Model
                     a1.COUNT_VIEW,
                     (select COUNT(a3.\"BIDER_NAME\")
                         from \"TBL_BIDINGS\" a3
-                        where  a1.\"BIDING_ID\"  = a3.\"BIDING_ID\"
+                        where  a1.\"BID_PACKAGE_CODE\"  = a3.\"BID_PACKAGE_CODE\"
                         group by a3.\"BIDER_NAME\") as COUNT_BIDER
                 from \"TBL_BIDINGS\" a1
                 inner join (select max(a1.\"BIDING_ID\") as \"BIDING_ID\", a1.\"BID_PACKAGE_CODE\"
