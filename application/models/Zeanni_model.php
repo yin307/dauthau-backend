@@ -1259,13 +1259,17 @@ class Zeanni_model extends CI_Model
                     to_char(a1.\"PUBLIC_DATE\", 'yyyy-mm-dd hh24:mi:ss') as \"a1-zn-PUBLIC_DATE\",  a1.\"NOTI_TYPE\" as \"a1-zn-NOTI_TYPE\",  a1.\"BID_TYPE\" as \"a1-zn-BID_TYPE\",  
                     to_char(a1.UPDATE_DATE, 'yyyy-mm-dd hh24:mi:ss') as \"a1-zn-CREATE_DATE\",
                     to_char(a1.\"APPROVAL_DATE\", 'yyyy-mm-dd hh24:mi:ss') as \"a1-zn-APPROVAL_DATE\",  a1.\"BIDER_NAME\" as \"a1-zn-BIDER_NAME\",  a1.\"BID_PACKAGE_CODE\" as \"a1-zn-BID_PACKAGE_CODE\",
-                    a1.COUNT_VIEW
+                    a1.COUNT_VIEW,
+                    (select COUNT(a3.\"BIDER_NAME\")
+                        from \"TBL_BIDINGS\" a3
+                        where  a1.\"BID_PACKAGE_CODE\"  = a3.\"BID_PACKAGE_CODE\"
+                        group by a3.\"BIDER_NAME\") as COUNT_BIDER
                 from \"TBL_BIDINGS\" a1 
-                inner join (select max(a1.\"BIDING_ID\") as \"BIDING_ID\", a1.\"BID_PACKAGE_CODE\"
-                    from \"TBL_BIDINGS\" a1 
-                    where a1.\"NOTI_TYPE\" = '1' 
-                    group by a1.\"BID_PACKAGE_CODE\") a2 on a2.\"BIDING_ID\"=a1.\"BIDING_ID\"
-                " . $where . " 
+                -- inner join (select max(a1.\"BIDING_ID\") as \"BIDING_ID\", a1.\"BID_PACKAGE_CODE\"
+                --     from \"TBL_BIDINGS\" a1 
+                --     where a1.\"NOTI_TYPE\" = '1' 
+                --     group by a1.\"BID_PACKAGE_CODE\") a2 on a2.\"BIDING_ID\"=a1.\"BIDING_ID\"
+                " . $where . " and a1.\"NOTI_TYPE\" = '1' 
                 order by  NVL(a1.\"PUBLIC_DATE\",TO_DATE('1000-01-01','yyyy-MM-dd')) desc,NVL(a1.\"UPDATE_DATE\",TO_DATE('1000-01-01','yyyy-MM-dd')) desc 
             ) a 
             left join TBL_BID_PACKAGES a2 on a2.BID_PACKAGE_CODE = a.\"a1-zn-BID_PACKAGE_CODE\"
