@@ -785,7 +785,8 @@ class Zeanni_model extends CI_Model
                      a1.\"PROCURING_NAME\" as \"a1-zn-PROCURING_NAME\",  a1.\"ADDRESS\" as \"a1-zn-ADDRESS\",  
                      a1.\"TEL_NUM\" as \"a1-zn-TEL_NUM\",  
                      a1.\"PROVINCE\" as \"a1-zn-PROVINCE\",
-                     to_char(a1.\"APPROVAL_DATE\", 'yyyy-mm-dd hh24:mi:ss') as \"a1-zn-APPROVAL_DATE\"
+                     to_char(a1.\"APPROVAL_DATE\", 'yyyy-mm-dd hh24:mi:ss') as \"a1-zn-APPROVAL_DATE\",
+                     a1.\"STATUS\"
                 from \"TBL_PROCURINGS\" a1
                 where (a1.\"STATUS\" = 'Y' OR a1.\"STATUS\" = 'N') " . $where . "
                 ORDER BY NVL(a1.\"APPROVAL_DATE\",TO_DATE('1111-01-01','yyyy-MM-dd')) desc
