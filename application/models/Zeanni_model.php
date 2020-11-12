@@ -773,7 +773,7 @@ class Zeanni_model extends CI_Model
         }
 
         if (!empty($where)) {
-            $where = ' and '.$where;
+            $where = ' and ' . join(' and ', $where);
         } else {
             $where = '';
         }
