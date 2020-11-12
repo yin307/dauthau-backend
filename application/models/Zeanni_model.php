@@ -773,7 +773,7 @@ class Zeanni_model extends CI_Model
         }
 
         if (!empty($where)) {
-            $where = ' where ' . join(' and ', $where);
+            $where = ' ' . join(' and ', $where);
         } else {
             $where = '';
         }
@@ -787,7 +787,7 @@ class Zeanni_model extends CI_Model
                      a1.\"PROVINCE\" as \"a1-zn-PROVINCE\",
                      to_char(a1.\"APPROVAL_DATE\", 'yyyy-mm-dd hh24:mi:ss') as \"a1-zn-APPROVAL_DATE\"
                 from \"TBL_PROCURINGS\" a1
-                " . $where . "
+                where (a1.\"STATUS\" = 'Y' OR a1.\"STATUS\" = 'N') " . $where . "
                 ORDER BY NVL(a1.\"APPROVAL_DATE\",TO_DATE('1111-01-01','yyyy-MM-dd')) desc
             ) a 
             WHERE rownum < ((" . $page . " * 100) + 1 ) 
