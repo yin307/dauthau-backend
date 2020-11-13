@@ -534,6 +534,7 @@ class Zeanni extends CI_Controller
     {
         $data = array("errCode" => 0, "msg" => "ok", "data" => array("data" => array(), "lable" => array()));
         $data["data"]["data"] = $this->Zeanni->listBidings_Detail();
+        print_r($data);
         echo json_encode($data);
     }
     public function Ajax_updateViewNews()
