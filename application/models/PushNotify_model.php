@@ -578,7 +578,7 @@ class PushNotify_model extends CI_Model implements PushNotify{
             null as TIME_END_PUSH,
             0 as TIMES,
             null as NOTI_VERSION_NUM_LOG,
-            \'/home\' as "URL",
+            CONCAT(\'/nha_thau___chi_tiet/\',a1.BUSSINESS_REGISTRATION_NUM) as "URL",
             \'Phê duyệt đăng ký nhà thầu\' as "HEADER"
           from TBL_BIDERS a1
           left join CONTENT_PUSH a2 on a2.NAME_TABLE=\'TBL_BIDERS\' and a2.TABLE_ID=a1."BUSSINESS_REGISTRATION_NUM" and a2.TYPE_PUSH=\'phe_duyet_dang_ky_nha_thau\'

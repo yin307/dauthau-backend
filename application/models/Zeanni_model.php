@@ -1348,7 +1348,7 @@ class Zeanni_model extends CI_Model
                     a3.CONTRACT_TYPE, a1.SELECTION_BIDER_REASON,
                     a1.CODEKH,a2.BID_PACKAGE_ID,a4.BIDER_SELECTION_ID,
                     a2.CODEKH,
-                    a1.\"APPROVAL_CERTIFICATE,
+                    a1.\"APPROVAL_CERTIFICATE\",
                     a1.\"PUBLIC_DATE\",
                     a1.\"BIDPROJECT\",
                     a1.\"BUYER\"
