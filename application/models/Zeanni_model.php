@@ -1257,6 +1257,10 @@ class Zeanni_model extends CI_Model
         //     from \"TBL_BIDINGS\" a1 
         //     where a1.\"NOTI_TYPE\" = '1' 
         //     group by a1.\"BID_PACKAGE_CODE\") a2 on a2.\"BIDING_ID\"=a1.\"BIDING_ID\"
+
+
+        // bo noti_type=1
+
         $sql = "SELECT * FROM ( 
             SELECT a.*,NVL(a.\"a1-zn-PACKAGE_NAME1\",a2.PACKAGE_NAME) as \"a1-zn-PACKAGE_NAME\", rownum r__ 
             FROM ( 
