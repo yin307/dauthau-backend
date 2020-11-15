@@ -1185,7 +1185,8 @@ class Zeanni_model extends CI_Model
                 a3.\"BIDING_ID\" as \"a3-zn-BIDING_ID\",a1.\"COUNT_SUB\",a1.STAGE_BIDDING,a1.\"PROCURING_CODE\",
                 a1.\"PRE_DOC_PLACE\",
                 a1.\"PRE_OPEN_PLACE\",
-                a1.\"EXCUTE_CONTRACT_TIME\"
+                a1.\"EXCUTE_CONTRACT_TIME\",
+                a1.\"TYPE\"
             from \"TBL_BID_PACKAGES\" a1 
             left join \"TBL_PROCURINGS\" a2  on a2.\"PROCURING_CODE\" = a1.\"PROCURING_CODE\" 
             left join \"TBL_BIDINGS\" a3 on a1.\"BID_PACKAGE_CODE\" = a3.\"BID_BID_PACKAGE_CODE\" and a3.\"NOTI_TYPE\" != 1
