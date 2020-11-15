@@ -1276,7 +1276,7 @@ class Zeanni_model extends CI_Model
                     from \"TBL_BIDINGS\" a1 
                     where a1.\"NOTI_TYPE\" = '1' 
                     group by a1.\"BID_PACKAGE_CODE\") a2 on a2.\"BIDING_ID\"=a1.\"BIDING_ID\"
-                " . $where . " and a1.\"NOTI_TYPE\" = '1' 
+                " . $where . "
                 order by  NVL(a1.\"PUBLIC_DATE\",TO_DATE('1000-01-01','yyyy-MM-dd')) desc,NVL(a1.\"UPDATE_DATE\",TO_DATE('1000-01-01','yyyy-MM-dd')) desc 
             ) a 
             left join TBL_BID_PACKAGES a2 on a2.BID_PACKAGE_CODE = a.\"a1-zn-BID_PACKAGE_CODE\"
@@ -1354,8 +1354,7 @@ class Zeanni_model extends CI_Model
                     a2.CODEKH,
                     a1.\"PUBLIC_DATE\",
                     a1.\"BIDPROJECT\",
-                    a1.\"BUYER\",
-                    DBMS_LOB.SUBSTR(a1.\"APPROVAL_CERTIFICATE\",3000) as APPROVAL_CERTIFICATE
+                    a1.\"BUYER\"
                   from \"TBL_BIDINGS\" a1 
                   left join TBL_BID_PACKAGES a2 on a2.BID_PACKAGE_CODE = a1.\"BID_PACKAGE_CODE\"
                   left join TBL_PACKAGE_INFO a3 on a3.PACKAGE_NUM = a1.CODEKH
