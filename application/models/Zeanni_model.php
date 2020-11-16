@@ -788,7 +788,9 @@ class Zeanni_model extends CI_Model
                      to_char(a1.\"APPROVAL_DATE\", 'yyyy-mm-dd hh24:mi:ss') as \"a1-zn-APPROVAL_DATE\",
                      a1.\"STATUS\"
                 from \"TBL_PROCURINGS\" a1 
-                where (a1.\"STATUS\" = 'Y' OR a1.\"STATUS\" = 'N') and a1.\"APPROVAL_DATE\" is not null " . $where . "
+                where 
+                -- (a1.\"STATUS\" = 'Y' OR a1.\"STATUS\" = 'N') and 
+                a1.\"APPROVAL_DATE\" is not null " . $where . "
                 ORDER BY NVL(a1.\"APPROVAL_DATE\",TO_DATE('1111-01-01','yyyy-MM-dd')) desc
             ) a 
             WHERE rownum < ((" . $page . " * 100) + 1 ) 
@@ -1356,7 +1358,7 @@ class Zeanni_model extends CI_Model
                     a3.CONTRACT_TYPE, a1.SELECTION_BIDER_REASON,
                     a1.CODEKH,a2.BID_PACKAGE_ID,a4.BIDER_SELECTION_ID,
                     a2.CODEKH,
-                    a1.\"PUBLIC_DATE\",
+                    to_char(a1.\"PUBLIC_DATE\", 'yyyy-mm-dd hh24:mi:ss') as \"PUBLIC_DATE\",
                     a1.\"BIDPROJECT\",
                     a1.\"BUYER\"
                   from \"TBL_BIDINGS\" a1 
