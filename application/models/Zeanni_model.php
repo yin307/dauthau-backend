@@ -887,7 +887,7 @@ class Zeanni_model extends CI_Model
                         a1.\"VERSION_NUM\" as \"a1-zn-VERSION_NUM\",  a2.\"PROCURING_NAME\" as \"a2-zn-PROCURING_NAME\",  
                         a1.\"INVESTORS\" as \"a1-zn-INVESTORS\",  a1.\"TYPE\" as \"a1-zn-TYPE\",  
                         a1.\"APPROVAL_STATUS\" as \"a1-zn-APPROVAL_STATUS\",  a1.\"VALUE\" as \"a1-zn-VALUE\",  
-                        a1.\"APPROVAL_OFFICE\" as \"a1-zn-APPROVAL_OFFICE\",  
+                         a1.\"APPROVAL_OFFICE\" as \"a1-zn-APPROVAL_OFFICE\",  
                         a1.\"APPROVAL_DOC_NUM\" as \"a1-zn-APPROVAL_DOC_NUM\",  
                         to_char(a1.\"APPROVAL_DATE\", 'yyyy-mm-dd hh24:mi:ss') as \"a1-zn-APPROVAL_DATE\",
                         to_char(a1.\"CREATE_DATE\", 'yyyy-mm-dd hh24:mi:ss') as \"a1-zn-CREATE_DATE\",
@@ -1017,7 +1017,7 @@ class Zeanni_model extends CI_Model
                     a1.\"OPEN_PLACE\",
                     a2.\"EFFECTIVE_DATE\"
                     from \"TBL_BID_PACKAGES\" a1 
-                    inner join \"TBL_PROCURINGS\" a2  on a1.\"PROCURING_CODE\" = a2.\"PROCURING_CODE\"
+                    left join \"TBL_PROCURINGS\" a2  on a1.\"PROCURING_CODE\" = a2.\"PROCURING_CODE\"
                     where a1.\"PREQUALIFICATION_STATUS\" =  '1' and a1.\"FIELD\" = '" . $BUSSINESS_FIELD . "' " . $where . "
                     order by  a1.\"CREATE_DATE\" desc
             ) a 
@@ -1082,7 +1082,7 @@ class Zeanni_model extends CI_Model
                         a1.\"PROCURING_CODE\",
                         a2.\"EFFECTIVE_DATE\",
                         a1.\"TYPE\"
-                        from \"TBL_BID_PACKAGES\" a1 inner join \"TBL_PROCURINGS\" a2  on a1.\"PROCURING_CODE\" = a2.\"PROCURING_CODE\"
+                        from \"TBL_BID_PACKAGES\" a1 left join \"TBL_PROCURINGS\" a2  on a1.\"PROCURING_CODE\" = a2.\"PROCURING_CODE\"
                         where (a1.\"PREQUALIFICATION_STATUS\" !=  '1' or a1.\"PREQUALIFICATION_STATUS\" is null)
                             and a1.\"FIELD\" = '" . $BUSSINESS_FIELD . "' " . $where . "
                         order by  a1.\"CREATE_DATE\" desc
