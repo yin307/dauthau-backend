@@ -1071,7 +1071,7 @@ class Zeanni_model extends CI_Model
                     SELECT a.*, rownum r__ 
                     FROM ( 
                         select a1.\"BID_PACKAGE_ID\" as \"a1-zn-BID_PACKAGE_ID\",  
-                        a2.\"PROCURING_NAME\" as \"a2-zn-PROCURING_NAME\",  a1.\"PACKAGE_NAME\" as \"a1-zn-PACKAGE_NAME\",  
+                        NVL(a2.\"PROCURING_NAME\", a1.\"INVESTOR\") as \"a2-zn-PROCURING_NAME\",  a1.\"PACKAGE_NAME\" as \"a1-zn-PACKAGE_NAME\",  
                         a1.\"BID_PACKAGE_CODE\" as \"a1-zn-BID_PACKAGE_CODE\",  a1.\"NOTI_VERSION_NUM\" as \"a1-zn-NOTI_VERSION_NUM\", 
                         a1.\"LOCATION\" as \"a1-zn-LOCATION\",  
                         to_char(a1.\"START_SUBMISSION_DATE\", 'yyyy-mm-dd hh24:mi:ss') as \"a1-zn-START_SUBMISSION_DATE\",  
