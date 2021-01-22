@@ -256,8 +256,8 @@ class Zeanni_model extends CI_Model
                 if($ORGANIZATION_ID === null)
                     $ORGANIZATION_ID = '';
 
-                // $arr[$row['TYPE']] = array(
-                $arr['doanhnghiep'] = array(
+                $arr[$row['TYPE']] = array(
+                // $arr['doanhnghiep'] = array(
                     'ORGANIZATION_ID' => $ORGANIZATION_ID,
                     'STATUS_ORGANIZATION' => $row['STATUS_ORGANIZATION'],
                     'TYPE' => $row['TYPE'],
