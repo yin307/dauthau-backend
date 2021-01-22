@@ -263,6 +263,11 @@ class Zeanni_model extends CI_Model
                 );
             }
             $data = $data[0];
+
+            if($data['ORGANIZATION_ID'] === null){
+                $data['ORGANIZATION_ID'] = '';
+            }
+
             $data['ORGANIZATION'] = $arr;
             $sql = 'select *
             from "TBL_PACKAGE_FOLLOWS_V2"
