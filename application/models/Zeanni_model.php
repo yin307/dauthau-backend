@@ -243,7 +243,7 @@ class Zeanni_model extends CI_Model
             return array('errorCode' => 1, 'data' => array());
         }
 
-        $this->db->select("a.USER_ID,a.FULLNAME,a.EMAIL,a.STATUS,a.TOKEN,a.TEL_NUM,a.BIRTHDAY,a.SEX,NVL(b.\"ORGANIZATION_ID\", ''),a.SOCIAL_ID,b.TYPE,b.STATUS as STATUS_ORGANIZATION");
+        $this->db->select("a.USER_ID,a.FULLNAME,a.EMAIL,a.STATUS,a.TOKEN,a.TEL_NUM,a.BIRTHDAY,a.SEX,b.ORGANIZATION_ID,a.SOCIAL_ID,b.TYPE,b.STATUS as STATUS_ORGANIZATION");
         $this->db->from('TBL_USERS a');
         $this->db->join('AW_USER_ORGANIZATION b', 'b.USER_ID = a.USER_ID', 'left');
         $this->db->where($arrWhere);
@@ -252,8 +252,12 @@ class Zeanni_model extends CI_Model
         if (!empty($data)) {
             $arr = array();
             foreach ($data as $row) {
+                $ORGANIZATION_ID = $row['ORGANIZATION_ID'];
+                if($ORGANIZATION_ID === null)
+                    $ORGANIZATION_ID = '';
+
                 $arr[$row['TYPE']] = array(
-                    'ORGANIZATION_ID' => $row['ORGANIZATION_ID'],
+                    'ORGANIZATION_ID' => $ORGANIZATION_ID,
                     'STATUS_ORGANIZATION' => $row['STATUS_ORGANIZATION'],
                     'TYPE' => $row['TYPE'],
                 );
