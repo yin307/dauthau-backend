@@ -1557,7 +1557,7 @@ class Zeanni_model extends CI_Model
             a2."PACKAGE_FOLLOW_ID",a3."USER_ID"
         from "TBL_PACKAGE_INFO" a1
         inner join "TBL_PACKAGE_FOLLOWS_V2" a2 on a2."BID_PACKAGE_ID" = a1."ID"
-        inner join "TBL_USERS" a3 on a3."USER_ID" = 7769 and a2."IS_SUB_PACKAGE"=0';
+        inner join "TBL_USERS" a3 on a3."USER_ID" = 7769 where a2."IS_SUB_PACKAGE"=0';
         // where a3."TOKEN" = \'' . $token . '\' and a2."IS_SUB_PACKAGE"=0';
         // echo $sql;
         $query = $this->db->query($sql);
@@ -1578,7 +1578,7 @@ class Zeanni_model extends CI_Model
         from "TBL_BID_PACKAGES" a1 
         inner join "TBL_PROCURINGS" a2  on a1."PROCURING_CODE" = a2."PROCURING_CODE"                  
         inner join "TBL_PACKAGE_FOLLOWS_V2" a3 on a3."BID_PACKAGE_ID" = a1."BID_PACKAGE_ID"
-        inner join "TBL_USERS" a4 on a4."USER_ID" = 7769 a3."IS_SUB_PACKAGE"=1';
+        inner join "TBL_USERS" a4 on a4."USER_ID" = 7769 where a3."IS_SUB_PACKAGE"=1';
         // where a4."TOKEN" = \'' . $token . '\' and a3."IS_SUB_PACKAGE"=1';
         // echo '<br/>'.$sql;
         $query = $this->db->query($sql);
