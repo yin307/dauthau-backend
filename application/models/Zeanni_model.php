@@ -1602,7 +1602,7 @@ class Zeanni_model extends CI_Model
             'error' => 0,
             'msg' => 'OK',
             'data' => $res,
-            'token' => $token,
+            'token' => 'assdddsdd'.$token,
         );
     }
 
