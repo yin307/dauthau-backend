@@ -1586,7 +1586,8 @@ class Zeanni_model extends CI_Model
         $res = array(
             'PACKAGE_INFO' => $data1,
             'BID_PACKAGES' => array(),
-            'BID_PACKAGES_PREQUALIFICATION' => array()
+            'BID_PACKAGES_PREQUALIFICATION' => array(),
+            'token' => 'assdddsdd'.$token,
         );
         foreach ($data2 as $k => $v) {
             if ($v['PREQUALIFICATION_STATUS'] == 1) {
@@ -1602,7 +1603,7 @@ class Zeanni_model extends CI_Model
             'error' => 0,
             'msg' => 'OK',
             'data' => $res,
-            'token' => 'assdddsdd'.$token,
+            
         );
     }
 
