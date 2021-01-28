@@ -1539,13 +1539,13 @@ class Zeanni_model extends CI_Model
     {
         $arr = getallheaders();
         // print_r($arr);
-        if (empty($arr['x-csrftoken'])) {
-            return array(
-                'error' => 1,
-                'msg' => 'Không lấy được giá trị TOKEN truyền lên.',
-                'data' => ''
-            );
-        }
+        // if (empty($arr['x-csrftoken'])) {
+        //     return array(
+        //         'error' => 1,
+        //         'msg' => 'Không lấy được giá trị TOKEN truyền lên.',
+        //         'data' => ''
+        //     );
+        // }
         $token = $this->db->escape_str(trim($arr['x-csrftoken']));
 
         $sql = 'select  a1."ID" as "a1-zn-ID",  a1."CODE" as "a1-zn-CODE",  
