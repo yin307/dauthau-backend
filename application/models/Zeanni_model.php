@@ -1601,7 +1601,8 @@ class Zeanni_model extends CI_Model
         return array(
             'error' => 0,
             'msg' => 'OK',
-            'data' => $res
+            'data' => $res,
+            'token' => $token,
         );
     }
 
