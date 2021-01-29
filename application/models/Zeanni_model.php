@@ -1563,9 +1563,9 @@ class Zeanni_model extends CI_Model
         $query = $this->db->query($sql);
         $data1 =  $query->result_array();
 
-        $sql = 'select a1."BID_PACKAGE_ID" as "a1-zn-BID_PACKAGE_ID",  a2."PROCURING_NAME" as "a2-zn-PROCURING_NAME",        
+        $sql = 'select a1."BID_PACKAGE_ID" as "a1-zn-BID_PACKAGE_ID",  NVL(a2."PROCURING_NAME", a1."INVESTOR") as "a2-zn-PROCURING_NAME",        
             a1."PACKAGE_NAME" as "a1-zn-PACKAGE_NAME",  a1."BID_PACKAGE_CODE" as "a1-zn-BID_PACKAGE_CODE",                      
-            a1."NOTI_VERSION_NUM" as "a1-zn-NOTI_VERSION_NUM",  a2."PROVINCE" as "a1-zn-LOCATION",                      
+            a1."NOTI_VERSION_NUM" as "a1-zn-NOTI_VERSION_NUM",  a1."LOCATION" as "a1-zn-LOCATION",                      
             to_char(a1."PRE_START_DOC_DATE", \'yyyy-mm-dd hh24:mi:ss\') as "a1-zn-START_SUBMISSION_DATE",                  
             to_char(a1."PRE_FINISH_DOC_DATE", \'yyyy-mm-dd hh24:mi:ss\') as "a1-zn-FINISH_SUBMISSION_DATE",                  
             to_char(a1."CREATE_DATE", \'yyyy-mm-dd hh24:mi:ss\') as "a1-zn-CREATE_DATE",                   
@@ -1576,7 +1576,7 @@ class Zeanni_model extends CI_Model
             to_char(a1."FINISH_SUBMISSION_DATE", \'yyyy-mm-dd hh24:mi:ss\') as "FINISH_SUBMISSION_DATE",
             NVL(a1."PREQUALIFICATION_STATUS",0) as "PREQUALIFICATION_STATUS"
         from "TBL_BID_PACKAGES" a1 
-        inner join "TBL_PROCURINGS" a2  on a1."PROCURING_CODE" = a2."PROCURING_CODE"                  
+        left join "TBL_PROCURINGS" a2  on a1."PROCURING_CODE" = a2."PROCURING_CODE"                  
         inner join "TBL_PACKAGE_FOLLOWS_V2" a3 on a3."BID_PACKAGE_ID" = a1."BID_PACKAGE_ID"
         inner join "TBL_USERS" a4 on a4."USER_ID" = a3."USER_ID"
         where a4."TOKEN" = \'' . $token . '\' and a3."IS_SUB_PACKAGE"=1';
