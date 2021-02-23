@@ -694,9 +694,8 @@ class Zeanni_model extends CI_Model
 
         if (!empty($where)) {
             $where = ' where ' . join(' and ', $where);
-            $where = $where. " and (a1.STATUS='Y' OR a1.BUSSINESS_REGISTRATION_NUM in (SELECT BIZ_REG_NO FROM TBL_RETAIL)) ";
         } else {
-            $where = " where (a1.STATUS='Y' OR a1.BUSSINESS_REGISTRATION_NUM in (SELECT BIZ_REG_NO FROM TBL_RETAIL))";
+            
         }
         $page = empty($_GET['page']) ? 1 : (int)$_GET['page'];
         $sql = "SELECT * FROM ( 
@@ -712,7 +711,41 @@ class Zeanni_model extends CI_Model
                     to_char(a1.\"WEBSITE\") as \"a1-zn-WEBSITE\",  
                     a1.\"ADDRESS\" as \"a1-zn-ADDRESS\",  a1.\"BUSSINESS_FIELD\" as \"a1-zn-BUSSINESS_FIELD\",  
                     a1.\"BIDER_EN_NAME\" as \"a1-zn-BIDER_EN_NAME\",  a1.\"BUSSINESS_TYPE\" as \"a1-zn-BUSSINESS_TYPE\"
-                from \"TBL_BIDERS\" a1
+                from (
+                       
+                    (select a3.\"BIDER_NAME\",
+                a3.\"BUSSINESS_REGISTRATION_NUM\",
+                a3.\"BUSSINESS_REGISTRATION_DATE\",
+                a3.\"TAXNUMBER\",
+                a3.\"TEL_NUM\",
+                a3.\"APPROVAL_DATE\",
+                a3.\"FAX_NUM\",
+                a3.\"PROVINCE\",
+                to_char(a3.\"WEBSITE\") as WEBSITE,
+                a3.\"ADDRESS\",
+                a3.\"BUSSINESS_FIELD\",
+                a3.\"BIDER_EN_NAME\",
+                a3.\"BUSSINESS_TYPE\" from TBL_BIDERS a3 where a3.status='Y')
+                        union
+                    (select a2.\"BIDER_NAME\",
+                a2.\"BUSSINESS_REGISTRATION_NUM\",
+                a2.\"BUSSINESS_REGISTRATION_DATE\",
+                a2.\"TAXNUMBER\",
+                a2.\"TEL_NUM\",
+                a2.\"APPROVAL_DATE\",
+                a2.\"FAX_NUM\",
+                a2.\"PROVINCE\",
+                to_char(a2.\"WEBSITE\") as WEBSITE,
+                a2.\"ADDRESS\",
+                a2.\"BUSSINESS_FIELD\",
+                a2.\"BIDER_EN_NAME\",
+                a2.\"BUSSINESS_TYPE\" from 
+                        TBL_BIDERS a2 
+                        inner join tbl_retain a3 
+                        on a2.bussiness_registration_num = a3.biz_reg_no 
+                    )
+                
+                )  a1
                 " . $join
             . $where . "
                 ORDER BY " . $orderBy . " NVL(a1.\"APPROVAL_DATE\",TO_DATE('1111-01-01','yyyy-MM-dd')) desc
