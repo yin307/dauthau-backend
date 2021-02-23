@@ -695,7 +695,7 @@ class Zeanni_model extends CI_Model
         if (!empty($where)) {
             $where = ' where ' . join(' and ', $where);
         } else {
-            
+            $where = '';
         }
         $page = empty($_GET['page']) ? 1 : (int)$_GET['page'];
         $sql = "SELECT * FROM ( 
@@ -753,7 +753,7 @@ class Zeanni_model extends CI_Model
             WHERE rownum < ((" . $page . " * 100) + 1 ) 
         ) WHERE r__ >= (((" . $page . "-1) * 100) + 1)";
 
-        echo $sql;
+        // echo $sql;
 
         $query = $this->db->query($sql);
         $data =  $query->result_array();
