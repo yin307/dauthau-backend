@@ -836,7 +836,7 @@ class Zeanni_model extends CI_Model
                      a1.\"STATUS\"
                 from \"TBL_PROCURINGS\" a1 
                 where 
-                (a1.\"STATUS\" = 'Y') and 
+                (a1.\"STATUS\" = 'Y' OR a1.\"STATUS\" = 'B') and 
                 a1.\"APPROVAL_DATE\" is not null " . $where . "
                 ORDER BY NVL(a1.\"APPROVAL_DATE\",TO_DATE('1111-01-01','yyyy-MM-dd')) desc
             ) a 
@@ -1611,7 +1611,8 @@ class Zeanni_model extends CI_Model
             a1."ESTIMATE_PRICE" as "a1-zn-ESTIMATE_PRICE",
             to_char(a1."START_SUBMISSION_DATE", \'yyyy-mm-dd hh24:mi:ss\') as "START_SUBMISSION_DATE",
             to_char(a1."FINISH_SUBMISSION_DATE", \'yyyy-mm-dd hh24:mi:ss\') as "FINISH_SUBMISSION_DATE",
-            NVL(a1."PREQUALIFICATION_STATUS",0) as "PREQUALIFICATION_STATUS"
+            NVL(a1."PREQUALIFICATION_STATUS",0) as "PREQUALIFICATION_STATUS",
+            a2."PROCURING_CODE" as PROCURING_CODE
         from "TBL_BID_PACKAGES" a1 
         left join "TBL_PROCURINGS" a2  on a1."PROCURING_CODE" = a2."PROCURING_CODE"                  
         inner join "TBL_PACKAGE_FOLLOWS_V2" a3 on a3."BID_PACKAGE_ID" = a1."BID_PACKAGE_ID"
