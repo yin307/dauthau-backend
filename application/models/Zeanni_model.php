@@ -694,8 +694,9 @@ class Zeanni_model extends CI_Model
 
         if (!empty($where)) {
             $where = ' where ' . join(' and ', $where);
+            $where = $where. " and (a1.STATUS='Y' OR a1.BUSSINESS_REGISTRATION_NUM in (SELECT BIZ_REG_NO IN TBL_RETAIL)) ";
         } else {
-            $where = '';
+            $where = " where (a1.STATUS='Y' OR a1.BUSSINESS_REGISTRATION_NUM in (SELECT BIZ_REG_NO IN TBL_RETAIL))";
         }
         $page = empty($_GET['page']) ? 1 : (int)$_GET['page'];
         $sql = "SELECT * FROM ( 
