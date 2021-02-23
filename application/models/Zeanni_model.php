@@ -719,6 +719,9 @@ class Zeanni_model extends CI_Model
             ) a 
             WHERE rownum < ((" . $page . " * 100) + 1 ) 
         ) WHERE r__ >= (((" . $page . "-1) * 100) + 1)";
+
+        echo $sql;
+
         $query = $this->db->query($sql);
         $data =  $query->result_array();
         return $data;
