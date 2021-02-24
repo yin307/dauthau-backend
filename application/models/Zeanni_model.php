@@ -1408,7 +1408,7 @@ class Zeanni_model extends CI_Model
                     to_char(a1.\"PUBLIC_DATE\", 'yyyy-mm-dd hh24:mi:ss') as \"PUBLIC_DATE\",
                     a1.\"BIDPROJECT\",
                     a1.\"BUYER\",
-                    a1.\"approve_state\",
+                    a1.\"APPROVE_STATE\",
                     a1.\"CANCEL_YN\"
                   from \"TBL_BIDINGS\" a1 
                   left join TBL_BID_PACKAGES a2 on a2.BID_PACKAGE_CODE = a1.\"BID_PACKAGE_CODE\"
