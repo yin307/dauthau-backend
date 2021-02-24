@@ -1412,10 +1412,10 @@ class Zeanni_model extends CI_Model
                   left join TBL_BID_PACKAGES a2 on a2.BID_PACKAGE_CODE = a1.\"BID_PACKAGE_CODE\"
                   left join TBL_PACKAGE_INFO a3 on a3.PACKAGE_NUM = a1.CODEKH
                   left join TBL_BIDER_SELECTIONS a4 on a3.CODE = a4.BIDER_SELECTION_ID
-                where  '" . $_getSegment[2] . "'  = a1.\"BIDING_ID\" and a1.approve_state  = 'Y' and (a1.CANCEL_YN='N' or a1.CANCEL_YN is null)";
+                where  '" . $_getSegment[2] . "'  = a1.\"BIDING_ID\"";
         $query = $this->db->query($sql);
         $data =  $query->result_array();
-
+        //where  '" . $_getSegment[2] . "'  = a1.\"BIDING_ID\" and a1.approve_state  = 'Y' and (a1.CANCEL_YN='N' or a1.CANCEL_YN is null)";
         //get list nha thau qua vong so tuyen
         //BID_PACKAGE_CODE
         if (!empty($data) && !empty($_GET['NOTI_TYPE'])) {
