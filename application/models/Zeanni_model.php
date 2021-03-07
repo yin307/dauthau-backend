@@ -1438,7 +1438,7 @@ class Zeanni_model extends CI_Model
             $sql = 'select a1."BIDER_NAME" as "a1-zn-BIDER_NAME",
                         a1.BUSSINESS_REGISTRATION_NUM
                 from "TBL_BIDINGS" a1 
-            where  \'' . $data[0]['a1-zn-BID_PACKAGE_CODE'] . '\'  = a1."BID_PACKAGE_CODE"
+            where  \'' . $data[0]['a1-zn-BID_PACKAGE_CODE'] . '\'  = a1."BID_PACKAGE_CODE" and a1.BIDER_NAME IS NOT NULL
             group by a1."BIDER_NAME", a1.BUSSINESS_REGISTRATION_NUM ';
 
             $query = $this->db->query($sql);
