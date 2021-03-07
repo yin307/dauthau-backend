@@ -749,7 +749,7 @@ class Zeanni extends CI_Controller
         if(!empty($row)){
             $sql = "update AW_USERS_TYPE_PUSH
                 set SEND_PUSH = ".$status."
-            where USER_ID='".$UserId."' and ID=".$id;
+            where USER_ID='".$UserId."' and type_push_id=".$id;
         }
         else{
             $sql = "insert into AW_USERS_TYPE_PUSH(SEND_PUSH,type_push_id,user_id)
