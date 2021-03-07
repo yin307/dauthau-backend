@@ -1420,7 +1420,7 @@ class Zeanni_model extends CI_Model
         //where  '" . $_getSegment[2] . "'  = a1.\"BIDING_ID\" and a1.approve_state  = 'Y' and (a1.CANCEL_YN='N' or a1.CANCEL_YN is null)";
         //get list nha thau qua vong so tuyen
         //BID_PACKAGE_CODE
-        if (!empty($data) && !empty($_GET['NOTI_TYPE'])) {
+        if (!empty($data)) {
 
             // $sql = 'select a1."BIDER_NAME" as "a1-zn-BIDER_NAME",
             //             (
@@ -1436,7 +1436,7 @@ class Zeanni_model extends CI_Model
             $sql = 'select a1."BIDER_NAME" as "a1-zn-BIDER_NAME",
                         a1.BUSSINESS_REGISTRATION_NUM
                 from "TBL_BIDINGS" a1 
-            where  \'' . $data[0]['a1-zn-BID_PACKAGE_CODE'] . '\'  = a1."BID_PACKAGE_CODE" and a1."NOTI_TYPE"=1
+            where  \'' . $data[0]['a1-zn-BID_PACKAGE_CODE'] . '\'  = a1."BID_PACKAGE_CODE"
             group by a1."BIDER_NAME", a1.BUSSINESS_REGISTRATION_NUM ';
 
             $query = $this->db->query($sql);
