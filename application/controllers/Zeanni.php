@@ -727,8 +727,16 @@ class Zeanni extends CI_Controller
             $status=$_GET['status']==1?1:0;
         }
         
+        if(empty($id)){
+            $id = (int)$_POST['id'];
+        }
+        if(empty($status)){
+            $status = (int)$_POST['id'];
+        }
 
-        $UserId = $this->Zeanni->getUserId();
+        // $UserId = $this->Zeanni->getUserId();
+        echo $id.'  '.$status;
+        $UserId = '7745';
         if($UserId==-1 || !isset($status) || empty($id)){
             $data = array("errCode" => 1, "msg" => 'Error', "data" => array());
             echo json_encode($data);
