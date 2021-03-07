@@ -735,7 +735,7 @@ class Zeanni extends CI_Controller
             die;
         }
 
-        $sql = 'select ID from AW_USERS_TYPE_PUSH where type_push_id='.$id.' and user_id='.$UserId;
+        $sql = 'select ID, user_id from AW_USERS_TYPE_PUSH where type_push_id='.$id.' and user_id='.$UserId;
         $query = $this->db->query($sql);
         $row = $query->row_array();
         if(!empty($row)){
