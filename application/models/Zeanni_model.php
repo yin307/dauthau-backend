@@ -1011,6 +1011,8 @@ class Zeanni_model extends CI_Model
                                     ";
         }
 
+        
+
         $sql = "SELECT * FROM ( 
                     SELECT a.*, rownum r__ 
                     FROM ( 
@@ -1026,7 +1028,7 @@ class Zeanni_model extends CI_Model
                         from \"TBL_BIDINGS\" a1
                         left join \"TBL_BID_PACKAGES\" a2  on a2.\"BID_PACKAGE_CODE\" = a1.\"BID_PACKAGE_CODE\"" .
             " where (a1.\"NOTI_TYPE\" !=  '1' or a1.\"NOTI_TYPE\"  is null) and a1.\"FIELD\"='" . $BUSSINESS_FIELD . "'
-                        " . $where . "
+                        " . $where . " and NOT EXISTS(SELECT NULL FROM \"TBL_BID_CANCEL\" bc WHERE a1.\"BID_PACKAGE_CODE\" = bc.BID_NO)
                         order by  NVL(a1.\"PUBLIC_DATE\",TO_DATE('1000-01-01','yyyy-MM-dd')) desc
                     ) a 
                     WHERE rownum < ((" . $page . " * 100) + 1 ) 
