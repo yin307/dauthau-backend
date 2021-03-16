@@ -191,7 +191,7 @@ class PushNotify_model extends CI_Model implements PushNotify{
     else if($call==4){
         //lấy những gói thầu chuẩn bị đóng thầu. (gói chinh thuc)
         $sql = 'INSERT INTO CONTENT_PUSH("NAME_TABLE","BID_PACKAGE_CODE","TABLE_ID","TYPE_PUSH","DATE_CREATED",
-            "CONTENT_PUSH","TIME_START_PUSH","TIME_END_PUSH","TIMES","NOTI_VERSION_NUM_LOG","URL","HEADER")
+            "CONTENT_PUSH","TIME_START_PUSH","TIME_END_PUSH","TIMES","NOTI_VERSION_NUM_LOG","priority","URL","HEADER")
             
             select \'TBL_BID_PACKAGES\' as NAME_TABLE,
                 a1."BID_PACKAGE_CODE",
