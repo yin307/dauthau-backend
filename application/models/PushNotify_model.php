@@ -222,7 +222,7 @@ class PushNotify_model extends CI_Model implements PushNotify{
         
         //lấy những gói thầu chuẩn bị đóng thầu. (gói sơ tuyển)
         $sql = 'INSERT INTO CONTENT_PUSH("NAME_TABLE","BID_PACKAGE_CODE","TABLE_ID","TYPE_PUSH","DATE_CREATED",
-        "CONTENT_PUSH","TIME_START_PUSH","TIME_END_PUSH","TIMES","NOTI_VERSION_NUM_LOG","URL","HEADER")
+        "CONTENT_PUSH","TIME_START_PUSH","TIME_END_PUSH","TIMES","NOTI_VERSION_NUM_LOG","priority","URL","HEADER")
         
         select \'TBL_BID_PACKAGES\' as TBL_BID_PACKAGES,
           a1."BID_PACKAGE_CODE",
