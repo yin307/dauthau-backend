@@ -1024,12 +1024,14 @@ class Zeanni_model extends CI_Model
                         to_char(a1.\"APPROVAL_DATE\", 'yyyy-mm-dd hh24:mi:ss') as \"a1-zn-APPROVAL_DATE\",  
                         a1.\"BIDER_NAME\" as \"a1-zn-BIDER_NAME\",  a1.\"BID_PACKAGE_CODE\" as \"a1-zn-BID_PACKAGE_CODE\",  
                         a1.\"PRICE_BIDING\" as \"a1-zn-PRICE_BIDING\",  a1.\"PRICE_ACCEPT\" as \"a1-zn-PRICE_ACCEPT\",
-                        to_char(a1.PUBLIC_DATE, 'yyyy-mm-dd hh24:mi:ss') as \"a1-zn-CREATE_DATE\"
+                        to_char(a1.PUBLIC_DATE, 'yyyy-mm-dd hh24:mi:ss') as \"a1-zn-CREATE_DATE\",
+                        a3.\"BID_NO\" as \"BID_NO_CANCEL\"
                         from \"TBL_BIDINGS\" a1
-                        left join \"TBL_BID_PACKAGES\" a2  on a2.\"BID_PACKAGE_CODE\" = a1.\"BID_PACKAGE_CODE\"" .
+                        left join \"TBL_BID_PACKAGES\" a2  on a2.\"BID_PACKAGE_CODE\" = a1.\"BID_PACKAGE_CODE\" 
+                        left join \"TBL_BID_CANCEL\" a3 on a1.\"BID_PACKAGE_CODE\" = a3.\"BID_NO\"
+                        " .
             " where (a1.\"NOTI_TYPE\" !=  '1' or a1.\"NOTI_TYPE\"  is null) and a1.\"FIELD\"='" . $BUSSINESS_FIELD . "'
-                        " . $where . " and NOT EXISTS(SELECT NULL FROM \"TBL_BID_CANCEL\" bc WHERE a1.\"BID_PACKAGE_CODE\" = bc.BID_NO)
-                        order by  NVL(a1.\"PUBLIC_DATE\",TO_DATE('1000-01-01','yyyy-MM-dd')) desc
+                        " . $where . " order by  NVL(a1.\"PUBLIC_DATE\",TO_DATE('1000-01-01','yyyy-MM-dd')) desc
                     ) a 
                     WHERE rownum < ((" . $page . " * 100) + 1 ) 
                 ) WHERE r__ >= (((" . $page . "-1) * 100) + 1)";
