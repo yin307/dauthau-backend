@@ -1606,7 +1606,7 @@ class Zeanni_model extends CI_Model
         inner join "TBL_USERS" a3 on a3."USER_ID" = a2."USER_ID"
         where a3."TOKEN" = \'' . $token . '\' and a2."IS_SUB_PACKAGE"=0 
         order by a2.CREATE_DATE desc';
-        echo $sql;
+        // echo $sql;
         $query = $this->db->query($sql);
         $data1 =  $query->result_array();
 
