@@ -1584,15 +1584,15 @@ class Zeanni_model extends CI_Model
     {
         $arr = getallheaders();
         // print_r($arr);
-        // if (empty($arr['x-csrftoken'])) {
-        //     return array(
-        //         'error' => 1,
-        //         'msg' => 'Không lấy được giá trị TOKEN truyền lên.',
-        //         'data' => ''
-        //     );
-        // }
-        // $token = $this->db->escape_str(trim($arr['x-csrftoken']));
-        $token = '4e4af0a9a46e8a047ce5414561a23182';
+        if (empty($arr['x-csrftoken'])) {
+            return array(
+                'error' => 1,
+                'msg' => 'Không lấy được giá trị TOKEN truyền lên.',
+                'data' => ''
+            );
+        }
+        $token = $this->db->escape_str(trim($arr['x-csrftoken']));
+        // $token = '4e4af0a9a46e8a047ce5414561a23182';
         // where a3."TOKEN" = \'' . $token . '\' and a2."IS_SUB_PACKAGE"=0 
         $sql = 'select  a1."ID" as "a1-zn-ID",  a1."CODE" as "a1-zn-CODE",  
             a1."PACKAGE_NAME" as "a1-zn-PACKAGE_NAME",  
