@@ -1628,7 +1628,7 @@ class Zeanni_model extends CI_Model
         inner join "TBL_PACKAGE_FOLLOWS_V2" a3 on a3."BID_PACKAGE_ID" = a1."BID_PACKAGE_ID"
         inner join "TBL_USERS" a4 on a4."USER_ID" = a3."USER_ID"
         where a4."TOKEN" = \'' . $token . '\' and a3."IS_SUB_PACKAGE"=1 
-        order by a2.CREATE_DATE desc';
+        order by a3.CREATE_DATE desc';
         // echo '<br/>'.$sql;
         $query = $this->db->query($sql);
         $data2 =  $query->result_array();
