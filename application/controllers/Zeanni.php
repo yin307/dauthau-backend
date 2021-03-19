@@ -712,7 +712,8 @@ class Zeanni extends CI_Controller
 
         $sql = "select a1.*,NVL(a2.send_push,1) as send_push
         from AW_TYPE_PUSH a1
-        left join AW_USERS_TYPE_PUSH a2 on a2.type_push_id=a1.id and a2.user_id='".$id."'";
+        left join AW_USERS_TYPE_PUSH a2 on a2.type_push_id=a1.id and a2.user_id='".$id."'
+         order by a2.INDEX_SORT asc";
         $query = $this->db->query($sql);
         $data = $query->result_array();
         $data = array("errCode" => 0, "msg" => '0k', "data" => $data);
