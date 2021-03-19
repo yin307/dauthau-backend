@@ -1584,13 +1584,13 @@ class Zeanni_model extends CI_Model
     {
         $arr = getallheaders();
         // print_r($arr);
-        // if (empty($arr['x-csrftoken'])) {
-        //     return array(
-        //         'error' => 1,
-        //         'msg' => 'Không lấy được giá trị TOKEN truyền lên.',
-        //         'data' => ''
-        //     );
-        // }
+        if (empty($arr['x-csrftoken'])) {
+            return array(
+                'error' => 1,
+                'msg' => 'Không lấy được giá trị TOKEN truyền lên.',
+                'data' => ''
+            );
+        }
         $token = $this->db->escape_str(trim($arr['x-csrftoken']));
         // where a3."TOKEN" = \'' . $token . '\' and a2."IS_SUB_PACKAGE"=0 
         $sql = 'select  a1."ID" as "a1-zn-ID",  a1."CODE" as "a1-zn-CODE",  
@@ -1603,8 +1603,8 @@ class Zeanni_model extends CI_Model
         from "TBL_PACKAGE_INFO" a1
         inner join "TBL_PACKAGE_FOLLOWS_V2" a2 on a2."BID_PACKAGE_ID" = a1."ID"
         inner join "TBL_USERS" a3 on a3."USER_ID" = a2."USER_ID"
-        where a3."USERID" = "7769" and a2."IS_SUB_PACKAGE"=0 
-        order by a3."CREATE_DATE" desc';
+        where a3."TOKEN" = \'' . $token . '\' and a2."IS_SUB_PACKAGE"=0 
+        order by a2."CREATE_DATE" desc';
         // echo $sql;
         $query = $this->db->query($sql);
         $data1 =  $query->result_array();
@@ -1627,7 +1627,7 @@ class Zeanni_model extends CI_Model
         inner join "TBL_PACKAGE_FOLLOWS_V2" a3 on a3."BID_PACKAGE_ID" = a1."BID_PACKAGE_ID"
         inner join "TBL_USERS" a4 on a4."USER_ID" = a3."USER_ID"
         where a4."TOKEN" = \'' . $token . '\' and a3."IS_SUB_PACKAGE"=1 
-        order by a3."CREATE_DATE" desc';
+        order by a2."CREATE_DATE" desc';
         // echo '<br/>'.$sql;
         $query = $this->db->query($sql);
         $data2 =  $query->result_array();
