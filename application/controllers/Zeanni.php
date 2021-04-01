@@ -282,13 +282,13 @@ class Zeanni extends CI_Controller
     public function clearTableContentLogPush(){
         $this->PushNotify->clearTableContentLogPush();
     }
-    public function scanContentPush(){
+    public function scanContentPushV2(){
         $this->PushNotify->scanContentPush();
     }
     public function logContentPushByUser(){
         $this->PushNotify->logContentPushByUser();
     }
-    public function pushNotify(){
+    public function pushNotifyV2(){
         $this->PushNotify->pushNotify();
     }
     public function testPush(){
