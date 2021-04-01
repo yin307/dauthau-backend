@@ -149,7 +149,7 @@ class PushNotify_model extends CI_Model implements PushNotify{
         $this->db->query($sql);
 
         //update NOTI_VERSION_NUM_LOG
-        $sql = 'update TBL_BID_PACKAGES 
+        $sql = 'update TBL_BID_PACKAGES a1
                   set NOTI_VERSION_NUM_LOG=NOTI_VERSION_NUM
                 '.$where;
         $this->db->query($sql);
