@@ -1929,7 +1929,7 @@ class Zeanni_model extends CI_Model
         //             a1.BID_TYPE=2
         //         group by a1.LOCATION
         //         order by "C" desc';
-        echo $sql;
+            
         $query = $this->db->query($sql);
         $res = $query->result_array();
         $data = array();
