@@ -1026,7 +1026,8 @@ class Zeanni_model extends CI_Model
                         a1.\"PRICE_BIDING\" as \"a1-zn-PRICE_BIDING\",  a1.\"PRICE_ACCEPT\" as \"a1-zn-PRICE_ACCEPT\",
                         to_char(a1.PUBLIC_DATE, 'yyyy-mm-dd hh24:mi:ss') as \"a1-zn-CREATE_DATE\",
                         a3.\"BID_NO\" as \"BID_NO_CANCEL\",
-                        a1.\"RESULT_TYPE\" 
+                        a1.\"RESULT_TYPE\",
+                        a1.\"VENTURE_NAME\" 
                         from \"TBL_BIDINGS\" a1
                         left join \"TBL_BID_PACKAGES\" a2  on a2.\"BID_PACKAGE_CODE\" = a1.\"BID_PACKAGE_CODE\" 
                         left join \"TBL_BID_CANCEL\" a3 on a1.\"BID_PACKAGE_CODE\" = a3.\"BID_NO\"
@@ -1417,7 +1418,8 @@ class Zeanni_model extends CI_Model
                     a1.\"BUYER\",
                     a1.\"APPROVE_STATE\",
                     a1.\"CANCEL_YN\",
-                    a2.\"PREQUALIFICATION_STATUS\"
+                    a2.\"PREQUALIFICATION_STATUS\",
+                    a1.\"VENTURE_NAME\"
                   from \"TBL_BIDINGS\" a1 
                   left join TBL_BID_PACKAGES a2 on a2.BID_PACKAGE_CODE = a1.\"BID_PACKAGE_CODE\"
                   left join TBL_PACKAGE_INFO a3 on a3.PACKAGE_NUM = a1.CODEKH
