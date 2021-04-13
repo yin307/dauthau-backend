@@ -1139,7 +1139,7 @@ class Zeanni_model extends CI_Model
                         a1.\"OPEN_DATE\",
                         a1.\"TYPE\"
                         from \"TBL_BID_PACKAGES\" a1 left join \"TBL_PROCURINGS\" a2  on a1.\"PROCURING_CODE\" = a2.\"PROCURING_CODE\"
-                        where (a1.\"PREQUALIFICATION_STATUS\" !=  '1' or a1.\"PREQUALIFICATION_STATUS\" is null)
+                        where (a1.\"PREQUALIFICATION_STATUS\" !=  '1' or a1.\"PREQUALIFICATION_STATUS\" is null) and a1.\"FIELD\" is not null 
                             and a1.\"FIELD\" = '" . $BUSSINESS_FIELD . "' " . $where . "
                         order by  a1.\"CREATE_DATE\" desc
                     ) a 
@@ -1413,7 +1413,9 @@ class Zeanni_model extends CI_Model
                     to_char(a1.UPDATE_DATE, 'yyyy-mm-dd') as CREATE_DATE,
                     '' as STATUS_BID,
                     a3.CONTRACT_TYPE, a1.SELECTION_BIDER_REASON,
-                    a1.CODEKH,a2.BID_PACKAGE_ID,a4.BIDER_SELECTION_ID,
+                    a1.CODEKH,
+                    a2.BID_PACKAGE_ID,
+                    a4.BIDER_SELECTION_ID,
                     a2.CODEKH,
                     to_char(a1.\"PUBLIC_DATE\", 'yyyy-mm-dd hh24:mi:ss') as \"PUBLIC_DATE\",
                     a1.\"BIDPROJECT\",
