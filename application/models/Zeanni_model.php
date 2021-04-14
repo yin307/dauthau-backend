@@ -1150,7 +1150,7 @@ class Zeanni_model extends CI_Model
         $query = $this->db->query($sql);
         $data =  $query->result_array();
         return $data;
-    }
+    }go
 
     public function LayTongThongKe()
     {
