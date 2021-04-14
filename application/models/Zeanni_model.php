@@ -1137,6 +1137,7 @@ class Zeanni_model extends CI_Model
                         a1.\"PROCURING_CODE\",
                         a2.\"EFFECTIVE_DATE\",
                         a1.\"OPEN_DATE\",
+                        a1.\"PRICE\",
                         a1.\"TYPE\"
                         from \"TBL_BID_PACKAGES\" a1 left join \"TBL_PROCURINGS\" a2  on a1.\"PROCURING_CODE\" = a2.\"PROCURING_CODE\"
                         where (a1.\"PREQUALIFICATION_STATUS\" !=  '1' or a1.\"PREQUALIFICATION_STATUS\" is null) and a1.\"FIELD\" is not null and a1.\"PROCURING_CODE\" is not null 
