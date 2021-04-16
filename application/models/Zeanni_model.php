@@ -1319,6 +1319,10 @@ class Zeanni_model extends CI_Model
 
 
         // bo noti_type=1
+//inner join (select max(a1.\"BIDING_ID\") as \"BIDING_ID\", a1.\"BID_PACKAGE_CODE\"
+//'from \"TBL_BIDINGS\" a1 '
+//--where a1.\"NOTI_TYPE\" = '1' 
+//group by a1.\"BID_PACKAGE_CODE\") a2 on a2.\"BIDING_ID\"=a1.\"BIDING_ID\"
 
         $sql = "SELECT * FROM ( 
             SELECT a.*,NVL(a.\"a1-zn-PACKAGE_NAME1\",a2.PACKAGE_NAME) as \"a1-zn-PACKAGE_NAME\", rownum r__ 
@@ -1338,7 +1342,7 @@ class Zeanni_model extends CI_Model
                 from \"TBL_BIDINGS\" a1
                     
                 " . $where . "
-                order by  NVL(a1.\"PUBLIC_DATE\",TO_DATE('1000-01-01','yyyy-MM-dd')) desc,NVL(a1.\"UPDATE_DATE\",TO_DATE('1000-01-01','yyyy-MM-dd')) desc 
+                order by \"a1-zn-BID_PACKAGE_CODE\" desc 
             ) a 
             left join TBL_BID_PACKAGES a2 on a2.BID_PACKAGE_CODE = a.\"a1-zn-BID_PACKAGE_CODE\"
             WHERE rownum < ((" . $page . " * 100) + 1 ) 
