@@ -1033,7 +1033,7 @@ class Zeanni_model extends CI_Model
                         left join \"TBL_BID_PACKAGES\" a2  on a2.\"BID_PACKAGE_CODE\" = a1.\"BID_PACKAGE_CODE\" 
                         left join \"TBL_BID_CANCEL\" a3 on a1.\"BID_PACKAGE_CODE\" = a3.\"BID_NO\"
                         " .
-            " where a1.\"RESULT_TYPE\" = '2' and (a1.\"NOTI_TYPE\" !=  '1' or a1.\"NOTI_TYPE\"  is null) and a1.\"FIELD\"='" . $BUSSINESS_FIELD . "'
+            " where a1.\"RESULT_TYPE\" = '2' and a1.\"FIELD\"='" . $BUSSINESS_FIELD . "'
                         " . $where . " order by  NVL(a1.\"PUBLIC_DATE\",TO_DATE('1000-01-01','yyyy-MM-dd')) desc
                     ) a 
                     WHERE rownum < ((" . $page . " * 100) + 1 ) 
