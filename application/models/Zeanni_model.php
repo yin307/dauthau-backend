@@ -909,7 +909,7 @@ class Zeanni_model extends CI_Model
                         -- ) a2 on a1.\"BIDER_SELECTION_ID\" = a2.\"CODE\" 
                         -- left join \"TBL_PACKAGE_INFO\"  a5 on a5.\"ID\"=a2.\"ID\"
                         " . $where . "
-                        order by  a1.\"CREATE_DATE\" desc
+                        order by  a1.\"BIDER_SELECTION_ID\" desc
                     ) a
                     WHERE rownum < ((" . $page . " * 100) + 1 )
                 )
