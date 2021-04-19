@@ -940,7 +940,8 @@ class Zeanni_model extends CI_Model
                         to_char(a1.\"APPROVAL_DATE\", 'yyyy-mm-dd hh24:mi:ss') as \"a1-zn-APPROVAL_DATE\",
                         to_char(a1.\"CREATE_DATE\", 'yyyy-mm-dd hh24:mi:ss') as \"a1-zn-CREATE_DATE\",
                         a2.\"PROVINCE\" as \"PROVINCE\",
-                        a1.\"PROCURING_CODE\"
+                        a1.\"PROCURING_CODE\",
+                        a1.\"PRICE_STRING\"
                 from \"TBL_BIDER_SELECTIONS\" a1 
                 left join \"TBL_PROCURINGS\" a2  on a2.\"PROCURING_CODE\" = a1.\"PROCURING_CODE\" 
                 where  '" . $_getSegment['2'] . "'  = a1.\"BIDER_SELECTION_ID\"";
