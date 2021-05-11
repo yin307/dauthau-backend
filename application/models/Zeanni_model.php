@@ -909,13 +909,7 @@ class Zeanni_model extends CI_Model
                         a1.\"PROCURING_CODE\",
                         a1.\"PRICE_STRING\"
 
-                        from \"TBL_BIDER_SELECTIONS\" a1 
-                        -- left join ( 
-                        --         select \"CODE\",MAX(\"ID\") as \"ID\"
-                        --         from \"TBL_PACKAGE_INFO\" 
-                        --         group by CODE
-                        -- ) a2 on a1.\"BIDER_SELECTION_ID\" = a2.\"CODE\" 
-                        -- left join \"TBL_PACKAGE_INFO\"  a5 on a5.\"ID\"=a2.\"ID\"
+                        from \"TBL_BIDER_SELECTIONS\" a1                         
                         " . $where . "
                         order by  a1.\"BIDER_SELECTION_ID\" desc
                     ) a
