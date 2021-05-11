@@ -1349,7 +1349,7 @@ class Zeanni_model extends CI_Model
                     from \"TBL_BIDINGS\" a1                     
                     group by a1.\"BID_PACKAGE_CODE\") a2 on a2.\"BIDING_ID\"=a1.\"BIDING_ID\"
                 " . $where . "
-                order by a1.\"PUBLIC_DATE\" desc 
+                order by a1.\"BID_PACKAGE_CODE\" desc 
             ) a 
             left join TBL_BID_PACKAGES a2 on a2.BID_PACKAGE_CODE = a.\"a1-zn-BID_PACKAGE_CODE\"
             WHERE rownum < ((" . $page . " * 100) + 1 ) 
