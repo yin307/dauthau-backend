@@ -1354,7 +1354,7 @@ class Zeanni_model extends CI_Model
             left join TBL_BID_PACKAGES a2 on a2.BID_PACKAGE_CODE = a.\"a1-zn-BID_PACKAGE_CODE\"
             WHERE rownum < ((" . $page . " * 100) + 1 ) 
         ) WHERE r__ >= (((" . $page . "-1) * 100) + 1)";
-        // echo $sql;
+        echo $sql;
         $query = $this->db->query($sql);
         $data =  $query->result_array();
         if (!empty($_GET['s_test'])) {
