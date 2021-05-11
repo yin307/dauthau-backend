@@ -1346,8 +1346,7 @@ class Zeanni_model extends CI_Model
                         group by a3.\"BIDER_NAME\")) as COUNT_BIDER
                 from \"TBL_BIDINGS\" a1
                     inner join (select max(a1.\"BIDING_ID\") as \"BIDING_ID\", a1.\"BID_PACKAGE_CODE\"
-                    from \"TBL_BIDINGS\" a1 
-                    --where a1.\"NOTI_TYPE\" = '1' 
+                    from \"TBL_BIDINGS\" a1                     
                     group by a1.\"BID_PACKAGE_CODE\") a2 on a2.\"BIDING_ID\"=a1.\"BIDING_ID\"
                 " . $where . "
                 order by a1.\"PUBLIC_DATE\" desc 
