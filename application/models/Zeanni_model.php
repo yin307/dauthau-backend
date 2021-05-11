@@ -710,7 +710,9 @@ class Zeanni_model extends CI_Model
                     a1.\"PROVINCE\" as \"a1-zn-PROVINCE\",  
                     to_char(a1.\"WEBSITE\") as \"a1-zn-WEBSITE\",  
                     a1.\"ADDRESS\" as \"a1-zn-ADDRESS\",  a1.\"BUSSINESS_FIELD\" as \"a1-zn-BUSSINESS_FIELD\",  
-                    a1.\"BIDER_EN_NAME\" as \"a1-zn-BIDER_EN_NAME\",  a1.\"BUSSINESS_TYPE\" as \"a1-zn-BUSSINESS_TYPE\"
+                    a1.\"BIDER_EN_NAME\" as \"a1-zn-BIDER_EN_NAME\",  a1.\"BUSSINESS_TYPE\" as \"a1-zn-BUSSINESS_TYPE\",
+                    a1.\"COMPANY_STATUS\" as \"a1-COMPANY_STATUS\",
+                    a1.\"IS_PAID\" as \"IS_PAID\"
                 from (
                        
                     (select a3.\"BIDER_NAME\",
@@ -725,7 +727,9 @@ class Zeanni_model extends CI_Model
                 a3.\"ADDRESS\",
                 a3.\"BUSSINESS_FIELD\",
                 a3.\"BIDER_EN_NAME\",
-                a3.\"BUSSINESS_TYPE\" from TBL_BIDERS a3 where a3.status='Y')
+                a3.\"BUSSINESS_TYPE\",
+                a3.\"COMPANY_STATUS\",
+                a3.\"IS_PAID\" from TBL_BIDERS a3 where a3.status='Y')
                         union
                     (select a2.\"BIDER_NAME\",
                 a2.\"BUSSINESS_REGISTRATION_NUM\",
@@ -739,7 +743,9 @@ class Zeanni_model extends CI_Model
                 a2.\"ADDRESS\",
                 a2.\"BUSSINESS_FIELD\",
                 a2.\"BIDER_EN_NAME\",
-                a2.\"BUSSINESS_TYPE\" from 
+                a2.\"BUSSINESS_TYPE\",
+                a2.\"COMPANY_STATUS\",
+                a2.\"IS_PAID\" from 
                         TBL_BIDERS a2 
                         inner join tbl_retain a3 
                         on a2.bussiness_registration_num = a3.biz_reg_no 
