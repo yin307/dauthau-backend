@@ -1340,7 +1340,7 @@ class Zeanni_model extends CI_Model
                     to_char(a1.\"APPROVAL_DATE\", 'yyyy-mm-dd hh24:mi:ss') as \"a1-zn-APPROVAL_DATE\",  a1.\"BIDER_NAME\" as \"a1-zn-BIDER_NAME\",  a1.\"BID_PACKAGE_CODE\" as \"a1-zn-BID_PACKAGE_CODE\",
                     a1.COUNT_VIEW,
                     a1.\"RESULT_TYPE\",
-                    to_char(a1.\"OPEN_DATE\", 'yyyy-mm-dd hh24:mi:ss') as \"OPEN_DATE\"
+                    to_char(a1.\"OPEN_DATE\", 'yyyy-mm-dd hh24:mi:ss')
                     (select count(*) from (select a3.\"BIDER_NAME\"
                         from \"TBL_BIDINGS\" a3
                         where  a1.\"BID_PACKAGE_CODE\" = a3.\"BID_PACKAGE_CODE\"
