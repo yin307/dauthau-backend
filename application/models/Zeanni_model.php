@@ -891,7 +891,7 @@ class Zeanni_model extends CI_Model
             //CREATE_DATE
             $where .= " and a1.\"CREATE_DATE\" >= TO_DATE('" . date("Y-m-d") . "','yyyy-MM-dd') ";
         } else {
-            $where .= " and a1.\"CREATE_DATE\" > TO_DATE('" . date("Y-01-01") . "','yyyy-MM-dd') ";
+            $where .= " and a1.\"CREATE_DATE\" > TO_DATE('" . date("1990-01-01") . "','yyyy-MM-dd') ";
         }
 
         $sql = "SELECT * FROM
