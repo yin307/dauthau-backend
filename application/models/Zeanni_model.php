@@ -660,10 +660,12 @@ class Zeanni_model extends CI_Model
         }
 
         if (!empty($_POST['from_date'])) {
-            $where[] = " a1.\"BUSSINESS_REGISTRATION_DATE\" >= TO_DATE('" . $_POST['from_date'] . "','yyyy-MM-dd') ";
+            // $where[] = " a1.\"BUSSINESS_REGISTRATION_DATE\" >= TO_DATE('" . $_POST['from_date'] . "','yyyy-MM-dd') ";
+            $where[] = " a1.\"APPROVAL_DATE\" >= TO_DATE('" . $_POST['from_date'] . "','yyyy-MM-dd') ";
         }
         if (!empty($_POST['to_date'])) {
-            $where[] = " a1.\"BUSSINESS_REGISTRATION_DATE\" <= TO_DATE('" . $_POST['to_date'] . "','yyyy-MM-dd') ";
+            // $where[] = " a1.\"BUSSINESS_REGISTRATION_DATE\" <= TO_DATE('" . $_POST['to_date'] . "','yyyy-MM-dd') ";
+            $where[] = " a1.\"APPROVAL_DATE\" <= TO_DATE('" . $_POST['to_date'] . "','yyyy-MM-dd') ";
         }
 
         if (!empty($_POST['localtion'])) {
