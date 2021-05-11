@@ -1356,7 +1356,7 @@ class Zeanni_model extends CI_Model
             ORDER BY
                 a.\"a1-zn-BID_PACKAGE_CODE\" DESC
         ) WHERE r__ >= (((" . $page . "-1) * 100) + 1)";
-        echo $sql;
+        // echo $sql;
         $query = $this->db->query($sql);
         $data =  $query->result_array();
         if (!empty($_GET['s_test'])) {
