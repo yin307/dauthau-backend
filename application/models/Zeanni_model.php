@@ -900,7 +900,7 @@ class Zeanni_model extends CI_Model
 
                         from \"TBL_BIDER_SELECTIONS\" a1                         
                         " . $where . "
-                        order by  a1.\"BIDER_SELECTION_ID\"
+                        order by  a1.\"BIDER_SELECTION_ID\" desc
                     ) a
                     WHERE rownum < ((" . $page . " * 100) + 1 )
                 )
