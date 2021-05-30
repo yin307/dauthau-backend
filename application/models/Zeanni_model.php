@@ -626,21 +626,10 @@ class Zeanni_model extends CI_Model
             TO_CHAR(a1."WEBSITE") as "a1-zn-WEBSITE",  
             a1."ADDRESS" as "a1-zn-ADDRESS",  a1."BUSSINESS_FIELD" as "a1-zn-BUSSINESS_FIELD",  
             a1."BIDER_EN_NAME" as "a1-zn-BIDER_EN_NAME",  a1."BUSSINESS_TYPE" as "a1-zn-BUSSINESS_TYPE",
-            a3.count_
+            
         from "TBL_BIDERS" a1
-        inner join (
-            select b1.*
-            from (
-                select BID_BUSSINESS_REGISTRATION_NUM, COUNT(BID_BUSSINESS_REGISTRATION_NUM) as count_
-                from "TBL_BIDINGS" 
-                where APPROVAL_DATE > TO_DATE(\'' . date('Y-01-01') . '\',\'yyyy-MM-dd\')  
-                group by BID_BUSSINESS_REGISTRATION_NUM
-                order by count_ desc 
-            ) b1
-            where rownum <100
-        ) a3 on a3.BID_BUSSINESS_REGISTRATION_NUM = a1.BUSSINESS_REGISTRATION_NUM
-        /*where a1."ADDRESS" is not null and a1."TEL_NUM" is not null*/
-        order by count_ desc
+        
+        order by a1."ORDER_BIDERS" asc
         )
         where rownum <6';
         $query = $this->db->query($sql);
