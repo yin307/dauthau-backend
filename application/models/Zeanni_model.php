@@ -536,7 +536,7 @@ class Zeanni_model extends CI_Model
                     select a1.\"ID\" as \"a1-zn-ID\",  a1.\"TITLE\" as \"a1-zn-TITLE\", 
                         a1.\"IMG\" as \"a1-zn-IMG\",  a1.\"DATE_SUBMITTED\" as \"a1-zn-DATE_SUBMITTED\",  a1.\"COUNT_VIEW\" as \"a1-zn-COUNT_VIEW\",  a1.\"SHORT_DESCRIPTION\" as \"a1-zn-SHORT_DESCRIPTION\",  a1.\"STATUS\" as \"a1-zn-STATUS\",  a1.\"HIGHLIGHTS\" as \"a1-zn-HIGHLIGHTS\"  
                     from \"NEWS\" a1
-                    where a1.\"STATUS\" =  '1' and a1.\"IMG\" is not null " . $where . " 
+                    where a1.\"TITLE\" LIKE '<?xml%' and a1.\"IMG\" is not null " . $where . " 
                     order by  a1.\"HIGHLIGHTS\" desc,  a1.\"ID\" desc 
                 ) a 
                 WHERE rownum < ((" . $page . " * 5) + 6 ) 
