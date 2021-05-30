@@ -625,7 +625,7 @@ class Zeanni_model extends CI_Model
             a1."PROVINCE" as "a1-zn-PROVINCE",  
             TO_CHAR(a1."WEBSITE") as "a1-zn-WEBSITE",  
             a1."ADDRESS" as "a1-zn-ADDRESS",  a1."BUSSINESS_FIELD" as "a1-zn-BUSSINESS_FIELD",  
-            a1."BIDER_EN_NAME" as "a1-zn-BIDER_EN_NAME",  a1."BUSSINESS_TYPE" as "a1-zn-BUSSINESS_TYPE",
+            a1."BIDER_EN_NAME" as "a1-zn-BIDER_EN_NAME",  a1."BUSSINESS_TYPE" as "a1-zn-BUSSINESS_TYPE"
             
         from "TBL_BIDERS" a1
         
