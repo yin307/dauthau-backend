@@ -879,7 +879,8 @@ class PushNotify_model extends CI_Model implements PushNotify{
 		);
 		
 		$fields = array(
-			'app_id' => "359d4968-225d-4e33-ba21-1d63c0fb8b34",
+			// 'app_id' => "359d4968-225d-4e33-ba21-1d63c0fb8b34",
+			'app_id' => "5500fa7d-1a59-4352-a45b-b393138e7821",
       // 'included_segments' => array('9484b018-8c55-4cc5-810b-537607f4c6da'),
       'include_player_ids'=>$include_player_ids, //array('0fab97ac-8455-4081-babd-770999834d22'),//array('02fba03b-4000-4fd3-b0e1-f4eff361e17d'),
 			'data' => array(
@@ -897,7 +898,8 @@ class PushNotify_model extends CI_Model implements PushNotify{
 		
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, "https://onesignal.com/api/v1/notifications");
-		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json; charset=utf-8','Authorization: Basic YmJlNjZhNTUtNDRlMi00MjgzLTlkOWQtODFlZTlhZjQ1ODhk'));
+		// curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json; charset=utf-8','Authorization: Basic YmJlNjZhNTUtNDRlMi00MjgzLTlkOWQtODFlZTlhZjQ1ODhk'));
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json; charset=utf-8','Authorization: Basic ZDc3ZWU5ODItZDgxNi00ZjEyLWEzNTAtOWJmNGM5OThkMGJj'));
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
 		curl_setopt($ch, CURLOPT_HEADER, FALSE);
 		curl_setopt($ch, CURLOPT_POST, TRUE);
